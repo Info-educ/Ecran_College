@@ -2,7 +2,6 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=1920, height=1080">
 <title>Écran Accueil – Collège Joliot Curie</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Righteous&display=swap" rel="stylesheet">
@@ -590,74 +589,95 @@
 </div>
 
 <script>
+/* ================================================================
+   JAVASCRIPT ES5 STRICT — compatible tous navigateurs embarqués
+   Pas de : const/let, =>, async/await, template literals,
+            includes(), padStart(), destructuring
+================================================================ */
+
+/* ── UTILITAIRES ── */
+function pad2(n) {
+  return n < 10 ? '0' + n : '' + n;
+}
+
+function inArray(arr, val) {
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] === val) return true;
+  }
+  return false;
+}
+
+function setText(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
 /* ── HORLOGE ── */
+var JOURS = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+var MOIS  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+
 function updateClock() {
-  const now = new Date();
-  const h = String(now.getHours()).padStart(2,'0');
-  const m = String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('time').textContent = h + ':' + m;
-  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  const mois  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-  document.getElementById('day-name').textContent  = jours[now.getDay()];
-  document.getElementById('date-full').textContent = now.getDate() + ' ' + mois[now.getMonth()] + ' ' + now.getFullYear();
+  var now = new Date();
+  setText('time', pad2(now.getHours()) + ':' + pad2(now.getMinutes()));
+  setText('day-name', JOURS[now.getDay()]);
+  setText('date-full', now.getDate() + ' ' + MOIS[now.getMonth()] + ' ' + now.getFullYear());
 }
 setInterval(updateClock, 1000);
 updateClock();
 
-/* ── COMPTE À REBOURS — supprimé ── */
-
 /* ══════════════════════════════════════════════════
-   CARROUSEL D'INFOS COLLÈGE — défilement lent, cartes grandes
+   CARROUSEL D'INFOS — ES5
 ══════════════════════════════════════════════════ */
-const ACTUS = [
+var ACTUS = [
   {
-    emoji: '🏭', tag: 'Sortie péda', tagClass: 'tag-blue', accentClass: 'accent-blue',
-    text: 'Sortie 6ème D — Visite d\'une laiterie',
-    detail: 'Mercredi 1er avril · Matin',
+    emoji: '&#127981;', tag: 'Sortie p&#233;da', tagClass: 'tag-blue', accentClass: 'accent-blue',
+    text: 'Sortie 6&#232;me D &#8212; Visite d\'une laiterie',
+    detail: 'Mercredi 1er avril &middot; Matin',
     date: 'Cette semaine'
   },
   {
-    emoji: '🌍', tag: 'École Ouverte', tagClass: 'tag-green', accentClass: 'accent-green',
+    emoji: '&#127757;', tag: '&#201;cole Ouverte', tagClass: 'tag-green', accentClass: 'accent-green',
     text: 'Jeux traditionnels du monde',
-    detail: 'Mercredi 1er avril · Après-midi',
+    detail: 'Mercredi 1er avril &middot; Apr&#232;s-midi',
     date: 'Cette semaine'
   },
   {
-    emoji: '🏛️', tag: 'Sortie péda', tagClass: 'tag-orange', accentClass: 'accent-orange',
-    text: 'Sortie 5ème D — Musée de l\'Immigration',
-    detail: 'Jeudi 2 avril · Après-midi · Palais de la Porte d\'Orée',
+    emoji: '&#127963;', tag: 'Sortie p&#233;da', tagClass: 'tag-orange', accentClass: 'accent-orange',
+    text: 'Sortie 5&#232;me D &#8212; Mus&#233;e de l\'Immigration',
+    detail: 'Jeudi 2 avril &middot; Apr&#232;s-midi &middot; Palais de la Porte d\'Or&#233;e',
     date: 'Cette semaine'
   },
   {
-    emoji: '🎨', tag: 'Sortie péda', tagClass: 'tag-red', accentClass: 'accent-red',
-    text: 'Sortie 3ème B — Exposition Matisse',
-    detail: 'Vendredi 3 avril · Après-midi · Grand Palais',
+    emoji: '&#127912;', tag: 'Sortie p&#233;da', tagClass: 'tag-red', accentClass: 'accent-red',
+    text: 'Sortie 3&#232;me B &#8212; Exposition Matisse',
+    detail: 'Vendredi 3 avril &middot; Apr&#232;s-midi &middot; Grand Palais',
     date: 'Cette semaine'
-  },
+  }
 ];
 
-let actuIdx = 0;
-let actuTimer = null;
+var actuIdx = 0;
 
 function buildActuCards() {
-  const scene = document.getElementById('actu-scene');
-  scene.innerHTML = ACTUS.map((a, i) => `
-    <div class="actu-card ${i === 0 ? 'visible' : ''}" id="actu-card-${i}">
-      <div class="actu-card-accent ${a.accentClass}"></div>
-      <span class="actu-card-tag ${a.tagClass}">${a.tag}</span>
-      <div class="actu-card-emoji">${a.emoji}</div>
-      <div class="actu-card-text">${a.text}</div>
-      <div class="actu-card-detail">${a.detail}</div>
-      <div class="actu-card-date">${a.date}</div>
-    </div>
-  `).join('');
+  var scene = document.getElementById('actu-scene');
+  var html = '';
+  for (var i = 0; i < ACTUS.length; i++) {
+    var a = ACTUS[i];
+    html += '<div class="actu-card' + (i === 0 ? ' visible' : '') + '" id="actu-card-' + i + '">';
+    html += '<div class="actu-card-accent ' + a.accentClass + '"></div>';
+    html += '<span class="actu-card-tag ' + a.tagClass + '">' + a.tag + '</span>';
+    html += '<div class="actu-card-emoji">' + a.emoji + '</div>';
+    html += '<div class="actu-card-text">' + a.text + '</div>';
+    html += '<div class="actu-card-detail">' + a.detail + '</div>';
+    html += '<div class="actu-card-date">' + a.date + '</div>';
+    html += '</div>';
+  }
+  scene.innerHTML = html;
 
-  // Dots
-  const dotsHtml = ACTUS.map((_, i) =>
-    `<div class="actu-dot ${i===0?'active':''}" id="dot-${i}"></div>`
-  ).join('');
-  // Injecter dots sous la scène
-  let dotsEl = document.getElementById('actu-dots-bar');
+  var dotsHtml = '';
+  for (var j = 0; j < ACTUS.length; j++) {
+    dotsHtml += '<div class="actu-dot' + (j === 0 ? ' active' : '') + '" id="dot-' + j + '"></div>';
+  }
+  var dotsEl = document.getElementById('actu-dots-bar');
   if (!dotsEl) {
     dotsEl = document.createElement('div');
     dotsEl.className = 'actu-dots';
@@ -667,261 +687,303 @@ function buildActuCards() {
   dotsEl.innerHTML = dotsHtml;
 }
 
-function showActu(nextIdx) {
-  const current = document.getElementById('actu-card-' + actuIdx);
-  const next    = document.getElementById('actu-card-' + nextIdx);
-  const dotCur  = document.getElementById('dot-' + actuIdx);
-  const dotNext = document.getElementById('dot-' + nextIdx);
+function removeClass(el, cls) {
+  if (!el) return;
+  el.className = el.className.replace(new RegExp('(^|\\s)' + cls + '(\\s|$)', 'g'), ' ').replace(/\s+/g, ' ').replace(/^\s|\s$/g, '');
+}
+function addClass(el, cls) {
+  if (!el) return;
+  removeClass(el, cls);
+  el.className = (el.className + ' ' + cls).replace(/^\s|\s$/g, '');
+}
 
-  if (current) { current.classList.remove('visible'); current.classList.add('exit-up'); }
-  setTimeout(() => {
-    if (current) { current.classList.remove('exit-up'); }
-    if (next)    { next.classList.add('visible'); }
+function showActu(nextIdx) {
+  var current = document.getElementById('actu-card-' + actuIdx);
+  var next    = document.getElementById('actu-card-' + nextIdx);
+  var dotCur  = document.getElementById('dot-' + actuIdx);
+  var dotNext = document.getElementById('dot-' + nextIdx);
+
+  if (current) { removeClass(current, 'visible'); addClass(current, 'exit-up'); }
+  setTimeout(function() {
+    if (current) { removeClass(current, 'exit-up'); }
+    if (next)    { addClass(next, 'visible'); }
   }, 700);
 
-  if (dotCur)  dotCur.classList.remove('active');
-  if (dotNext) dotNext.classList.add('active');
+  if (dotCur)  removeClass(dotCur,  'active');
+  if (dotNext) addClass(dotNext, 'active');
   actuIdx = nextIdx;
 }
 
 function startActuRotation() {
-  actuTimer = setInterval(() => {
-    const next = (actuIdx + 1) % ACTUS.length;
+  setInterval(function() {
+    var next = (actuIdx + 1) % ACTUS.length;
     showActu(next);
-  }, 6000); // 6 secondes par carte — défilement lent et lisible
+  }, 6000);
 }
 
 buildActuCards();
 startActuRotation();
 
 /* ══════════════════════════════════════════════════
-   MENUS CANTINE — base de données intégrée
-   (mercredi = pas de demi-pension)
+   MENUS CANTINE — ES5
 ══════════════════════════════════════════════════ */
-const MENUS = {
-  // Semaine du 30 mars - 4 avril
-  '2026-03-30': { // lundi
-    entree: ['Escalope de veau hachée FR basquaise', 'Riz à la mexicaine <span class="vege-tag">Végé</span>'],
-    plat: ['Escalope de veau hachée FR basquaise', 'Croq veggie tomate <span class="vege-tag">Végé</span>'],
-    accomp: ['Petits pois <span class="bio-tag">BIO</span> à la lyonnaise', 'Riz créole'],
-    fromage: ["Pont l'Evêque <span class='bio-tag'>AOC</span>", "Tomme croûte fleurie"],
-    dessert: ['Pomme rouge Ecoresponsable', 'Orange Global Gap']
+var MENUS = {
+  '2026-03-30': {
+    entree: ['Escalope de veau hach\u00e9e FR basquaise', 'Riz \u00e0 la mexicaine <span class="vege-tag">V\u00e9g\u00e9</span>'],
+    plat:   ['Escalope de veau hach\u00e9e FR basquaise', 'Croq veggie tomate <span class="vege-tag">V\u00e9g\u00e9</span>'],
+    accomp: ['Petits pois <span class="bio-tag">BIO</span> \u00e0 la lyonnaise', 'Riz cr\u00e9ole'],
+    fromage:['Pont l\u2019Ev\u00eaque <span class="bio-tag">AOC</span>', 'Tomme cro\u00fbte fleurie'],
+    dessert:['Pomme rouge Ecoresponsable', 'Orange Global Gap']
   },
-  '2026-03-31': { // mardi
+  '2026-03-31': {
     entree: [],
-    plat: ['Poulet LR sauté', 'Croq veggie tomate <span class="vege-tag">Végé</span>'],
+    plat:   ['Poulet LR saut\u00e9', 'Croq veggie tomate <span class="vege-tag">V\u00e9g\u00e9</span>'],
     accomp: ['Ratatouille', 'Pommes rissolées'],
-    fromage: ['Fromage / laitage ORTEMS 01'],
-    dessert: ['Gâteau provence aux amandes citron', 'Muffin à la vanille et pépites de chocolat']
+    fromage:['Fromage / laitage ORTEMS 01'],
+    dessert:['G\u00e2teau provence aux amandes citron', 'Muffin \u00e0 la vanille et p\u00e9pites de chocolat']
   },
-  // mercredi 1er avril : PAS DE DEMI-PENSION
-  '2026-04-02': { // jeudi
+  '2026-04-02': {
     entree: [],
-    plat: ["Gâteau d'œufs <span class='bio-tag'>BIO</span> sauce tomate", "Boulgour <span class='bio-tag'>BIO</span> égrené vég. marocaine <span class='vege-tag'>Végé</span>"],
-    accomp: ["Haricots beurre à la tomate", "Boulgour <span class='bio-tag'>BIO</span> et jus de légumes"],
-    fromage: ['Fromage frais aux fruits <span class="bio-tag">BIO</span>', 'Fromage frais sucré'],
-    dessert: ['Banane', 'Kiwi']
+    plat:   ['G\u00e2teau d\u2019\u0153ufs <span class="bio-tag">BIO</span> sauce tomate', 'Boulgour <span class="bio-tag">BIO</span> \u00e9gren\u00e9 v\u00e9g. marocaine <span class="vege-tag">V\u00e9g\u00e9</span>'],
+    accomp: ['Haricots beurre \u00e0 la tomate', 'Boulgour <span class="bio-tag">BIO</span> et jus de l\u00e9gumes'],
+    fromage:['Fromage frais aux fruits <span class="bio-tag">BIO</span>', 'Fromage frais sucr\u00e9'],
+    dessert:['Banane', 'Kiwi']
   },
-  '2026-04-03': { // vendredi
+  '2026-04-03': {
     entree: ['Concombre <span class="bio-tag">BIO</span> vinaigrette', 'Salade verte <span class="bio-tag">BIO</span>'],
-    plat: ['Filet de colin meunière', 'Gnocchetti <span class="bio-tag">BIO</span> sauce fromagère végé <span class="vege-tag">Végé</span>'],
-    accomp: ['Épinards <span class="bio-tag">BIO</span> à la béchamel', 'Gnocchetti Sardi <span class="bio-tag">BIO</span>'],
-    fromage: [],
-    dessert: ['Purée de pomme <span class="bio-tag">BIO</span>', 'Compote de pommes fraises']
+    plat:   ['Filet de colin meuni\u00e8re', 'Gnocchetti <span class="bio-tag">BIO</span> sauce fromag\u00e8re v\u00e9g\u00e9 <span class="vege-tag">V\u00e9g\u00e9</span>'],
+    accomp: ['\u00c9pinards <span class="bio-tag">BIO</span> \u00e0 la b\u00e9chamel', 'Gnocchetti Sardi <span class="bio-tag">BIO</span>'],
+    fromage:[],
+    dessert:['Pur\u00e9e de pomme <span class="bio-tag">BIO</span>', 'Compote de pommes fraises']
   },
-  // Semaine du 6 avril
-  '2026-04-06': { // lundi — pas de menu indiqué
+  '2026-04-06': {
     entree: [],
-    plat: ['Semoule <span class="bio-tag">BIO</span> et jambalaya <span class="bio-tag">BIO</span>', 'Dahl de lentilles corail et riz <span class="vege-tag">Végé</span>'],
+    plat:   ['Semoule <span class="bio-tag">BIO</span> et jambalaya <span class="bio-tag">BIO</span>', 'Dahl de lentilles corail et riz <span class="vege-tag">V\u00e9g\u00e9</span>'],
     accomp: [],
-    fromage: ['Fromage frais aux fruits <span class="bio-tag">BIO</span>', 'Fromage frais sucré'],
-    dessert: ['Ananas', 'Orange Global Gap']
+    fromage:['Fromage frais aux fruits <span class="bio-tag">BIO</span>', 'Fromage frais sucr\u00e9'],
+    dessert:['Ananas', 'Orange Global Gap']
   },
-  '2026-04-07': { // mardi
+  '2026-04-07': {
     entree: ['Salade de tomates', 'Concombre <span class="bio-tag">BIO</span> vinaigrette'],
-    plat: ['Steak de colin sauce sétoise', 'Bouchée de blé <span class="vege-tag">Végé</span>'],
-    accomp: ['Chou-fleur <span class="bio-tag">BIO</span> aux saveurs du soleil', 'Blé <span class="bio-tag">BIO</span> à la tomate'],
-    fromage: ['Yaourt nature <span class="bio-tag">BIO</span> et sucre'],
-    dessert: ['Compote de pommes', 'Compote de pomme-banane']
+    plat:   ['Steak de colin sauce s\u00e9toise', 'Bouch\u00e9e de bl\u00e9 <span class="vege-tag">V\u00e9g\u00e9</span>'],
+    accomp: ['Chou-fleur <span class="bio-tag">BIO</span> aux saveurs du soleil', 'Bl\u00e9 <span class="bio-tag">BIO</span> \u00e0 la tomate'],
+    fromage:['Yaourt nature <span class="bio-tag">BIO</span> et sucre'],
+    dessert:['Compote de pommes', 'Compote de pomme-banane']
   },
-  // mercredi 8 avril : PAS DE DEMI-PENSION
-  '2026-04-09': { // jeudi
+  '2026-04-09': {
     entree: [],
-    plat: ['Cordon bleu de dinde', 'Calamars à la romaine'],
+    plat:   ['Cordon bleu de dinde', 'Calamars \u00e0 la romaine'],
     accomp: ['Ratatouille', 'Pommes campagnardes'],
-    fromage: [],
-    dessert: ['Liégeois au chocolat', 'Liégeois à la vanille']
+    fromage:[],
+    dessert:['Li\u00e9geois au chocolat', 'Li\u00e9geois \u00e0 la vanille']
   },
-  '2026-04-10': { // vendredi
+  '2026-04-10': {
     entree: [],
-    plat: ["Boulettes d'agneau sauce navarin", "Omelette <span class='bio-tag'>BIO</span> <span class='vege-tag'>Végé</span>"],
-    accomp: ["Flageolets à l'ail", "Mélange légumes haricots plats"],
-    fromage: ['Saint Nectaire <span class="bio-tag">AOC</span>', 'Tomme noire'],
-    dessert: ['Entremet chocolat festif']
+    plat:   ['Boulettes d\u2019agneau sauce navarin', 'Omelette <span class="bio-tag">BIO</span> <span class="vege-tag">V\u00e9g\u00e9</span>'],
+    accomp: ['Flageolets \u00e0 l\u2019ail', 'M\u00e9lange l\u00e9gumes haricots plats'],
+    fromage:['Saint Nectaire <span class="bio-tag">AOC</span>', 'Tomme noire'],
+    dessert:['Entremet chocolat festif']
   }
 };
 
 function getMenuDuJour() {
-  const now = new Date();
-  const dow = now.getDay(); // 0=dim, 3=mer, 6=sam
-  const pad = n => String(n).padStart(2,'0');
-  const dateKey = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate());
+  var now = new Date();
+  var dow = now.getDay();
+  var dateKey = now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate());
+  var libelle = JOURS[dow] + ' ' + now.getDate() + ' ' + MOIS[now.getMonth()];
 
-  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  const mois  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-  const libelle = jours[dow] + ' ' + now.getDate() + ' ' + mois[now.getMonth()];
+  setText('repas-date-label', libelle);
 
-  document.getElementById('repas-date-label').textContent = libelle;
+  var container = document.getElementById('repas-categories');
+  if (!container) return;
 
-  const container = document.getElementById('repas-categories');
-
-  // Fermé le week-end et le mercredi
   if (dow === 0 || dow === 6 || dow === 3) {
-    container.innerHTML = '<div class="repas-closed-sm">🏠 Pas de demi-pension ' + (dow===3 ? 'le mercredi' : 'le week-end') + '</div>';
+    container.innerHTML = '<div class="repas-closed-sm">&#127968; Pas de demi-pension ' + (dow === 3 ? 'le mercredi' : 'le week-end') + '</div>';
     return;
   }
 
-  const menu = MENUS[dateKey];
+  var menu = MENUS[dateKey];
   if (!menu) {
-    container.innerHTML = '<div class="repas-closed-sm">🔄 Menu non disponible</div>';
+    container.innerHTML = '<div class="repas-closed-sm">&#128260; Menu non disponible</div>';
     return;
   }
 
-  const cats = [
-    { label: '🥗 Entrée', items: menu.entree },
-    { label: '🍖 Plat', items: menu.plat },
-    { label: '🥦 Accomp.', items: menu.accomp },
-    { label: '🧀 Fromage', items: menu.fromage },
-    { label: '🍮 Dessert', items: menu.dessert }
-  ].filter(c => c.items && c.items.length > 0);
+  var cats = [
+    { label: 'Entr\u00e9e',   items: menu.entree  },
+    { label: 'Plat',         items: menu.plat    },
+    { label: 'Accomp.',      items: menu.accomp  },
+    { label: 'Fromage',      items: menu.fromage },
+    { label: 'Dessert',      items: menu.dessert }
+  ];
 
-  container.innerHTML = cats.map(c =>
-    '<div class="repas-cat"><div class="repas-cat-label">' + c.label + '</div>' +
-    '<div class="repas-items">' + c.items.join('<br>') + '</div></div>'
-  ).join('');
+  var html = '';
+  for (var i = 0; i < cats.length; i++) {
+    var c = cats[i];
+    if (!c.items || c.items.length === 0) continue;
+    html += '<div class="repas-cat">';
+    html += '<div class="repas-cat-label">' + c.label + '</div>';
+    html += '<div class="repas-items">' + c.items.join('<br>') + '</div>';
+    html += '</div>';
+  }
+  container.innerHTML = html;
 }
 getMenuDuJour();
-// Mise à jour toutes les heures (changement de jour)
 setInterval(getMenuDuJour, 3600000);
 
 /* ── CITATIONS ROTATIVES ── */
-const quotes = [
-  { text: "L'éducation est l'arme la plus puissante pour changer le monde.", author: "Nelson Mandela" },
-  { text: "La connaissance s'acquiert par l'expérience, tout le reste n'est qu'information.", author: "Albert Einstein" },
-  { text: "Il faut toujours viser la lune, car même en cas d'échec, on atterrit dans les étoiles.", author: "Oscar Wilde" },
-  { text: "Le succès c'est tomber sept fois et se relever huit.", author: "Proverbe japonais" },
-  { text: "Apprendre sans réfléchir est vain. Réfléchir sans apprendre est dangereux.", author: "Confucius" },
-  { text: "Ce n'est pas parce que les choses sont difficiles que nous n'osons pas, c'est parce que nous n'osons pas qu'elles sont difficiles.", author: "Sénèque" },
+var QUOTES = [
+  { text: "L\u2019\u00e9ducation est l\u2019arme la plus puissante pour changer le monde.", author: "Nelson Mandela" },
+  { text: "La connaissance s\u2019acquiert par l\u2019exp\u00e9rience, tout le reste n\u2019est qu\u2019information.", author: "Albert Einstein" },
+  { text: "Il faut toujours viser la lune, car m\u00eame en cas d\u2019\u00e9chec, on atterrit dans les \u00e9toiles.", author: "Oscar Wilde" },
+  { text: "Le succ\u00e8s c\u2019est tomber sept fois et se relever huit.", author: "Proverbe japonais" },
+  { text: "Apprendre sans r\u00e9fl\u00e9chir est vain. R\u00e9fl\u00e9chir sans apprendre est dangereux.", author: "Confucius" },
+  { text: "Ce n\u2019est pas parce que les choses sont difficiles que nous n\u2019osons pas.", author: "S\u00e9n\u00e8que" }
 ];
-let qi = 0;
+var qi = 0;
 function rotateQuote() {
-  qi = (qi + 1) % quotes.length;
-  const el = document.getElementById('quote-text');
-  const au = document.getElementById('quote-author');
-  el.style.transition = 'opacity 0.8s'; el.style.opacity = 0;
-  au.style.transition = 'opacity 0.8s'; au.style.opacity = 0;
-  setTimeout(() => {
-    el.textContent = '"' + quotes[qi].text + '"';
-    au.textContent = '— ' + quotes[qi].author;
-    el.style.opacity = 1; au.style.opacity = 1;
+  qi = (qi + 1) % QUOTES.length;
+  var el = document.getElementById('quote-text');
+  var au = document.getElementById('quote-author');
+  if (!el || !au) return;
+  el.style.opacity = 0;
+  au.style.opacity = 0;
+  setTimeout(function() {
+    el.textContent = '\u201c' + QUOTES[qi].text + '\u201d';
+    au.textContent = '\u2014 ' + QUOTES[qi].author;
+    el.style.opacity = 1;
+    au.style.opacity = 1;
   }, 800);
 }
 setInterval(rotateQuote, 13000);
 
-/* ══════════ MÉTÉO — Open-Meteo (RGPD ✅, sans clé) ══════════ */
-const ICONS = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
-const DESCS = {0:'Ensoleillé',1:'Peu nuageux',2:'Partiellement nuageux',3:'Nuageux',45:'Brouillard',48:'Brouillard givrant',51:'Bruine légère',53:'Bruine',55:'Bruine forte',61:'Pluie légère',63:'Pluie',65:'Pluie forte',71:'Neige légère',73:'Neige',75:'Neige forte',80:'Averses',81:'Averses',82:'Averses fortes',95:'Orage',96:'Orage + grêle',99:'Orage violent'};
+/* ══════════════════════════════════════════════════
+   MÉTÉO — XMLHttpRequest ES5 (pas de fetch/async)
+   Open-Meteo, RGPD ✅, sans clé API
+══════════════════════════════════════════════════ */
+var ICONS = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
+var DESCS = {0:'Ensoleillé',1:'Peu nuageux',2:'Partiellement nuageux',3:'Nuageux',45:'Brouillard',48:'Brouillard givrant',51:'Bruine légère',53:'Bruine',55:'Bruine forte',61:'Pluie légère',63:'Pluie',65:'Pluie forte',71:'Neige légère',73:'Neige',75:'Neige forte',80:'Averses',81:'Averses',82:'Averses fortes',95:'Orage',96:'Orage + grêle',99:'Orage violent'};
 
-async function fetchMeteo() {
-  try {
-    // Coordonnées à adapter à la commune du collège
-    const url = 'https://api.open-meteo.com/v1/forecast'
-      + '?latitude=48.7953&longitude=2.3097'
-      + '&current_weather=true'
-      + '&hourly=temperature_2m,weathercode'
-      + '&daily=weathercode,temperature_2m_max,temperature_2m_min'
-      + '&forecast_days=3&timezone=Europe%2FParis';
-    const r = await fetch(url);
-    const d = await r.json();
-    const tempNow  = Math.round(d.current_weather.temperature);
-    const wcodeNow = d.current_weather.weathercode;
-    const tmax0    = Math.round(d.daily.temperature_2m_max[0]);
-    const tmin0    = Math.round(d.daily.temperature_2m_min[0]);
-    document.getElementById('meteo-icon').textContent   = ICONS[wcodeNow] || '🌤️';
-    document.getElementById('meteo-temp').textContent   = tempNow + '°';
-    document.getElementById('meteo-desc').textContent   = DESCS[wcodeNow] || 'Variable';
-    document.getElementById('meteo-minmax').textContent = '↓' + tmin0 + '° ↑' + tmax0 + '°';
-    applyMeteoBackground(wcodeNow, tempNow);
-    const wcode1 = d.daily.weathercode[1];
-    const tmax1  = Math.round(d.daily.temperature_2m_max[1]);
-    const tmin1  = Math.round(d.daily.temperature_2m_min[1]);
-    const joursC = ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'];
-    const demainDate = new Date(); demainDate.setDate(demainDate.getDate() + 1);
-    document.getElementById('demain-label').textContent    = 'Demain — ' + joursC[demainDate.getDay()];
-    document.getElementById('meteo-icon-d1').textContent   = ICONS[wcode1] || '🌤️';
-    document.getElementById('meteo-temp-d1').textContent   = Math.round((tmax1+tmin1)/2) + '°';
-    document.getElementById('meteo-desc-d1').textContent   = DESCS[wcode1] || 'Variable';
-    document.getElementById('meteo-minmax-d1').textContent = '↓' + tmin1 + '° ↑' + tmax1 + '°';
-    const isPluie = c => [51,53,55,61,63,65,80,81,82,95,96,99].includes(c);
-    let conseil = '🌤️ Bonne journée au collège Joliot Curie !';
-    if (isPluie(wcodeNow)) conseil = '☂️ Pensez à votre parapluie en sortant !';
-    else if (tempNow < 8)  conseil = '🥶 Il fait froid ! Couvrez-vous bien.';
-    else if (tempNow > 25) conseil = '☀️ Il fait chaud ! Pensez à bien vous hydrater.';
-    document.getElementById('meteo-conseil').textContent = conseil;
-  } catch(e) {
-    document.getElementById('meteo-desc').textContent = 'Météo indisponible';
-  }
+function isPluieCode(c) {
+  return inArray([51,53,55,61,63,65,80,81,82,95,96,99], c);
 }
+function isOrageCode(c) { return inArray([95,96,99], c); }
+function isNeigeCode(c) { return inArray([71,73,75], c); }
+function isPluieFortCode(c) { return inArray([61,63,65,80,81,82], c); }
+function isNuagCode(c)  { return inArray([2,3], c); }
 
 function applyMeteoBackground(wcode, tempNow) {
-  const bg      = document.getElementById('bg-canvas');
-  const part    = document.getElementById('particles');
-  const overlay = document.getElementById('weather-overlay');
-  const vignette= document.getElementById('vignette');
+  var bg      = document.getElementById('bg-canvas');
+  var part    = document.getElementById('particles');
+  var overlay = document.getElementById('weather-overlay');
+  var vignette= document.getElementById('vignette');
+  if (!bg) return;
+
   part.innerHTML = '';
   overlay.style.cssText = 'position:fixed;inset:0;z-index:2;pointer-events:none;transition:all 3s ease;';
-  const isGel    = tempNow <= 0;
-  const isBroui  = [45,48].includes(wcode);
-  vignette.classList.toggle('active', isGel || isBroui);
-  const isOrage  = [95,96,99].includes(wcode);
-  const isNeige  = [71,73,75].includes(wcode);
-  const isPluie  = [51,53,55,61,63,65,80,81,82].includes(wcode);
-  const isNuag   = [2,3].includes(wcode);
-  const isSoleil = wcode === 0;
-  let gradient = '';
-  let particleConf = null;
-  if (isOrage) {
+
+  var isGel   = tempNow <= 0;
+  var isBroui = inArray([45,48], wcode);
+  if (isGel || isBroui) { addClass(vignette, 'active'); } else { removeClass(vignette, 'active'); }
+
+  var gradient = '';
+  var pCount = 0, pColor = '', pSize = 1, pSpeed = 1, pType = 'rain';
+
+  if (isOrageCode(wcode)) {
     gradient = 'linear-gradient(160deg,#0a0015 0%,#1a0533 40%,#0d0020 60%,#0a0015 100%)';
-    particleConf = { count:90, color:'rgba(200,230,255,0.75)', size:1.2, speed:2.2, type:'rain' };
-  } else if (isNeige) {
+    pCount = 90; pColor = 'rgba(200,230,255,0.75)'; pSize = 1.2; pSpeed = 2.2; pType = 'rain';
+  } else if (isNeigeCode(wcode)) {
     gradient = 'linear-gradient(160deg,#d8eef8 0%,#c0dcee 40%,#e4f2fa 100%)';
-    particleConf = { count:80, color:'rgba(255,255,255,0.95)', size:6, speed:0.35, type:'snow' };
-  } else if (isPluie) {
+    pCount = 80; pColor = 'rgba(255,255,255,0.95)'; pSize = 6; pSpeed = 0.35; pType = 'snow';
+  } else if (isPluieFortCode(wcode) && tempNow < 5) {
+    gradient = 'linear-gradient(160deg,#0e1a25 0%,#1a2e40 40%,#0e1a25 100%)';
+    pCount = 100; pColor = 'rgba(160,210,255,0.7)'; pSize = 1.3; pSpeed = 1.9; pType = 'rain';
+  } else if (isPluieCode(wcode)) {
     gradient = 'linear-gradient(160deg,#244a70 0%,#345a82 40%,#244a70 100%)';
-    particleConf = { count:75, color:'rgba(180,220,255,0.70)', size:1.4, speed:1.3, type:'rain' };
-  } else if (isNuag) {
+    pCount = 75; pColor = 'rgba(180,220,255,0.70)'; pSize = 1.4; pSpeed = 1.3; pType = 'rain';
+  } else if (isBroui) {
+    gradient = 'linear-gradient(160deg,#a8b0bc 0%,#b8c0cc 40%,#a8b0bc 100%)';
+  } else if (isNuagCode(wcode)) {
     gradient = 'linear-gradient(160deg,#5a7898 0%,#7a90a8 40%,#5a7898 100%)';
-  } else if (isSoleil) {
+  } else if (wcode === 0 && tempNow > 25) {
+    gradient = 'linear-gradient(160deg,#ffc000 0%,#ffd800 30%,#ff9400 60%,#ffc000 100%)';
+  } else if (wcode === 0) {
     gradient = 'linear-gradient(160deg,#5abcf0 0%,#90d8f8 30%,#fff8b0 60%,#ffe060 100%)';
   } else {
     gradient = 'linear-gradient(160deg,#80b0d0 0%,#a0c8e8 50%,#80b0d0 100%)';
   }
+
   bg.style.backgroundImage = gradient;
   bg.style.backgroundSize  = '400% 400%';
-  if (particleConf) {
-    const { count, color, size, speed, type } = particleConf;
-    for (let i = 0; i < count; i++) {
-      const el = document.createElement('div');
-      el.className = 'drop';
-      const left = Math.random() * 110 - 5;
-      const delay= Math.random() * 10;
-      const dur  = (2.5 + Math.random() * 4) / speed;
-      const s    = type === 'snow' ? size * (0.4 + Math.random() * 0.8) : size * (0.6 + Math.random() * 0.5);
-      const h    = type === 'rain' ? s * 7 : s;
-      el.style.cssText = 'left:' + left + '%;width:' + s + 'px;height:' + h + 'px;background:' + color + ';animation-duration:' + dur + 's;animation-delay:-' + delay + 's;border-radius:' + (type==='snow'?'50%':'1px') + ';';
-      part.appendChild(el);
+
+  if (pCount > 0) {
+    for (var i = 0; i < pCount; i++) {
+      var drop = document.createElement('div');
+      drop.className = 'drop';
+      var left  = Math.random() * 110 - 5;
+      var delay = Math.random() * 10;
+      var dur   = (2.5 + Math.random() * 4) / pSpeed;
+      var s     = pType === 'snow' ? pSize * (0.4 + Math.random() * 0.8) : pSize * (0.6 + Math.random() * 0.5);
+      var h     = pType === 'rain' ? s * 7 : s;
+      var br    = pType === 'snow' ? '50%' : '1px';
+      drop.style.cssText = 'left:' + left + '%;width:' + s + 'px;height:' + h + 'px;background:' + pColor + ';animation-duration:' + dur + 's;animation-delay:-' + delay + 's;border-radius:' + br + ';';
+      part.appendChild(drop);
     }
   }
+}
+
+function fetchMeteo() {
+  var url = 'https://api.open-meteo.com/v1/forecast'
+    + '?latitude=48.7953&longitude=2.3097'
+    + '&current_weather=true'
+    + '&daily=weathercode,temperature_2m_max,temperature_2m_min'
+    + '&forecast_days=2&timezone=Europe%2FParis';
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState !== 4) return;
+    if (xhr.status !== 200) {
+      setText('meteo-desc', 'Météo indisponible');
+      return;
+    }
+    try {
+      var d = JSON.parse(xhr.responseText);
+      var tempNow  = Math.round(d.current_weather.temperature);
+      var wcodeNow = d.current_weather.weathercode;
+      var tmax0    = Math.round(d.daily.temperature_2m_max[0]);
+      var tmin0    = Math.round(d.daily.temperature_2m_min[0]);
+
+      setText('meteo-icon',   ICONS[wcodeNow] || '🌤️');
+      setText('meteo-temp',   tempNow + '°');
+      setText('meteo-desc',   DESCS[wcodeNow] || 'Variable');
+      setText('meteo-minmax', '↓' + tmin0 + '° ↑' + tmax0 + '°');
+
+      applyMeteoBackground(wcodeNow, tempNow);
+
+      var wcode1 = d.daily.weathercode[1];
+      var tmax1  = Math.round(d.daily.temperature_2m_max[1]);
+      var tmin1  = Math.round(d.daily.temperature_2m_min[1]);
+      var joursC = ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'];
+      var demain = new Date();
+      demain.setDate(demain.getDate() + 1);
+
+      setText('demain-label',    'Demain \u2014 ' + joursC[demain.getDay()]);
+      setText('meteo-icon-d1',   ICONS[wcode1] || '🌤️');
+      setText('meteo-temp-d1',   Math.round((tmax1 + tmin1) / 2) + '°');
+      setText('meteo-desc-d1',   DESCS[wcode1] || 'Variable');
+      setText('meteo-minmax-d1', '↓' + tmin1 + '° ↑' + tmax1 + '°');
+
+      var conseil = '🌤️ Bonne journée au collège Joliot Curie !';
+      if (isPluieCode(wcodeNow))  conseil = '☂️ Pensez à votre parapluie en sortant !';
+      else if (tempNow < 8)       conseil = '🥶 Il fait froid ! Couvrez-vous bien.';
+      else if (tempNow > 25)      conseil = '☀️ Il fait chaud ! Hydratez-vous bien.';
+      setText('meteo-conseil', conseil);
+
+    } catch (e) {
+      setText('meteo-desc', 'Météo indisponible');
+    }
+  };
+  xhr.send();
 }
 
 fetchMeteo();
