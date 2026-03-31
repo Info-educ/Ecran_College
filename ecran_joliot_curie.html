@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Écran Accueil – Collège Joliot Curie</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Righteous&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --c1: #1a3a6e;   /* bleu marine */
+    --c2: #c0392b;   /* rouge */
+    --c3: #f8c42e;   /* jaune/or */
+    --c4: #2ecc71;   /* vert */
+    --c5: #e67e22;   /* orange */
+    --dark: #0f1e3a;
+    --text: #1a2a4a;
+    --muted: #5a6a8a;
+    --card: rgba(255,255,255,0.88);
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    width: 1920px; height: 1080px;
+    overflow: hidden;
+    position: relative;
+    color: var(--text);
+  }
+
+  #bg-canvas {
+    position: fixed; inset: 0; z-index: 0;
+  }
+  .dots {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.04) 1.5px, transparent 1.5px);
+    background-size: 48px 48px;
+  }
+  .particles { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+  /* .drop et @keyframes fall remplacés par animation JS */
+  #vignette {
+    position: fixed; inset: 0; z-index: 3; pointer-events: none;
+    background: radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,0.18) 60%,rgba(0,0,0,0.55) 80%,rgba(0,0,0,0.80) 100%);
+    opacity: 0; transition: opacity 3s ease;
+  }
+  #vignette.active { opacity: 1; }
+
+  /* ══════ LAYOUT PRINCIPAL ══════ */
+  .layout {
+    position: relative; z-index: 10;
+    width: 100%; height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 540px;
+    padding: 28px 36px 72px 36px;
+    gap: 24px;
+  }
+  .col-left  { display: flex; flex-direction: column; gap: 18px; min-height: 0; }
+  .col-right { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+
+  /* ── HEADER ── */
+  .hero-header {
+    display: flex; align-items: stretch; gap: 20px;
+    animation: bounceIn 0.6s ease both;
+  }
+  .logo-zone {
+    background: var(--dark);
+    border-radius: 20px;
+    padding: 16px 24px;
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 6px 6px 0 rgba(26,58,110,0.3);
+    flex-shrink: 0;
+  }
+  .logo-zone img { height: 84px; width: auto; border-radius: 12px; background: white; padding: 4px; }
+  .college-name {
+    font-family: 'Righteous', sans-serif;
+    font-size: 20px; color: #fff; line-height: 1.25;
+  }
+  .college-sub {
+    font-size: 11px; color: rgba(255,255,255,0.45);
+    letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px;
+  }
+  .semaine-badge {
+    margin-top: 8px;
+    display: inline-block;
+    background: var(--c3); color: var(--dark);
+    border-radius: 8px; padding: 3px 12px;
+    font-weight: 900; font-size: 13px; letter-spacing: 1px;
+  }
+
+  .clock-hero {
+    flex: 1; background: var(--dark); border-radius: 20px;
+    padding: 16px 32px;
+    display: flex; align-items: center; gap: 24px;
+    box-shadow: 6px 6px 0 rgba(192,57,43,0.2);
+  }
+  .time-big {
+    font-family: 'Righteous', sans-serif; font-size: 80px; line-height: 1;
+    color: var(--c3); text-shadow: 3px 3px 0 rgba(255,196,46,0.25); flex-shrink: 0;
+  }
+  .date-info { flex: 1; }
+  .date-day  { font-size: 30px; font-weight: 900; color: #fff; line-height: 1; text-transform: capitalize; }
+  .date-full { font-size: 14px; color: rgba(255,255,255,0.45); margin-top: 5px; font-weight: 600; text-transform: capitalize; }
+
+  /* ── MÉTÉO ── */
+  .meteo-inline {
+    background: linear-gradient(135deg, #1a3a6e, #2a4d8e);
+    border-radius: 16px; padding: 12px 18px;
+    display: flex; flex-direction: column; gap: 8px;
+    color: #fff; flex-shrink: 0; min-width: 280px;
+    box-shadow: 5px 5px 0 rgba(26,58,110,0.25);
+  }
+  .meteo-row { display: flex; align-items: center; gap: 8px; }
+  .meteo-day-label { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; margin-bottom: 2px; }
+  .meteo-block { display: flex; align-items: center; gap: 8px; flex: 1; }
+  .mi-icon     { font-size: 34px; line-height: 1; }
+  .mi-icon-sm  { font-size: 24px; line-height: 1; }
+  .mi-temp     { font-family:'Righteous',sans-serif; font-size: 34px; line-height: 1; color: var(--c3); }
+  .mi-temp-sm  { font-family:'Righteous',sans-serif; font-size: 24px; line-height: 1; color: rgba(255,196,46,0.7); }
+  .mi-info     { font-size: 11px; opacity: 0.80; margin-top: 2px; }
+  .mi-minmax   { font-size: 10px; opacity: 0.55; margin-top: 2px; }
+  .meteo-divider { width: 1px; background: rgba(255,255,255,0.12); align-self: stretch; margin: 0 4px; }
+  .meteo-conseil {
+    background: rgba(255,255,255,0.09); border-radius: 10px;
+    padding: 7px 12px; font-size: 12px; font-weight: 700;
+    color: rgba(255,255,255,0.90); line-height: 1.5;
+    border-left: 3px solid var(--c3);
+  }
+
+  .section-badge-actu {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--c1); color: #fff;
+    border-radius: 30px; padding: 10px 26px;
+    font-weight: 800; font-size: 15px; letter-spacing: 1px; text-transform: uppercase;
+    box-shadow: 4px 4px 0 rgba(26,58,110,0.3);
+    flex-shrink: 0;
+  }
+  .actu-zone {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .actu-header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; flex-shrink: 0;
+  }
+  .semaine-pill {
+    background: var(--c3); color: var(--dark);
+    border-radius: 30px; padding: 9px 22px;
+    font-weight: 900; font-size: 15px; letter-spacing: 1px;
+    box-shadow: 4px 4px 0 rgba(248,196,46,0.3);
+    flex-shrink: 0;
+  }
+  /* Scène de défilement des cartes */
+  .actu-scene {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+    border-radius: 22px;
+  }
+  /* Chaque carte occupe tout l'espace de la scène */
+  .actu-card {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.96);
+    border-radius: 22px;
+    padding: 44px 52px;
+    /* backdrop-filter: blur(10px); — non supporté Magicinfo */
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.07);
+    display: flex; flex-direction: column; justify-content: center;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .actu-card.visible {
+    opacity: 1; transform: translateY(0);
+  }
+  .actu-card.exit-up {
+    opacity: 0; transform: translateY(-40px);
+  }
+  .actu-card-accent {
+    width: 6px; height: 100%;
+    position: absolute; left: 0; top: 0; bottom: 0;
+    border-radius: 22px 0 0 22px;
+  }
+  .actu-card-tag {
+    font-size: 12px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+    padding: 6px 18px; border-radius: 20px; display: inline-block; margin-bottom: 18px;
+    align-self: flex-start;
+  }
+  .actu-card-emoji { font-size: 88px; margin-bottom: 18px; line-height: 1; }
+  .actu-card-text  {
+    font-size: 44px; font-weight: 900; color: var(--text); line-height: 1.35;
+    max-width: 860px;
+  }
+  .actu-card-detail {
+    font-size: 20px; font-weight: 700; color: var(--muted); margin-top: 14px; line-height: 1.4;
+  }
+  .actu-card-date  { font-size: 14px; color: var(--muted); margin-top: 24px; font-weight: 700; }
+  /* Indicateurs pagination */
+  .actu-dots {
+    display: flex; gap: 6px; justify-content: center;
+    margin-top: 12px; flex-shrink: 0;
+  }
+  .actu-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(26,58,110,0.18); transition: all 0.3s ease;
+  }
+  .actu-dot.active { background: var(--c1); width: 24px; border-radius: 4px; }
+
+  /* Couleurs par type */
+  .tag-blue   { background: rgba(26,58,110,0.12);  color: var(--c1); }
+  .tag-red    { background: rgba(192,57,43,0.12);  color: var(--c2); }
+  .tag-green  { background: rgba(46,204,113,0.15); color: #1a9950; }
+  .tag-orange { background: rgba(230,126,34,0.15); color: #c06010; }
+  .tag-purple { background: rgba(142,68,173,0.12); color: #7d3c9a; }
+  .accent-blue   { background: var(--c1); }
+  .accent-red    { background: var(--c2); }
+  .accent-green  { background: var(--c4); }
+  .accent-orange { background: var(--c5); }
+  .accent-purple { background: #8e44ad; }
+
+  /* ══ REPAS COMPACT (colonne droite, bas) ══ */
+  .repas-card {
+    background: linear-gradient(135deg, #1a3a6e, #0f2650);
+    border-radius: 18px; padding: 18px 22px;
+    box-shadow: 5px 5px 0 rgba(26,58,110,0.3);
+    color: #fff; flex-shrink: 0;
+  }
+  .repas-card-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .repas-card-title {
+    font-family: 'Righteous', sans-serif; font-size: 18px; color: var(--c3);
+  }
+  .repas-card-date {
+    font-size: 12px; color: rgba(255,255,255,0.4); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .repas-card-body {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  /* chaque catégorie dans repas-card */
+  .repas-cat {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 10px 14px;
+    border-top: 3px solid var(--c3);
+    flex: 1; min-width: 80px;
+  }
+  .repas-cat-label {
+    font-size: 10px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--c3); margin-bottom: 5px;
+  }
+  .repas-items { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.88); line-height: 1.45; }
+  .repas-items .bio-tag {
+    display: inline-block; background: rgba(46,204,113,0.25); color: #2ecc71;
+    border-radius: 3px; padding: 0 4px; font-size: 9px; font-weight: 800; vertical-align: middle;
+  }
+  .repas-items .vege-tag {
+    display: inline-block; background: rgba(230,126,34,0.25); color: #e67e22;
+    border-radius: 3px; padding: 0 4px; font-size: 9px; font-weight: 800; vertical-align: middle;
+  }
+  .repas-closed-sm {
+    font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.4); padding: 6px 0;
+  }
+
+  /* ══ COLONNE DROITE ══ */
+  /* ── AGENDA ── */
+  .agenda-card {
+    background: rgba(255,255,255,0.96); border-radius: 20px;
+    padding: 18px 22px;
+    box-shadow: 5px 5px 0 rgba(0,0,0,0.07);
+    flex: 1; /* backdrop-filter: blur(8px); — non supporté Magicinfo */
+    animation: bounceIn 0.6s 0.18s ease both;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .agenda-header {
+    font-family:'Righteous',sans-serif; font-size: 17px; color: var(--dark);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  }
+  .agenda-section-sep {
+    font-size: 10px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+    padding: 7px 0 5px; border-top: 2px dashed rgba(0,0,0,0.08);
+    flex-shrink: 0;
+  }
+  .agenda-section-sep:first-child { border-top: none; padding-top: 0; }
+  .agenda-items { display: flex; flex-direction: column; gap: 0; flex: 1; overflow: hidden; }
+  .agenda-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 7px 0; border-bottom: 2px dashed rgba(0,0,0,0.07);
+  }
+  .agenda-item:last-child { border-bottom: none; }
+  .agenda-date-pill {
+    border-radius: 10px; padding: 5px 10px;
+    font-weight: 900; font-size: 12px; color: #fff;
+    white-space: nowrap; flex-shrink: 0; min-width: 62px; text-align: center; line-height: 1.3;
+  }
+  .pill-blue   { background: var(--c1); box-shadow: 2px 2px 0 rgba(26,58,110,0.3); }
+  .pill-c2, .pill-red { background: var(--c2); box-shadow: 2px 2px 0 rgba(192,57,43,0.3); }
+  .pill-green  { background: var(--c4); box-shadow: 2px 2px 0 rgba(46,204,113,0.3); }
+  .pill-orange { background: var(--c5); box-shadow: 2px 2px 0 rgba(230,126,34,0.3); }
+  .pill-purple { background: #8e44ad; box-shadow: 2px 2px 0 rgba(142,68,173,0.3); }
+  .agenda-info { flex: 1; }
+  .agenda-name { font-size: 14px; font-weight: 800; color: var(--text); line-height: 1.2; }
+  .agenda-lieu { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+
+  /* ── CITATION ── */
+  .quote-card {
+    background: linear-gradient(135deg, var(--c1), #2a4d9a);
+    border-radius: 16px; padding: 16px 20px;
+    box-shadow: 5px 5px 0 rgba(26,58,110,0.3);
+    animation: bounceIn 0.6s 0.32s ease both;
+    flex-shrink: 0;
+  }
+  .quote-icon { font-size: 20px; margin-bottom: 6px; }
+  .quote-txt  { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.5; font-style: italic; }
+  .quote-auth { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 6px; font-weight: 800; }
+
+  /* ── BANDEAU BAS ── */
+  .ticker-bottom {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    height: 52px; background: var(--dark);
+    display: flex; align-items: center; overflow: hidden;
+    box-shadow: 0 -4px 20px rgba(26,27,58,0.25);
+  }
+  .ticker-badge {
+    flex-shrink: 0; background: var(--c2); height: 100%;
+    display: flex; align-items: center; padding: 0 24px; gap: 8px;
+    font-family: 'Righteous', sans-serif; font-size: 14px; letter-spacing: 2px;
+    color: #fff; text-transform: uppercase; white-space: nowrap;
+    position: relative; z-index: 2;
+  }
+  .ticker-badge::after {
+    content: ''; position: absolute; right: -16px; top: 0;
+    border-top: 52px solid transparent; border-left: 16px solid var(--c2);
+  }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: blink 1.2s ease infinite; }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+  .ticker-track { flex: 1; overflow: hidden; }
+  .ticker-inner { display: flex; white-space: nowrap; animation: tickerLoop 50s linear infinite; will-change: transform; }
+  .ticker-copy { display: inline-flex; align-items: center; flex-shrink: 0; padding-right: 60px; }
+  .ticker-copy span { color: rgba(255,255,255,0.92); font-size: 17px; font-weight: 700; }
+  .ticker-copy .sep { color: var(--c3); margin: 0 24px; font-weight: 900; font-size: 18px; }
+  @keyframes tickerLoop { 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
+
+  /* ══ ANIMATIONS ══ */
+  @keyframes bounceIn {
+    0%   { opacity:0; transform:translateY(24px) scale(0.97); }
+    60%  { transform:translateY(-3px) scale(1.01); }
+    100% { opacity:1; transform:translateY(0) scale(1); }
+  }
+  @keyframes slideUp {
+    from { opacity:0; transform:translateY(30px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* Semaine prochaine grisée */
+  .next-week-event .event-name,
+  .next-week-event .event-detail { opacity: 0.65; }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas" style="position:fixed;inset:0;z-index:0;width:1920px;height:1080px;"></canvas>
+<div class="dots"></div>
+<div class="particles" id="particles"></div>
+<div id="weather-overlay" style="position:fixed;inset:0;z-index:2;pointer-events:none;transition:all 3s ease;"></div>
+<div id="vignette"></div>
+
+<div class="layout">
+
+  <!-- ════════ COLONNE GAUCHE ════════ -->
+  <div class="col-left">
+
+    <!-- Header -->
+    <div class="hero-header">
+      <div class="logo-zone">
+        <img src="logo.png" alt="Logo Joliot Curie">
+        <div>
+          <div class="college-name">Collège<br>Joliot Curie</div>
+          <div class="college-sub">Jean-Baptiste</div>
+          <div class="semaine-badge" id="semaine-badge">📅 Semaine A</div>
+        </div>
+      </div>
+
+      <div class="clock-hero">
+        <div class="time-big" id="time">08:00</div>
+        <div class="date-info">
+          <div class="date-day"  id="day-name">Mardi</div>
+          <div class="date-full" id="date-full">31 mars 2026</div>
+        </div>
+        <div class="meteo-inline">
+          <div>
+            <div class="meteo-day-label">Aujourd'hui</div>
+            <div class="meteo-block">
+              <div class="mi-icon" id="meteo-icon">🌤️</div>
+              <div>
+                <div class="mi-temp" id="meteo-temp">—°</div>
+                <div class="mi-info" id="meteo-desc">Chargement…</div>
+                <div class="mi-minmax" id="meteo-minmax"></div>
+              </div>
+            </div>
+          </div>
+          <div class="meteo-divider"></div>
+          <div>
+            <div class="meteo-day-label" id="demain-label">Demain</div>
+            <div class="meteo-block">
+              <div class="mi-icon-sm" id="meteo-icon-d1">⛅</div>
+              <div>
+                <div class="mi-temp-sm" id="meteo-temp-d1">—°</div>
+                <div class="mi-info" id="meteo-desc-d1">…</div>
+                <div class="mi-minmax" id="meteo-minmax-d1"></div>
+              </div>
+            </div>
+          </div>
+          <div class="meteo-conseil" id="meteo-conseil">📍 Bienvenue au collège Joliot Curie !</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFOS COLLÈGE — carrousel vertical défilant -->
+    <div class="actu-zone" style="animation: slideUp 0.6s 0.12s ease both;">
+      <div class="actu-header-row">
+        <div class="section-badge-actu">📢 Informations du collège</div>
+        <div class="semaine-pill" id="semaine-pill">📅 Semaine A</div>
+      </div>
+      <div class="actu-scene" id="actu-scene">
+        <!-- cartes injectées par JS -->
+      </div>
+    </div>
+
+  </div><!-- /col-left -->
+
+  <!-- ════════ COLONNE DROITE ════════ -->
+  <div class="col-right">
+
+    <!-- Agenda -->
+    <div class="agenda-card">
+      <div class="agenda-header">📅 À venir au collège</div>
+      <div class="agenda-items" id="agenda-items">
+        <!-- injecté par loadData() depuis data.json -->
+      </div>
+    </div>
+
+    <!-- REPAS DU JOUR — compact en bas de la colonne droite -->
+    <div class="repas-card" style="animation: slideUp 0.6s 0.25s ease both;">
+      <div class="repas-card-header">
+        <div class="repas-card-title">🍽️ Menu du jour</div>
+        <div class="repas-card-date" id="repas-date-label">…</div>
+      </div>
+      <div class="repas-card-body" id="repas-categories">
+        <div class="repas-closed-sm">Calcul du menu…</div>
+      </div>
+    </div>
+
+    <!-- Citation -->
+    <div class="quote-card">
+      <div class="quote-icon">💡</div>
+      <div class="quote-txt"  id="quote-text">"L'éducation est l'arme la plus puissante pour changer le monde."</div>
+      <div class="quote-auth" id="quote-author">— Nelson Mandela</div>
+    </div>
+
+  </div><!-- /col-right -->
+
+</div><!-- /layout -->
+
+<!-- BANDEAU DÉFILANT -->
+<div class="ticker-bottom">
+  <div class="ticker-badge"><div class="live-dot"></div>📢 Infos</div>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="ticker-inner">
+      <!-- injecté par loadData() depuis data.json — deux copies pour le défilement infini -->
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   JAVASCRIPT ES5 STRICT — compatible tous navigateurs embarqués
+   Pas de : const/let, =>, async/await, template literals,
+            includes(), padStart(), destructuring
+================================================================ */
+
+/* ── UTILITAIRES ── */
+/* ══ CODE MÉTÉO DE SECOURS (si meteo.json inaccessible) ══
+   Changer FALLBACK_WCODE pour tester une animation :
+   61=pluie légère, 63=pluie, 65=pluie forte, 80=averses,
+   95=orage, 71=neige, 0=soleil, 45=brouillard              */
+var FALLBACK_WCODE = 63;   /* pluie par défaut si réseau KO */
+var FALLBACK_TEMP  = 14;   /* température °C de secours      */
+function pad2(n) {
+  return n < 10 ? '0' + n : '' + n;
+}
+
+function inArray(arr, val) {
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] === val) return true;
+  }
+  return false;
+}
+
+function setText(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+/* ── HORLOGE ── */
+var JOURS = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+var MOIS  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+
+/* ── CORRECTION HORLOGE MAGICINFO ──────────────────────────────────────
+   MagicInfo ne gère pas le changement heure été/hiver automatiquement.
+   CLOCK_OFFSET_MS se décompose en deux corrections cumulées :
+     - HEURE_ETE_MS  : +3 600 000 ms (1h) — à retirer en heure d'hiver
+                       (dernier dimanche d'octobre → mettre 0)
+                       (dernier dimanche de mars   → remettre 3 600 000)
+     - AVANCE_ECOLE_MS : +180 000 ms (3 min) — décalage propre au poste
+                         MagicInfo du collège, à ne pas toucher.
+   ──────────────────────────────────────────────────────────────────────── */
+var HEURE_ETE_MS   = 3600000; /* 1h — passer à 0 en heure d'hiver */
+var AVANCE_ECOLE_MS =  180000; /* 3 min — décalage fixe du poste    */
+var CLOCK_OFFSET_MS = HEURE_ETE_MS + AVANCE_ECOLE_MS;
+
+function updateClock() {
+  var now = new Date(new Date().getTime() + CLOCK_OFFSET_MS);
+  setText('time',      pad2(now.getHours()) + ':' + pad2(now.getMinutes()));
+  setText('day-name',  JOURS[now.getDay()]);
+  setText('date-full', now.getDate() + ' ' + MOIS[now.getMonth()] + ' ' + now.getFullYear());
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+/* ══════════════════════════════════════════════════
+   CARROUSEL D'INFOS — ES5
+══════════════════════════════════════════════════ */
+var ACTUS = [
+  {
+    emoji: '🏭', tag: 'Sortie péda', tagClass: 'tag-blue', accentClass: 'accent-blue',
+    text: "Sortie 6ème D — Visite d'une laiterie",
+    detail: 'Mercredi 1er avril · Matin',
+    date: 'Cette semaine'
+  },
+  {
+    emoji: '🌍', tag: 'École Ouverte', tagClass: 'tag-green', accentClass: 'accent-green',
+    text: 'Jeux traditionnels du monde',
+    detail: 'Mercredi 1er avril · Après-midi',
+    date: 'Cette semaine'
+  },
+  {
+    emoji: '🏛️', tag: 'Sortie péda', tagClass: 'tag-orange', accentClass: 'accent-orange',
+    text: "Sortie 5ème D — Musée de l'Immigration",
+    detail: "Jeudi 2 avril · Après-midi · Palais de la Porte d'Orée",
+    date: 'Cette semaine'
+  },
+  {
+    emoji: '🎨', tag: 'Sortie péda', tagClass: 'tag-red', accentClass: 'accent-red',
+    text: 'Sortie 3ème B — Exposition Matisse',
+    detail: 'Vendredi 3 avril · Après-midi · Grand Palais',
+    date: 'Cette semaine'
+  }
+];
+
+var actuIdx = 0;
+
+
+function buildActuCards() {
+  var scene = document.getElementById('actu-scene');
+  var html = '';
+  for (var i = 0; i < ACTUS.length; i++) {
+    var a = ACTUS[i];
+    html += '<div class="actu-card' + (i === 0 ? ' visible' : '') + '" id="actu-card-' + i + '">';
+    html += '<div class="actu-card-accent ' + a.accentClass + '"></div>';
+    html += '<span class="actu-card-tag ' + a.tagClass + '">' + a.tag + '</span>';
+    html += '<div class="actu-card-emoji">' + a.emoji + '</div>';
+    html += '<div class="actu-card-text">' + a.text + '</div>';
+    html += '<div class="actu-card-detail">' + a.detail + '</div>';
+    html += '<div class="actu-card-date">' + a.date + '</div>';
+    html += '</div>';
+  }
+  scene.innerHTML = html;
+
+  var dotsHtml = '';
+  for (var j = 0; j < ACTUS.length; j++) {
+    dotsHtml += '<div class="actu-dot' + (j === 0 ? ' active' : '') + '" id="dot-' + j + '"></div>';
+  }
+  var dotsEl = document.getElementById('actu-dots-bar');
+  if (!dotsEl) {
+    dotsEl = document.createElement('div');
+    dotsEl.className = 'actu-dots';
+    dotsEl.id = 'actu-dots-bar';
+    scene.parentNode.appendChild(dotsEl);
+  }
+  dotsEl.innerHTML = dotsHtml;
+}
+
+function removeClass(el, cls) {
+  if (!el) return;
+  el.className = el.className.replace(new RegExp('(^|\\s)' + cls + '(\\s|$)', 'g'), ' ').replace(/\s+/g, ' ').replace(/^\s|\s$/g, '');
+}
+function addClass(el, cls) {
+  if (!el) return;
+  removeClass(el, cls);
+  el.className = (el.className + ' ' + cls).replace(/^\s|\s$/g, '');
+}
+
+function showActu(nextIdx) {
+  var current = document.getElementById('actu-card-' + actuIdx);
+  var next    = document.getElementById('actu-card-' + nextIdx);
+  var dotCur  = document.getElementById('dot-' + actuIdx);
+  var dotNext = document.getElementById('dot-' + nextIdx);
+
+  if (current) { removeClass(current, 'visible'); addClass(current, 'exit-up'); }
+  setTimeout(function() {
+    if (current) { removeClass(current, 'exit-up'); }
+    if (next)    { addClass(next, 'visible'); }
+  }, 700);
+
+  if (dotCur)  removeClass(dotCur,  'active');
+  if (dotNext) addClass(dotNext, 'active');
+  actuIdx = nextIdx;
+}
+
+function startActuRotation() {
+  setInterval(function() {
+    var next = (actuIdx + 1) % ACTUS.length;
+    showActu(next);
+  }, 6000);
+}
+
+buildActuCards();
+startActuRotation();
+
+/* ══════════════════════════════════════════════════
+   MENUS CANTINE — lus depuis data.json
+   Les menus sont définis dans data.json > "menus"
+   Format clé : "AAAA-MM-JJ" (pas de demi-pension mercredi/week-end)
+══════════════════════════════════════════════════ */
+
+/* Stockage en mémoire des menus chargés depuis data.json */
+var MENUS_DATA = {};
+
+function getMenuDuJour() {
+  var now = new Date(new Date().getTime() + CLOCK_OFFSET_MS);
+  var dow = now.getDay();
+  var dateKey = now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate());
+  var libelle = JOURS[dow] + ' ' + now.getDate() + ' ' + MOIS[now.getMonth()];
+
+  setText('repas-date-label', libelle);
+
+  var container = document.getElementById('repas-categories');
+  if (!container) return;
+
+  if (dow === 0 || dow === 6 || dow === 3) {
+    container.innerHTML = '<div class="repas-closed-sm">' + (dow === 3 ? '🏠 Pas de demi-pension le mercredi' : '🏠 Pas de demi-pension le week-end') + '</div>';
+    return;
+  }
+
+  var menu = MENUS_DATA[dateKey];
+  if (!menu) {
+    container.innerHTML = '<div class="repas-closed-sm">🔄 Menu non disponible</div>';
+    return;
+  }
+
+  var cats = [
+    { label: 'Entrée',   items: menu.entree  },
+    { label: 'Plat',     items: menu.plat    },
+    { label: 'Accomp.',  items: menu.accomp  },
+    { label: 'Fromage',  items: menu.fromage },
+    { label: 'Dessert',  items: menu.dessert }
+  ];
+
+  var html = '';
+  for (var i = 0; i < cats.length; i++) {
+    var c = cats[i];
+    if (!c.items || c.items.length === 0) continue;
+    html += '<div class="repas-cat">';
+    html += '<div class="repas-cat-label">' + c.label + '</div>';
+    html += '<div class="repas-items">' + c.items.join('<br>') + '</div>';
+    html += '</div>';
+  }
+  container.innerHTML = html;
+}
+getMenuDuJour();
+setInterval(getMenuDuJour, 3600000);
+
+
+/* ── CITATIONS ROTATIVES ── */
+var QUOTES = [
+  { text: "L'éducation est l'arme la plus puissante pour changer le monde.", author: "Nelson Mandela" },
+  { text: "La connaissance s'acquiert par l'expérience, tout le reste n'est qu'information.", author: "Albert Einstein" },
+  { text: "Il faut toujours viser la lune, car même en cas d'échec, on atterrit dans les étoiles.", author: "Oscar Wilde" },
+  { text: "Le succès c'est tomber sept fois et se relever huit.", author: "Proverbe japonais" },
+  { text: "Apprendre sans réfléchir est vain. Réfléchir sans apprendre est dangereux.", author: "Confucius" },
+  { text: "Ce n'est pas parce que les choses sont difficiles que nous n'osons pas.", author: "Sénèque" }
+];
+var qi = 0;
+
+function rotateQuote() {
+  qi = (qi + 1) % QUOTES.length;
+  var el = document.getElementById('quote-text');
+  var au = document.getElementById('quote-author');
+  if (!el || !au) return;
+  el.style.opacity = 0;
+  au.style.opacity = 0;
+  setTimeout(function() {
+    el.textContent = '\u201c' + QUOTES[qi].text + '\u201d';
+    au.textContent = '\u2014 ' + QUOTES[qi].author;
+    el.style.opacity = 1;
+    au.style.opacity = 1;
+  }, 800);
+}
+setInterval(rotateQuote, 13000);
+
+/* ══════════════════════════════════════════════════
+   MÉTÉO — XMLHttpRequest ES5 (pas de fetch/async)
+   Open-Meteo, RGPD ✅, sans clé API
+══════════════════════════════════════════════════ */
+var ICONS = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
+var DESCS = {0:'Ensoleillé',1:'Peu nuageux',2:'Partiellement nuageux',3:'Nuageux',45:'Brouillard',48:'Brouillard givrant',51:'Bruine légère',53:'Bruine',55:'Bruine forte',61:'Pluie légère',63:'Pluie',65:'Pluie forte',71:'Neige légère',73:'Neige',75:'Neige forte',80:'Averses',81:'Averses',82:'Averses fortes',95:'Orage',96:'Orage + grêle',99:'Orage violent'};
+
+function isPluieCode(c) {
+  return inArray([51,53,55,61,63,65,80,81,82,95,96,99], c);
+}
+function isOrageCode(c) { return inArray([95,96,99], c); }
+function isNeigeCode(c) { return inArray([71,73,75], c); }
+function isPluieFortCode(c) { return inArray([61,63,65,80,81,82], c); }
+function isNuagCode(c)  { return inArray([2,3], c); }
+
+/* ══════════════════════════════════════════════
+   CANVAS BACKGROUND — dessin JS pur du gradient
+   Compatible avec tous les navigateurs Magicinfo
+══════════════════════════════════════════════ */
+var _bgCurrentColors = null;
+var _bgTargetColors  = null;
+var _bgTransStart    = null;
+var _bgTransDur      = 3000; /* 3s de transition */
+var _bgRafId         = null;
+
+/* Parse "linear-gradient(160deg, #abc 0%, #def 50%, ...)" → tableau de {r,g,b,stop} */
+function parseGradient(gradStr) {
+  var stops = [];
+  var re = /#([0-9a-fA-F]{3,6})/g;
+  var stopRe = /(\d+(?:\.\d+)?)%/g;
+  var colors = [], percents = [];
+  var m;
+  while ((m = re.exec(gradStr)) !== null) {
+    var h = m[1];
+    if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    colors.push([parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)]);
+  }
+  while ((m = stopRe.exec(gradStr)) !== null) {
+    percents.push(parseFloat(m[1]) / 100);
+  }
+  for (var i = 0; i < colors.length; i++) {
+    stops.push({ r: colors[i][0], g: colors[i][1], b: colors[i][2], stop: percents[i] !== undefined ? percents[i] : i / (colors.length - 1) });
+  }
+  return stops;
+}
+
+/* Interpole entre deux jeux de stops */
+function lerpStops(a, b, t) {
+  var len = Math.min(a.length, b.length);
+  var out = [];
+  for (var i = 0; i < len; i++) {
+    out.push({
+      r: Math.round(a[i].r + (b[i].r - a[i].r) * t),
+      g: Math.round(a[i].g + (b[i].g - a[i].g) * t),
+      b: Math.round(a[i].b + (b[i].b - a[i].b) * t),
+      stop: a[i].stop + (b[i].stop - a[i].stop) * t
+    });
+  }
+  return out;
+}
+
+/* Dessine les stops sur le canvas (gradient vertical simple) */
+function renderStops(canvas, stops) {
+  var ctx = canvas.getContext('2d');
+  canvas.width  = 1920;
+  canvas.height = 1080;
+  var grad = ctx.createLinearGradient(0, 0, 1920, 1080);
+  for (var i = 0; i < stops.length; i++) {
+    grad.addColorStop(stops[i].stop, 'rgb(' + stops[i].r + ',' + stops[i].g + ',' + stops[i].b + ')');
+  }
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 1920, 1080);
+}
+
+function drawBgCanvas(canvas, newGradient) {
+  var newStops = parseGradient(newGradient);
+  if (!_bgCurrentColors) {
+    /* Premier rendu — pas de transition */
+    _bgCurrentColors = newStops;
+    renderStops(canvas, newStops);
+    return;
+  }
+  /* Normalise les deux tableaux à la même longueur */
+  while (_bgCurrentColors.length < newStops.length) _bgCurrentColors.push(_bgCurrentColors[_bgCurrentColors.length - 1]);
+  while (newStops.length < _bgCurrentColors.length) newStops.push(newStops[newStops.length - 1]);
+
+  _bgTargetColors = newStops;
+  _bgTransStart   = null;
+  if (_bgRafId) cancelAnimationFrame(_bgRafId);
+
+  var fromColors = _bgCurrentColors.slice();
+
+  function transStep(ts) {
+    if (!_bgTransStart) _bgTransStart = ts;
+    var t = Math.min((ts - _bgTransStart) / _bgTransDur, 1);
+    var cur = lerpStops(fromColors, _bgTargetColors, t);
+    renderStops(canvas, cur);
+    if (t < 1) {
+      _bgRafId = requestAnimationFrame(transStep);
+    } else {
+      _bgCurrentColors = _bgTargetColors;
+      _bgTargetColors  = null;
+      _bgRafId = null;
+    }
+  }
+  _bgRafId = requestAnimationFrame(transStep);
+}
+
+/* Gradient par défaut au chargement */
+(function() {
+  var canvas = document.getElementById('bg-canvas');
+  if (canvas) drawBgCanvas(canvas, 'linear-gradient(160deg,#c9e8ff 0%,#e8f4ff 50%,#fff5cc 100%)');
+})();
+
+function applyMeteoBackground(wcode, tempNow) {
+  var bg      = document.getElementById('bg-canvas');
+  var part    = document.getElementById('particles');
+  var overlay = document.getElementById('weather-overlay');
+  var vignette= document.getElementById('vignette');
+  if (!bg) return;
+
+  /* Stoppe les animations précédentes */
+  part.innerHTML = '';
+  if (window._lightningTimer) { clearTimeout(window._lightningTimer); window._lightningTimer = null; }
+
+  overlay.style.position = 'fixed'; overlay.style.top = '0'; overlay.style.right = '0';
+  overlay.style.bottom = '0'; overlay.style.left = '0'; overlay.style.zIndex = '2';
+  overlay.style.pointerEvents = 'none';
+
+  var isGel   = tempNow <= 0;
+  var isBroui = inArray([45,48], wcode);
+  if (isGel || isBroui) { addClass(vignette, 'active'); } else { removeClass(vignette, 'active'); }
+
+  /* ── Choix du gradient de fond ── */
+  var gradient = '';
+  if (isOrageCode(wcode)) {
+    gradient = 'linear-gradient(160deg,#0a0015 0%,#1a0533 40%,#0d0020 60%,#0a0015 100%)';
+  } else if (isNeigeCode(wcode)) {
+    gradient = 'linear-gradient(160deg,#d8eef8 0%,#c0dcee 40%,#e4f2fa 100%)';
+  } else if (isPluieFortCode(wcode)) {
+    /* Pluie forte/averses : ciel sombre quelle que soit la température */
+    gradient = 'linear-gradient(160deg,#152535 0%,#1a2e40 40%,#152535 100%)';
+  } else if (isPluieCode(wcode)) {
+    gradient = 'linear-gradient(160deg,#244a70 0%,#345a82 40%,#244a70 100%)';
+  } else if (isBroui) {
+    gradient = 'linear-gradient(160deg,#a8b0bc 0%,#b8c0cc 40%,#a8b0bc 100%)';
+  } else if (isNuagCode(wcode)) {
+    gradient = 'linear-gradient(160deg,#5a7898 0%,#7a90a8 40%,#5a7898 100%)';
+  } else if (wcode === 0 && tempNow > 25) {
+    gradient = 'linear-gradient(160deg,#ffc000 0%,#ffd800 30%,#ff9400 60%,#ffc000 100%)';
+  } else if (wcode === 0) {
+    gradient = 'linear-gradient(160deg,#5abcf0 0%,#90d8f8 30%,#fff8b0 60%,#ffe060 100%)';
+  } else if (isGel) {
+    gradient = 'linear-gradient(160deg,#c8e8f8 0%,#ddf0ff 50%,#b0d8f0 100%)';
+  } else {
+    gradient = 'linear-gradient(160deg,#80b0d0 0%,#a0c8e8 50%,#80b0d0 100%)';
+  }
+  /* Dessin du gradient sur canvas — compatible Magicinfo */
+  drawBgCanvas(bg, gradient);
+
+  /* ══════════════════════════════════════════════
+     PARTICULES JS — une fonction par type
+  ══════════════════════════════════════════════ */
+
+  /* ── Utilitaire : anime un élément de haut en bas ── */
+  function animFall(el, dur, pSpeed, pColor, horizontal) {
+    var startY = -20;
+    var endY   = 1120;
+    var startT = null;
+    var driftX = horizontal ? (Math.random() - 0.5) * 80 : 0;
+    var startX = parseFloat(el.style.left);
+
+    function step(ts) {
+      if (!startT) startT = ts;
+      var prog = (ts - startT) / dur;
+      if (prog >= 1) {
+        startT = null;
+        el.style.left = (Math.random() * 110 - 5) + '%';
+        requestAnimationFrame(function(t) { startT = t; step(t); });
+        return;
+      }
+      var y  = startY + prog * (endY - startY);
+      var op = prog < 0.9 ? 0.75 : 0.75 * (1 - (prog - 0.9) / 0.1);
+      if (horizontal) { el.style.left = (startX + driftX * prog) + '%'; }
+      el.style.top     = y + 'px';
+      el.style.opacity = op;
+      requestAnimationFrame(step);
+    }
+    setTimeout(function() {
+      requestAnimationFrame(function(t) { startT = t; step(t); });
+    }, Math.random() * dur);
+  }
+
+  /* ── Utilitaire : anime un élément de bas en haut (chaleur) ── */
+  function animRise(el, dur) {
+    var startT = null;
+    var startX = parseFloat(el.style.left);
+    var driftX = (Math.random() - 0.5) * 60;
+    function step(ts) {
+      if (!startT) startT = ts;
+      var prog = (ts - startT) / dur;
+      if (prog >= 1) {
+        startT = null;
+        el.style.left = (Math.random() * 100) + '%';
+        el.style.top  = '1100px';
+        requestAnimationFrame(function(t) { startT = t; step(t); });
+        return;
+      }
+      var y  = 1100 - prog * 1200;
+      var op = prog < 0.3 ? prog / 0.3 * 0.6 : prog > 0.7 ? 0.6 * (1 - (prog - 0.7) / 0.3) : 0.6;
+      el.style.top     = y + 'px';
+      el.style.left    = (startX + driftX * prog) + '%';
+      el.style.opacity = op;
+      requestAnimationFrame(step);
+    }
+    setTimeout(function() {
+      requestAnimationFrame(function(t) { startT = t; step(t); });
+    }, Math.random() * dur);
+  }
+
+  /* ── Utilitaire : pulse (brouillard, givre) ── */
+  function animPulse(el, dur) {
+    var startT = null;
+    function step(ts) {
+      if (!startT) startT = ts;
+      var prog = ((ts - startT) % dur) / dur;
+      var op = 0.08 + 0.12 * Math.sin(prog * Math.PI * 2);
+      el.style.opacity = op;
+      requestAnimationFrame(step);
+    }
+    setTimeout(function() {
+      requestAnimationFrame(function(t) { startT = t; step(t); });
+    }, Math.random() * dur);
+  }
+
+  /* ── PLUIE ── */
+  function addRain(count, color, size, speed) {
+    for (var i = 0; i < count; i++) {
+      (function() {
+        var el  = document.createElement('div');
+        var s   = size * (0.6 + Math.random() * 0.5);
+        var dur = Math.round((2500 + Math.random() * 3000) / speed);
+        el.style.cssText = 'position:absolute;left:' + (Math.random()*110-5) + '%;top:-20px;width:' + s + 'px;height:' + (s*7) + 'px;background:' + color + ';border-radius:1px;opacity:0;';
+        part.appendChild(el);
+        animFall(el, dur, speed, color, false);
+      })();
+    }
+  }
+
+  /* ── NEIGE ── */
+  function addSnow(count, color, size, speed) {
+    for (var i = 0; i < count; i++) {
+      (function() {
+        var el  = document.createElement('div');
+        var s   = size * (0.4 + Math.random() * 0.8);
+        var dur = Math.round((4000 + Math.random() * 6000) / speed);
+        el.style.cssText = 'position:absolute;left:' + (Math.random()*110-5) + '%;top:-20px;width:' + s + 'px;height:' + s + 'px;background:' + color + ';border-radius:50%;opacity:0;';
+        part.appendChild(el);
+        animFall(el, dur, speed, color, true);
+      })();
+    }
+  }
+
+  /* ── CHALEUR : particules montantes scintillantes ── */
+  function addHeat(count) {
+    for (var i = 0; i < count; i++) {
+      (function() {
+        var el  = document.createElement('div');
+        var s   = 3 + Math.random() * 5;
+        var dur = Math.round(3000 + Math.random() * 4000);
+        var hue = Math.round(30 + Math.random() * 30);
+        el.style.cssText = 'position:absolute;left:' + (Math.random()*100) + '%;top:1100px;width:' + s + 'px;height:' + s + 'px;background:hsla(' + hue + ',100%,70%,0.7);border-radius:50%;opacity:0;';
+        part.appendChild(el);
+        animRise(el, dur);
+      })();
+    }
+  }
+
+  /* ── GIVRE / GEL : cristaux qui tombent lentement ── */
+  function addFrost(count) {
+    for (var i = 0; i < count; i++) {
+      (function() {
+        var el  = document.createElement('div');
+        var s   = 4 + Math.random() * 6;
+        var dur = Math.round(6000 + Math.random() * 8000);
+        el.style.cssText = 'position:absolute;left:' + (Math.random()*110-5) + '%;top:-20px;width:' + s + 'px;height:' + s + 'px;background:rgba(200,235,255,0.9);border-radius:2px;opacity:0;transform:rotate(' + Math.round(Math.random()*45) + 'deg);';
+        part.appendChild(el);
+        animFall(el, dur, 1, 'rgba(200,235,255,0.9)', true);
+      })();
+    }
+  }
+
+  /* ── BROUILLARD : grandes ellipses translucides qui pulsent ── */
+  function addFog(count) {
+    for (var i = 0; i < count; i++) {
+      (function() {
+        var el  = document.createElement('div');
+        var w   = 300 + Math.random() * 500;
+        var h   = 40  + Math.random() * 80;
+        var top = Math.random() * 1080;
+        var dur = Math.round(3000 + Math.random() * 5000);
+        el.style.cssText = 'position:absolute;left:' + (Math.random()*120-10) + '%;top:' + top + 'px;width:' + w + 'px;height:' + h + 'px;background:rgba(200,210,220,0.15);border-radius:50%;opacity:0;';
+        part.appendChild(el);
+        animPulse(el, dur);
+      })();
+    }
+  }
+
+  /* ── ORAGE : éclairs aléatoires ── */
+  function addLightning() {
+    function flash() {
+      var el = document.createElement('div');
+      var x  = 10 + Math.random() * 80;
+      el.style.cssText = 'position:absolute;left:' + x + '%;top:0;width:2px;height:' + (200+Math.random()*400) + 'px;background:rgba(255,255,255,0.95);border-radius:1px;opacity:0;';
+      part.appendChild(el);
+      /* double flash rapide */
+      el.style.opacity = '0.9';
+      setTimeout(function() { el.style.opacity = '0'; }, 80);
+      setTimeout(function() { el.style.opacity = '0.7'; }, 150);
+      setTimeout(function() {
+        el.style.opacity = '0';
+        setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 100);
+      }, 230);
+      /* prochain éclair dans 2-8s */
+      window._lightningTimer = setTimeout(flash, 2000 + Math.random() * 6000);
+    }
+    window._lightningTimer = setTimeout(flash, 500 + Math.random() * 2000);
+  }
+
+  /* ── SOLEIL : rayons lumineux ── */
+  function addSunRays(count) {
+    for (var i = 0; i < count; i++) {
+      (function(idx) {
+        var el  = document.createElement('div');
+        var angle = (idx / count) * 360;
+        var len   = 300 + Math.random() * 200;
+        var dur   = Math.round(3000 + Math.random() * 4000);
+        el.style.cssText = 'position:absolute;left:60%;top:8%;width:3px;height:' + len + 'px;background:linear-gradient(to bottom,rgba(255,240,100,0.5),rgba(255,240,100,0));transform-origin:top center;transform:rotate(' + angle + 'deg);opacity:0;';
+        part.appendChild(el);
+        animPulse(el, dur);
+      })(i);
+    }
+  }
+
+  /* ══ Appel selon la météo ══ */
+  if (isOrageCode(wcode)) {
+    addRain(90, 'rgba(200,230,255,0.75)', 1.2, 2.2);
+    addLightning();
+  } else if (isNeigeCode(wcode)) {
+    addSnow(80, 'rgba(255,255,255,0.95)', 6, 0.35);
+  } else if (isPluieFortCode(wcode)) {
+    /* Pluie forte/averses : animation intense quelle que soit la température */
+    addRain(100, 'rgba(160,210,255,0.75)', 1.3, 1.9);
+  } else if (isPluieCode(wcode)) {
+    addRain(75, 'rgba(180,220,255,0.70)', 1.4, 1.3);
+  } else if (isBroui) {
+    addFog(18);
+  } else if (isNuagCode(wcode)) {
+    /* ciel couvert — pas de particules */
+  } else if (wcode === 0 && tempNow > 25) {
+    addHeat(40);
+    addSunRays(12);
+  } else if (wcode === 0) {
+    addSunRays(10);
+  } else if (isGel) {
+    addFrost(50);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CHARGEMENT data.json — source unique de données du collège
+   Alimente : badges semaine, agenda, ticker
+   Rafraîchi toutes les 15 min (l'admin peut pousser une MAJ à tout moment)
+══════════════════════════════════════════════════════════════════ */
+function buildAgenda(agenda) {
+  var container = document.getElementById('agenda-items');
+  if (!container) return;
+
+  var html = '';
+  var enSemaineProchaineSection = false;
+
+  for (var i = 0; i < agenda.length; i++) {
+    var ev = agenda[i];
+
+    /* Séparateur de section au premier événement "semaine prochaine" */
+    if (ev.semaine_prochaine && !enSemaineProchaineSection) {
+      html += '<div class="agenda-section-sep" style="color:var(--muted);">⏭️ Semaine prochaine</div>';
+      enSemaineProchaineSection = true;
+    } else if (!ev.semaine_prochaine && !enSemaineProchaineSection && i === 0) {
+      html += '<div class="agenda-section-sep" style="color:var(--c1);">✅ Cette semaine</div>';
+    }
+
+    var label = ev.label.replace('\n', '<br>');
+    var opacite = ev.semaine_prochaine ? ' style="opacity:0.65;"' : '';
+    html += '<div class="agenda-item"' + opacite + '>';
+    html += '<span class="agenda-date-pill pill-' + ev.couleur + '">' + label + '</span>';
+    html += '<div class="agenda-info">';
+    html += '<div class="agenda-name">' + ev.nom + '</div>';
+    html += '<div class="agenda-lieu">' + ev.lieu + '</div>';
+    html += '</div></div>';
+  }
+  container.innerHTML = html;
+}
+
+function buildTicker(items) {
+  var container = document.getElementById('ticker-inner');
+  if (!container) return;
+
+  /* Construire une copie du contenu (répétée 2× pour le défilement infini CSS) */
+  function buildCopy() {
+    var h = '<div class="ticker-copy">';
+    for (var i = 0; i < items.length; i++) {
+      h += '<span>' + items[i] + '</span>';
+      h += '<span class="sep">•</span>';
+    }
+    h += '</div>';
+    return h;
+  }
+  container.innerHTML = buildCopy() + buildCopy();
+}
+
+function loadData() {
+  var url = 'data.json?t=' + new Date().getTime();
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.timeout = 15000;
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState !== 4) return;
+    if (xhr.status === 200) {
+      try {
+        var d = JSON.parse(xhr.responseText);
+
+        /* Badges semaine A/B */
+        var labelSemaine = '📅 Semaine ' + d.semaine.type;
+        setText('semaine-badge', labelSemaine);
+        setText('semaine-pill',  labelSemaine);
+
+        /* Agenda */
+        if (d.agenda) { buildAgenda(d.agenda); }
+
+        /* Ticker */
+        if (d.ticker) { buildTicker(d.ticker); }
+
+        /* Menus — charge MENUS_DATA puis rafraichit l'affichage */
+        if (d.menus) {
+          MENUS_DATA = d.menus;
+          getMenuDuJour();
+        }
+
+      } catch (e) {
+        /* En cas d'erreur JSON, l'affichage reste vide — pas de crash */
+        console && console.error('data.json : erreur de parsing', e);
+      }
+    }
+    /* En cas d'erreur réseau : on garde les conteneurs vides, rien ne plante */
+  };
+
+  xhr.ontimeout = function() { console && console.warn('data.json : délai dépassé'); };
+  try { xhr.send(); } catch(e) {}
+}
+
+loadData();
+/* Rafraîchissement toutes les 15 min — l'admin peut pousser une MAJ à tout moment */
+setInterval(loadData, 900000);
+
+function fetchMeteo() {
+  /* Fichier JSON statique mis à jour par GitHub Action toutes les 30 min */
+  var url = 'meteo.json?t=' + new Date().getTime(); /* cache-busting */
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.timeout = 30000; /* 30 secondes max */
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState !== 4) return;
+    if (xhr.status === 200) {
+      try {
+        var d = JSON.parse(xhr.responseText);
+        var tempNow  = Math.round(d.current_weather.temperature);
+        var wcodeNow = d.current_weather.weathercode;
+        var tmax0    = Math.round(d.daily.temperature_2m_max[0]);
+        var tmin0    = Math.round(d.daily.temperature_2m_min[0]);
+
+        setText('meteo-icon',   ICONS[wcodeNow] || '🌤️');
+        setText('meteo-temp',   tempNow + '°');
+        setText('meteo-desc',   DESCS[wcodeNow] || 'Variable');
+        setText('meteo-minmax', '↓' + tmin0 + '° ↑' + tmax0 + '°');
+
+        applyMeteoBackground(wcodeNow, tempNow);
+
+        var wcode1 = d.daily.weathercode[1];
+        var tmax1  = Math.round(d.daily.temperature_2m_max[1]);
+        var tmin1  = Math.round(d.daily.temperature_2m_min[1]);
+        var joursC = ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'];
+        var demain = new Date();
+        demain.setDate(demain.getDate() + 1);
+
+        setText('demain-label',    'Demain \u2014 ' + joursC[demain.getDay()]);
+        setText('meteo-icon-d1',   ICONS[wcode1] || '🌤️');
+        setText('meteo-temp-d1',   Math.round((tmax1 + tmin1) / 2) + '°');
+        setText('meteo-desc-d1',   DESCS[wcode1] || 'Variable');
+        setText('meteo-minmax-d1', '↓' + tmin1 + '° ↑' + tmax1 + '°');
+
+        var conseil = '🌤️ Bonne journée au collège Joliot Curie !';
+        if (isPluieCode(wcodeNow))  conseil = '☂️ Pensez à votre parapluie en sortant !';
+        else if (tempNow < 8)       conseil = '🥶 Il fait froid ! Couvrez-vous bien.';
+        else if (tempNow > 25)      conseil = '☀️ Il fait chaud ! Hydratez-vous bien.';
+        setText('meteo-conseil', conseil);
+
+      } catch (e) {
+        setText('meteo-desc', 'Erreur données');
+      }
+    } else {
+      setText('meteo-desc', 'Réseau indisponible');
+    }
+  };
+
+  xhr.ontimeout = function() {
+    setText('meteo-desc', 'Délai dépassé');
+    /* Réessai dans 2 minutes */
+    setTimeout(fetchMeteo, 120000);
+  };
+
+  xhr.onerror = function() {
+    setText('meteo-desc', 'Hors ligne');
+    /* Applique quand même les animations avec le dernier code connu ou le code de secours */
+    if (typeof FALLBACK_WCODE !== 'undefined') {
+      applyMeteoBackground(FALLBACK_WCODE, FALLBACK_TEMP);
+    }
+    /* Réessai dans 2 minutes */
+    setTimeout(fetchMeteo, 120000);
+  };
+
+  try {
+    xhr.send();
+  } catch(e) {
+    setText('meteo-desc', 'Erreur réseau');
+  }
+}
+
+fetchMeteo();
+/* Rafraîchissement toutes les 5 minutes */
+setInterval(fetchMeteo, 300000);
+
+/* Rafraîchissement quand l'écran redevient visible (Magicinfo) */
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible') {
+    fetchMeteo();
+  }
+});
+</script>
+</body>
+</html>
