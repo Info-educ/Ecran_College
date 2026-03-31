@@ -1,173 +1,63 @@
 {
-  "_comment": "Fichier de données de l'écran du Collège Joliot Curie. Modifié via la page d'administration ou directement sur GitHub.",
-  "_version": "1.0",
-
   "semaine": {
     "type": "A",
-    "periode": "31 mars au 4 avril 2026"
+    "periode": ""
   },
-
   "actus": [
     {
-      "emoji": "🏭",
-      "tag": "Sortie péda",
+      "emoji": "🎭",
+      "tag": "Exemple",
+      "couleur": "purple",
+      "texte": "Spectacle de fin d'année",
+      "detail": "Vendredi · Salle polyvalente",
+      "date": "Cette semaine"
+    },
+    {
+      "emoji": "📌",
+      "tag": "TEST",
       "couleur": "blue",
-      "texte": "Sortie 6ème D — Visite d'une laiterie",
-      "detail": "Mercredi 1er avril · Matin",
-      "date": "Cette semaine"
-    },
-    {
-      "emoji": "🌍",
-      "tag": "École Ouverte",
-      "couleur": "green",
-      "texte": "Jeux traditionnels du monde",
-      "detail": "Mercredi 1er avril · Après-midi",
-      "date": "Cette semaine"
-    },
-    {
-      "emoji": "🏛️",
-      "tag": "Sortie péda",
-      "couleur": "orange",
-      "texte": "Sortie 5ème D — Musée de l'Immigration",
-      "detail": "Jeudi 2 avril · Après-midi · Palais de la Porte d'Orée",
-      "date": "Cette semaine"
-    },
-    {
-      "emoji": "🎨",
-      "tag": "Sortie péda",
-      "couleur": "red",
-      "texte": "Sortie 3ème B — Exposition Matisse",
-      "detail": "Vendredi 3 avril · Après-midi · Grand Palais",
+      "texte": "TEST",
+      "detail": "Salle 01",
       "date": "Cette semaine"
     }
   ],
-
   "agenda": [
     {
-      "label": "Mer 1/4\nmatin",
+      "label": "Lun 7/4\nmatin",
       "couleur": "blue",
-      "nom": "Sortie 6ème D — Laiterie",
-      "lieu": "Sortie pédagogique",
+      "nom": "Conseil de classe 3ème",
+      "lieu": "Salle des professeurs",
       "semaine_prochaine": false
     },
     {
-      "label": "Mer 1/4\napm",
-      "couleur": "green",
-      "nom": "École Ouverte",
-      "lieu": "Jeux traditionnels du monde",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Jeu 2/4\napm",
-      "couleur": "orange",
-      "nom": "Sortie 5ème D — Musée Immigration",
-      "lieu": "Palais de la Porte d'Orée",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Ven 3/4\napm",
-      "couleur": "red",
-      "nom": "Sortie 3ème B — Matisse",
-      "lieu": "Grand Palais",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Mer 8/4\napm",
-      "couleur": "green",
-      "nom": "École Ouverte 6ème",
-      "lieu": "Renforcement Maths & Français",
-      "semaine_prochaine": true
-    },
-    {
-      "label": "Jeu 9/4\nmatin",
+      "label": "JeudiTEST",
       "couleur": "blue",
-      "nom": "Réunion du CVC",
-      "lieu": "Conseil de Vie Collégienne",
-      "semaine_prochaine": true
-    },
-    {
-      "label": "Jeu 9/4\napm",
-      "couleur": "orange",
-      "nom": "La Tablée des Chefs",
-      "lieu": "Activité culinaire",
-      "semaine_prochaine": true
+      "nom": "Nouvel événement",
+      "lieu": "",
+      "semaine_prochaine": false
     }
   ],
-
-  "ticker": [
-    "Bienvenue au Collège Joliot Curie ! 👋",
-    "📅 Semaine A — du 31 mars au 4 avril 2026",
-    "🏭 Mercredi 1er avril matin : Sortie 6ème D — Visite d'une laiterie",
-    "🌍 Mercredi 1er avril après-midi : École Ouverte — Jeux traditionnels du monde",
-    "🏛️ Jeudi 2 avril après-midi : Sortie 5ème D — Musée de l'Immigration",
-    "🎨 Vendredi 3 avril après-midi : Sortie 3ème B — Exposition Matisse au Grand Palais",
-    "📚 Mercredi 8 avril : École Ouverte — Renforcement Maths & Français 6ème",
-    "🗳️ Jeudi 9 avril matin : Réunion du CVC",
-    "🍽️ Jeudi 9 avril après-midi : La Tablée des Chefs",
-    "🌿 Vacances de printemps à partir du 19 avril !"
-  ],
-
   "menus": {
     "2026-03-30": {
-      "entree":  ["Escalope de veau haché FR basquaise", "Riz à la mexicaine <span class=\"vege-tag\">Végé</span>"],
-      "plat":    ["Escalope de veau haché FR basquaise", "Croq veggie tomate <span class=\"vege-tag\">Végé</span>"],
-      "accomp":  ["Petits pois <span class=\"bio-tag\">BIO</span> à la lyonnaise", "Riz créole"],
-      "fromage": ["Pont l'Évêque <span class=\"bio-tag\">AOC</span>", "Tomme croûte fleurie"],
-      "dessert": ["Pomme rouge Ecoresponsable", "Orange Global Gap"]
-    },
-    "2026-03-31": {
-      "entree":  [],
-      "plat":    ["Poulet LR sauté", "Croq veggie tomate <span class=\"vege-tag\">Végé</span>"],
-      "accomp":  ["Ratatouille", "Pommes rissolées"],
-      "fromage": ["Fromage / laitage ORTEMS 01"],
-      "dessert": ["Gâteau provence aux amandes citron", "Muffin à la vanille et pépites de chocolat"]
-    },
-    "2026-04-02": {
-      "entree":  [],
-      "plat":    ["Gâteau d'œufs <span class=\"bio-tag\">BIO</span> sauce tomate", "Boulgour <span class=\"bio-tag\">BIO</span> égrené vég. marocaine <span class=\"vege-tag\">Végé</span>"],
-      "accomp":  ["Haricots beurre à la tomate", "Boulgour <span class=\"bio-tag\">BIO</span> et jus de légumes"],
-      "fromage": ["Fromage frais aux fruits <span class=\"bio-tag\">BIO</span>", "Fromage frais sucré"],
-      "dessert": ["Banane", "Kiwi"]
-    },
-    "2026-04-03": {
-      "entree":  ["Concombre <span class=\"bio-tag\">BIO</span> vinaigrette", "Salade verte <span class=\"bio-tag\">BIO</span>"],
-      "plat":    ["Filet de colin meunière", "Gnocchetti <span class=\"bio-tag\">BIO</span> sauce fromagère végé <span class=\"vege-tag\">Végé</span>"],
-      "accomp":  ["Épinards <span class=\"bio-tag\">BIO</span> à la béchamel", "Gnocchetti Sardi <span class=\"bio-tag\">BIO</span>"],
+      "entree": [
+        "TEST",
+        "TEST1"
+      ],
+      "plat": [],
+      "accomp": [],
       "fromage": [],
-      "dessert": ["Purée de pomme <span class=\"bio-tag\">BIO</span>", "Compote de pommes fraises"]
-    },
-    "2026-04-06": {
-      "entree":  [],
-      "plat":    ["Semoule <span class=\"bio-tag\">BIO</span> et jambalaya <span class=\"bio-tag\">BIO</span>", "Dahl de lentilles corail et riz <span class=\"vege-tag\">Végé</span>"],
-      "accomp":  [],
-      "fromage": ["Fromage frais aux fruits <span class=\"bio-tag\">BIO</span>", "Fromage frais sucré"],
-      "dessert": ["Ananas", "Orange Global Gap"]
-    },
-    "2026-04-07": {
-      "entree":  ["Salade de tomates", "Concombre <span class=\"bio-tag\">BIO</span> vinaigrette"],
-      "plat":    ["Steak de colin sauce sétoise", "Bouchée de blé <span class=\"vege-tag\">Végé</span>"],
-      "accomp":  ["Chou-fleur <span class=\"bio-tag\">BIO</span> aux saveurs du soleil", "Blé <span class=\"bio-tag\">BIO</span> à la tomate"],
-      "fromage": ["Yaourt nature <span class=\"bio-tag\">BIO</span> et sucre"],
-      "dessert": ["Compote de pommes", "Compote de pomme-banane"]
-    },
-    "2026-04-09": {
-      "entree":  [],
-      "plat":    ["Cordon bleu de dinde", "Calamars à la romaine"],
-      "accomp":  ["Ratatouille", "Pommes campagnardes"],
-      "fromage": [],
-      "dessert": ["Liégeois au chocolat", "Liégeois à la vanille"]
-    },
-    "2026-04-10": {
-      "entree":  [],
-      "plat":    ["Boulettes d'agneau sauce navarin", "Omelette <span class=\"bio-tag\">BIO</span> <span class=\"vege-tag\">Végé</span>"],
-      "accomp":  ["Flageolets à l'ail", "Mélange légumes haricots plats"],
-      "fromage": ["Saint Nectaire <span class=\"bio-tag\">AOC</span>", "Tomme noire"],
-      "dessert": ["Entremet chocolat festif"]
+      "dessert": []
     }
   },
-
-  "citation": {
-    "texte": "L'éducation est l'arme la plus puissante pour changer le monde.",
-    "auteur": "Nelson Mandela"
-  }
+  "ticker": [
+    "Bienvenue au Collège Joliot Curie ! 👋",
+    "📅 Semaine A",
+    "Hello World"
+  ],
+  "citations": [
+    {
+      "texte": "L'éducation est l'arme la plus puissante.",
+      "auteur": "Yohan Ensergueix"
+    }
+  ]
 }
