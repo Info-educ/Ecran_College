@@ -623,12 +623,13 @@ var JOURS = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 var MOIS  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 
 function updateClock() {
-  /* UTC+2 = heure d'été Paris. Pas besoin d'Intl. */
+  /* Le système Magicinfo est bloqué en UTC+1 (heure d'hiver).
+     On ajoute 1h à l'heure locale pour corriger vers l'heure d'été. */
   var now = new Date();
-  var paris = new Date(now.getTime() + 2 * 3600000);
-  setText('time', pad2(paris.getUTCHours()) + ':' + pad2(paris.getUTCMinutes()));
-  setText('day-name', JOURS[paris.getUTCDay()]);
-  setText('date-full', paris.getUTCDate() + ' ' + MOIS[paris.getUTCMonth()] + ' ' + paris.getUTCFullYear());
+  var fixed = new Date(now.getTime() + 3600000);
+  setText('time', pad2(fixed.getHours()) + ':' + pad2(fixed.getMinutes()));
+  setText('day-name', JOURS[fixed.getDay()]);
+  setText('date-full', fixed.getDate() + ' ' + MOIS[fixed.getMonth()] + ' ' + fixed.getFullYear());
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -946,14 +947,8 @@ function applyMeteoBackground(wcode, tempNow) {
 }
 
 function fetchMeteo() {
-  var meteoUrl = 'https://api.open-meteo.com/v1/forecast'
-    + '?latitude=48.7953&longitude=2.3097'
-    + '&current_weather=true'
-    + '&daily=weathercode,temperature_2m_max,temperature_2m_min'
-    + '&forecast_days=2&timezone=Europe%2FParis';
-
-  /* Proxy CORS pour contourner les restrictions réseau de Magicinfo */
-  var url = 'https://api.allorigins.win/get?url=' + encodeURIComponent(meteoUrl);
+  /* Proxy Google Apps Script — retourne directement le JSON Open-Meteo */
+  var url = 'https://script.google.com/macros/s/AKfycbzkgTnBIrcoqMk2_ya9Dm-f6xNx_skOJu_hFqvfycFDRvL-7t5e7rU8TACOVqXdlG7f-Q/exec';
 
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
@@ -963,8 +958,7 @@ function fetchMeteo() {
     if (xhr.readyState !== 4) return;
     if (xhr.status === 200) {
       try {
-        var wrapper = JSON.parse(xhr.responseText);
-        var d = JSON.parse(wrapper.contents);
+        var d = JSON.parse(xhr.responseText);
         var tempNow  = Math.round(d.current_weather.temperature);
         var wcodeNow = d.current_weather.weathercode;
         var tmax0    = Math.round(d.daily.temperature_2m_max[0]);
