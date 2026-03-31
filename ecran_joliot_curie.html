@@ -29,17 +29,9 @@
 
   .bg-canvas {
     position: fixed; inset: 0; z-index: 0;
-    background-size: 400% 400%;
-    background-image: linear-gradient(135deg,#c9e8ff 0%,#e8f4ff 25%,#fef9e7 50%,#fff5cc 75%,#c9e8ff 100%);
-    animation: bgShift 25s ease infinite;
-    transition: background-image 4s ease;
-  }
-  @keyframes bgShift {
-    0%   { background-position:   0%  50%; }
-    25%  { background-position:  50%   0%; }
-    50%  { background-position: 100%  50%; }
-    75%  { background-position:  50% 100%; }
-    100% { background-position:   0%  50%; }
+    background-size: 100% 100%;
+    background-image: linear-gradient(135deg,#c9e8ff 0%,#e8f4ff 50%,#fff5cc 100%);
+    transition: background-image 3s ease;
   }
   .dots {
     position: fixed; inset: 0; z-index: 1; pointer-events: none;
@@ -47,15 +39,7 @@
     background-size: 48px 48px;
   }
   .particles { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
-  .drop {
-    position: absolute; border-radius: 50%; opacity: 0;
-    animation: fall linear infinite;
-  }
-  @keyframes fall {
-    0%   { transform: translateY(-20px); opacity: 0.7; }
-    90%  { opacity: 0.5; }
-    100% { transform: translateY(1100px); opacity: 0; }
-  }
+  /* .drop et @keyframes fall remplacés par animation JS */
   #vignette {
     position: fixed; inset: 0; z-index: 3; pointer-events: none;
     background: radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,0.18) 60%,rgba(0,0,0,0.55) 80%,rgba(0,0,0,0.80) 100%);
@@ -181,10 +165,10 @@
   .actu-card {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: var(--card);
+    background: rgba(255,255,255,0.96);
     border-radius: 22px;
     padding: 44px 52px;
-    backdrop-filter: blur(10px);
+    /* backdrop-filter: blur(10px); — non supporté Magicinfo */
     box-shadow: 6px 6px 0 rgba(0,0,0,0.07);
     display: flex; flex-direction: column; justify-content: center;
     opacity: 0;
@@ -287,10 +271,10 @@
   /* ══ COLONNE DROITE ══ */
   /* ── AGENDA ── */
   .agenda-card {
-    background: var(--card); border-radius: 20px;
+    background: rgba(255,255,255,0.96); border-radius: 20px;
     padding: 18px 22px;
     box-shadow: 5px 5px 0 rgba(0,0,0,0.07);
-    flex: 1; backdrop-filter: blur(8px);
+    flex: 1; /* backdrop-filter: blur(8px); — non supporté Magicinfo */
     animation: bounceIn 0.6s 0.18s ease both;
     display: flex; flex-direction: column;
     overflow: hidden;
@@ -626,7 +610,7 @@ function updateClock() {
   /* Le système Magicinfo est bloqué en UTC+1 (heure d'hiver).
      On ajoute 1h à l'heure locale pour corriger vers l'heure d'été. */
   var now = new Date();
-  var fixed = new Date(now.getTime() + 3600000);
+  var fixed = new Date(now.getTime() + 3600000 + 3 * 60000);
   setText('time', pad2(fixed.getHours()) + ':' + pad2(fixed.getMinutes()));
   setText('day-name', JOURS[fixed.getDay()]);
   setText('date-full', fixed.getDate() + ' ' + MOIS[fixed.getMonth()] + ' ' + fixed.getFullYear());
@@ -887,34 +871,28 @@ function applyMeteoBackground(wcode, tempNow) {
   var vignette= document.getElementById('vignette');
   if (!bg) return;
 
+  /* Stoppe les animations précédentes */
   part.innerHTML = '';
-  overlay.style.position   = 'fixed';
-  overlay.style.top        = '0';
-  overlay.style.right      = '0';
-  overlay.style.bottom     = '0';
-  overlay.style.left       = '0';
-  overlay.style.zIndex     = '2';
+  if (window._lightningTimer) { clearTimeout(window._lightningTimer); window._lightningTimer = null; }
+
+  overlay.style.position = 'fixed'; overlay.style.top = '0'; overlay.style.right = '0';
+  overlay.style.bottom = '0'; overlay.style.left = '0'; overlay.style.zIndex = '2';
   overlay.style.pointerEvents = 'none';
 
   var isGel   = tempNow <= 0;
   var isBroui = inArray([45,48], wcode);
   if (isGel || isBroui) { addClass(vignette, 'active'); } else { removeClass(vignette, 'active'); }
 
+  /* ── Choix du gradient de fond ── */
   var gradient = '';
-  var pCount = 0, pColor = '', pSize = 1, pSpeed = 1, pType = 'rain';
-
   if (isOrageCode(wcode)) {
     gradient = 'linear-gradient(160deg,#0a0015 0%,#1a0533 40%,#0d0020 60%,#0a0015 100%)';
-    pCount = 90; pColor = 'rgba(200,230,255,0.75)'; pSize = 1.2; pSpeed = 2.2; pType = 'rain';
   } else if (isNeigeCode(wcode)) {
     gradient = 'linear-gradient(160deg,#d8eef8 0%,#c0dcee 40%,#e4f2fa 100%)';
-    pCount = 80; pColor = 'rgba(255,255,255,0.95)'; pSize = 6; pSpeed = 0.35; pType = 'snow';
   } else if (isPluieFortCode(wcode) && tempNow < 5) {
     gradient = 'linear-gradient(160deg,#0e1a25 0%,#1a2e40 40%,#0e1a25 100%)';
-    pCount = 100; pColor = 'rgba(160,210,255,0.7)'; pSize = 1.3; pSpeed = 1.9; pType = 'rain';
   } else if (isPluieCode(wcode)) {
     gradient = 'linear-gradient(160deg,#244a70 0%,#345a82 40%,#244a70 100%)';
-    pCount = 75; pColor = 'rgba(180,220,255,0.70)'; pSize = 1.4; pSpeed = 1.3; pType = 'rain';
   } else if (isBroui) {
     gradient = 'linear-gradient(160deg,#a8b0bc 0%,#b8c0cc 40%,#a8b0bc 100%)';
   } else if (isNuagCode(wcode)) {
@@ -923,26 +901,219 @@ function applyMeteoBackground(wcode, tempNow) {
     gradient = 'linear-gradient(160deg,#ffc000 0%,#ffd800 30%,#ff9400 60%,#ffc000 100%)';
   } else if (wcode === 0) {
     gradient = 'linear-gradient(160deg,#5abcf0 0%,#90d8f8 30%,#fff8b0 60%,#ffe060 100%)';
+  } else if (isGel) {
+    gradient = 'linear-gradient(160deg,#c8e8f8 0%,#ddf0ff 50%,#b0d8f0 100%)';
   } else {
     gradient = 'linear-gradient(160deg,#80b0d0 0%,#a0c8e8 50%,#80b0d0 100%)';
   }
-
   bg.style.backgroundImage = gradient;
-  bg.style.backgroundSize  = '400% 400%';
+  bg.style.backgroundSize  = '100% 100%';
 
-  if (pCount > 0) {
-    for (var i = 0; i < pCount; i++) {
-      var drop = document.createElement('div');
-      drop.className = 'drop';
-      var left  = Math.random() * 110 - 5;
-      var delay = Math.random() * 10;
-      var dur   = (2.5 + Math.random() * 4) / pSpeed;
-      var s     = pType === 'snow' ? pSize * (0.4 + Math.random() * 0.8) : pSize * (0.6 + Math.random() * 0.5);
-      var h     = pType === 'rain' ? s * 7 : s;
-      var br    = pType === 'snow' ? '50%' : '1px';
-      drop.style.cssText = 'left:' + left + '%;width:' + s + 'px;height:' + h + 'px;background:' + pColor + ';animation-duration:' + dur + 's;animation-delay:-' + delay + 's;border-radius:' + br + ';';
-      part.appendChild(drop);
+  /* ══════════════════════════════════════════════
+     PARTICULES JS — une fonction par type
+  ══════════════════════════════════════════════ */
+
+  /* ── Utilitaire : anime un élément de haut en bas ── */
+  function animFall(el, dur, pSpeed, pColor, horizontal) {
+    var startY = -20;
+    var endY   = 1120;
+    var startT = null;
+    var driftX = horizontal ? (Math.random() - 0.5) * 80 : 0;
+    var startX = parseFloat(el.style.left);
+
+    function step(ts) {
+      if (!startT) startT = ts;
+      var prog = (ts - startT) / dur;
+      if (prog >= 1) {
+        startT = null;
+        el.style.left = (Math.random() * 110 - 5) + '%';
+        requestAnimationFrame(function(t) { startT = t; step(t); });
+        return;
+      }
+      var y  = startY + prog * (endY - startY);
+      var op = prog < 0.9 ? 0.75 : 0.75 * (1 - (prog - 0.9) / 0.1);
+      if (horizontal) { el.style.left = (startX + driftX * prog) + '%'; }
+      el.style.top     = y + 'px';
+      el.style.opacity = op;
+      requestAnimationFrame(step);
     }
+    setTimeout(function() {
+      requestAnimationFrame(function(t) { startT = t; step(t); });
+    }, Math.random() * dur);
+  }
+
+  /* ── Utilitaire : anime un élément de bas en haut (chaleur) ── */
+  function animRise(el, dur) {
+    var startT = null;
+    var startX = parseFloat(el.style.left);
+    var driftX = (Math.random() - 0.5) * 60;
+    function step(ts) {
+      if (!startT) startT = ts;
+      var prog = (ts - startT) / dur;
+      if (prog >= 1) {
+        startT = null;
+        el.style.left = (Math.random() * 100) + '%';
+        el.style.top  = '1100px';
+        requestAnimationFrame(function(t) { startT = t; step(t); });
+        return;
+      }
+      var y  = 1100 - prog * 1200;
+      var op = prog < 0.3 ? prog / 0.3 * 0.6 : prog > 0.7 ? 0.6 * (1 - (prog - 0.7) / 0.3) : 0.6;
+      el.style.top     = y + 'px';
+      el.style.left    = (startX + driftX * prog) + '%';
+      el.style.opacity = op;
+      requestAnimationFrame(step);
+    }
+    setTimeout(function() {
+      requestAnimationFrame(function(t) { startT = t; step(t); });
+    }, Math.random() * dur);
+  }
+
+  /* ── Utilitaire : pulse (brouillard, givre) ── */
+  function animPulse(el, dur) {
+    var startT = null;
+    function step(ts) {
+      if (!startT) startT = ts;
+      var prog = ((ts - startT) % dur) / dur;
+      var op = 0.08 + 0.12 * Math.sin(prog * Math.PI * 2);
+      el.style.opacity = op;
+      requestAnimationFrame(step);
+    }
+    setTimeout(function() {
+      requestAnimationFrame(function(t) { startT = t; step(t); });
+    }, Math.random() * dur);
+  }
+
+  /* ── PLUIE ── */
+  function addRain(count, color, size, speed) {
+    for (var i = 0; i < count; i++) {
+      (function() {
+        var el  = document.createElement('div');
+        var s   = size * (0.6 + Math.random() * 0.5);
+        var dur = Math.round((2500 + Math.random() * 3000) / speed);
+        el.style.cssText = 'position:absolute;left:' + (Math.random()*110-5) + '%;top:-20px;width:' + s + 'px;height:' + (s*7) + 'px;background:' + color + ';border-radius:1px;opacity:0;';
+        part.appendChild(el);
+        animFall(el, dur, speed, color, false);
+      })();
+    }
+  }
+
+  /* ── NEIGE ── */
+  function addSnow(count, color, size, speed) {
+    for (var i = 0; i < count; i++) {
+      (function() {
+        var el  = document.createElement('div');
+        var s   = size * (0.4 + Math.random() * 0.8);
+        var dur = Math.round((4000 + Math.random() * 6000) / speed);
+        el.style.cssText = 'position:absolute;left:' + (Math.random()*110-5) + '%;top:-20px;width:' + s + 'px;height:' + s + 'px;background:' + color + ';border-radius:50%;opacity:0;';
+        part.appendChild(el);
+        animFall(el, dur, speed, color, true);
+      })();
+    }
+  }
+
+  /* ── CHALEUR : particules montantes scintillantes ── */
+  function addHeat(count) {
+    for (var i = 0; i < count; i++) {
+      (function() {
+        var el  = document.createElement('div');
+        var s   = 3 + Math.random() * 5;
+        var dur = Math.round(3000 + Math.random() * 4000);
+        var hue = Math.round(30 + Math.random() * 30);
+        el.style.cssText = 'position:absolute;left:' + (Math.random()*100) + '%;top:1100px;width:' + s + 'px;height:' + s + 'px;background:hsla(' + hue + ',100%,70%,0.7);border-radius:50%;opacity:0;';
+        part.appendChild(el);
+        animRise(el, dur);
+      })();
+    }
+  }
+
+  /* ── GIVRE / GEL : cristaux qui tombent lentement ── */
+  function addFrost(count) {
+    for (var i = 0; i < count; i++) {
+      (function() {
+        var el  = document.createElement('div');
+        var s   = 4 + Math.random() * 6;
+        var dur = Math.round(6000 + Math.random() * 8000);
+        el.style.cssText = 'position:absolute;left:' + (Math.random()*110-5) + '%;top:-20px;width:' + s + 'px;height:' + s + 'px;background:rgba(200,235,255,0.9);border-radius:2px;opacity:0;transform:rotate(' + Math.round(Math.random()*45) + 'deg);';
+        part.appendChild(el);
+        animFall(el, dur, 1, 'rgba(200,235,255,0.9)', true);
+      })();
+    }
+  }
+
+  /* ── BROUILLARD : grandes ellipses translucides qui pulsent ── */
+  function addFog(count) {
+    for (var i = 0; i < count; i++) {
+      (function() {
+        var el  = document.createElement('div');
+        var w   = 300 + Math.random() * 500;
+        var h   = 40  + Math.random() * 80;
+        var top = Math.random() * 1080;
+        var dur = Math.round(3000 + Math.random() * 5000);
+        el.style.cssText = 'position:absolute;left:' + (Math.random()*120-10) + '%;top:' + top + 'px;width:' + w + 'px;height:' + h + 'px;background:rgba(200,210,220,0.15);border-radius:50%;opacity:0;';
+        part.appendChild(el);
+        animPulse(el, dur);
+      })();
+    }
+  }
+
+  /* ── ORAGE : éclairs aléatoires ── */
+  function addLightning() {
+    function flash() {
+      var el = document.createElement('div');
+      var x  = 10 + Math.random() * 80;
+      el.style.cssText = 'position:absolute;left:' + x + '%;top:0;width:2px;height:' + (200+Math.random()*400) + 'px;background:rgba(255,255,255,0.95);border-radius:1px;opacity:0;';
+      part.appendChild(el);
+      /* double flash rapide */
+      el.style.opacity = '0.9';
+      setTimeout(function() { el.style.opacity = '0'; }, 80);
+      setTimeout(function() { el.style.opacity = '0.7'; }, 150);
+      setTimeout(function() {
+        el.style.opacity = '0';
+        setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 100);
+      }, 230);
+      /* prochain éclair dans 2-8s */
+      window._lightningTimer = setTimeout(flash, 2000 + Math.random() * 6000);
+    }
+    window._lightningTimer = setTimeout(flash, 500 + Math.random() * 2000);
+  }
+
+  /* ── SOLEIL : rayons lumineux ── */
+  function addSunRays(count) {
+    for (var i = 0; i < count; i++) {
+      (function(idx) {
+        var el  = document.createElement('div');
+        var angle = (idx / count) * 360;
+        var len   = 300 + Math.random() * 200;
+        var dur   = Math.round(3000 + Math.random() * 4000);
+        el.style.cssText = 'position:absolute;left:60%;top:8%;width:3px;height:' + len + 'px;background:linear-gradient(to bottom,rgba(255,240,100,0.5),rgba(255,240,100,0));transform-origin:top center;transform:rotate(' + angle + 'deg);opacity:0;';
+        part.appendChild(el);
+        animPulse(el, dur);
+      })(i);
+    }
+  }
+
+  /* ══ Appel selon la météo ══ */
+  if (isOrageCode(wcode)) {
+    addRain(90, 'rgba(200,230,255,0.75)', 1.2, 2.2);
+    addLightning();
+  } else if (isNeigeCode(wcode)) {
+    addSnow(80, 'rgba(255,255,255,0.95)', 6, 0.35);
+  } else if (isPluieFortCode(wcode) && tempNow < 5) {
+    addRain(100, 'rgba(160,210,255,0.7)', 1.3, 1.9);
+  } else if (isPluieCode(wcode)) {
+    addRain(75, 'rgba(180,220,255,0.70)', 1.4, 1.3);
+  } else if (isBroui) {
+    addFog(18);
+  } else if (isNuagCode(wcode)) {
+    /* ciel couvert — pas de particules */
+  } else if (wcode === 0 && tempNow > 25) {
+    addHeat(40);
+    addSunRays(12);
+  } else if (wcode === 0) {
+    addSunRays(10);
+  } else if (isGel) {
+    addFrost(50);
   }
 }
 
