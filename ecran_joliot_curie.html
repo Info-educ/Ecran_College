@@ -296,7 +296,7 @@
     flex-shrink: 0;
   }
   .agenda-section-sep:first-child { border-top: none; padding-top: 0; }
-  .agenda-items { display: flex; flex-direction: column; gap: 0; flex: 1; overflow: hidden; }
+  .agenda-items { display: flex; flex-direction: column; gap: 0; flex: 1; overflow: hidden; position: relative; }
   .agenda-item {
     display: flex; align-items: center; gap: 12px;
     padding: 7px 0; border-bottom: 2px dashed rgba(0,0,0,0.07);
@@ -572,36 +572,29 @@ function buildActuCards() {
     html += '<div class="actu-card-date">' + a.date + '</div>';
     html += '</div>';
   }
-  /* Si nombre impair, ajouter une carte vide pour compléter la dernière paire */
-  var totalCards = ACTUS.length;
-  if (totalCards % 2 !== 0) {
-    html += '<div class="actu-card" style="background:rgba(255,255,255,0.3);box-shadow:none;"></div>';
-    totalCards += 1;
-  }
   track.innerHTML = html;
 
   /* Calcul des dimensions en pixels */
   var sceneW = scene.offsetWidth;
-  var gap    = 16; /* px entre les deux cartes d'une paire */
+  var gap    = 16; /* px entre les deux cartes visibles */
   var cardW  = (sceneW - gap) / 2;
 
-  /* Largeur de la piste = toutes les cartes + gap à droite de chacune */
-  track.style.width = (totalCards * (cardW + gap)) + 'px';
+  /* Largeur de la piste = toutes les cartes alignées */
+  track.style.width = (ACTUS.length * (cardW + gap)) + 'px';
 
-  /* Appliquer la largeur fixe à chaque carte — gap uniforme de 16px à droite */
+  /* Appliquer la largeur fixe à chaque carte */
   var cards = track.getElementsByClassName('actu-card');
   for (var k = 0; k < cards.length; k++) {
-    cards[k].style.width     = cardW + 'px';
-    cards[k].style.minWidth  = cardW + 'px';
-    cards[k].style.maxWidth  = cardW + 'px';
+    cards[k].style.width      = cardW + 'px';
+    cards[k].style.minWidth   = cardW + 'px';
+    cards[k].style.maxWidth   = cardW + 'px';
     cards[k].style.marginRight = gap + 'px';
     cards[k].style.flexShrink = '0';
   }
 
-  /* Dots : un point par paire */
-  var pairs = Math.ceil(ACTUS.length / 2);
+  /* Dots : un point par carte */
   var dotsHtml = '';
-  for (var j = 0; j < pairs; j++) {
+  for (var j = 0; j < ACTUS.length; j++) {
     dotsHtml += '<div class="actu-dot' + (j === 0 ? ' active' : '') + '" id="dot-' + j + '"></div>';
   }
   var dotsEl = document.getElementById('actu-dots-bar');
@@ -628,34 +621,34 @@ function addClass(el, cls) {
   el.className = (el.className + ' ' + cls).replace(/^\s|\s$/g, '');
 }
 
-function showActu(nextPairIdx) {
+function showActu(nextIdx) {
   var track = document.getElementById('actu-track');
   var scene = document.getElementById('actu-scene');
   if (!track || !scene) return;
 
   var gap   = 16;
-  var sceneW = scene.offsetWidth;
-  var cardW  = (sceneW - gap) / 2;
-  /* Chaque paire avance de 2 * (cardW + gap) */
-  var offsetPx = nextPairIdx * 2 * (cardW + gap);
+  var cardW = (scene.offsetWidth - gap) / 2;
+  /* Décaler d'une carte */
+  var offsetPx = nextIdx * (cardW + gap);
   track.style.transform = 'translateX(-' + offsetPx + 'px)';
 
   /* Mise à jour des dots */
-  var dotCur  = document.getElementById('dot-' + Math.floor(actuIdx / 2));
-  var dotNext = document.getElementById('dot-' + nextPairIdx);
+  var dotCur  = document.getElementById('dot-' + actuIdx);
+  var dotNext = document.getElementById('dot-' + nextIdx);
   if (dotCur)  removeClass(dotCur,  'active');
   if (dotNext) addClass(dotNext, 'active');
 
-  actuIdx = nextPairIdx * 2;
+  actuIdx = nextIdx;
 }
 
 function startActuRotation() {
-  var pairs = Math.ceil(ACTUS.length / 2);
-  if (pairs <= 1) return;
+  if (ACTUS.length <= 2) return;
   actuTimer = setInterval(function() {
-    var currentPair = Math.floor(actuIdx / 2);
-    var nextPair = (currentPair + 1) % pairs;
-    showActu(nextPair);
+    /* On s'arrête à ACTUS.length - 1 pour ne pas dépasser (la dernière carte
+       doit rester visible à droite avec la carte précédente) */
+    var next = actuIdx + 1;
+    if (next > ACTUS.length - 2) { next = 0; }
+    showActu(next);
   }, 6000);
 }
 
