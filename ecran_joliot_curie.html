@@ -952,7 +952,7 @@ function fetchMeteo() {
 
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
-  xhr.timeout = 10000; /* 10 secondes max */
+  xhr.timeout = 30000; /* 30 secondes max */
 
   xhr.onreadystatechange = function() {
     if (xhr.readyState !== 4) return;
