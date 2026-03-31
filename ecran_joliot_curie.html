@@ -623,21 +623,12 @@ var JOURS = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 var MOIS  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 
 function updateClock() {
+  /* UTC+2 = heure d'été Paris. Pas besoin d'Intl. */
   var now = new Date();
-  try {
-    var fmtTime = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', hour12: false });
-    var fmtDay  = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long' });
-    var fmtDate = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', day: 'numeric', month: 'long', year: 'numeric' });
-    setText('time', fmtTime.format(now));
-    var dayStr = fmtDay.format(now);
-    setText('day-name', dayStr.charAt(0).toUpperCase() + dayStr.slice(1));
-    setText('date-full', fmtDate.format(now));
-  } catch(e) {
-    /* Fallback si Intl non supporté */
-    setText('time', pad2(now.getHours()) + ':' + pad2(now.getMinutes()));
-    setText('day-name', JOURS[now.getDay()]);
-    setText('date-full', now.getDate() + ' ' + MOIS[now.getMonth()] + ' ' + now.getFullYear());
-  }
+  var paris = new Date(now.getTime() + 2 * 3600000);
+  setText('time', pad2(paris.getUTCHours()) + ':' + pad2(paris.getUTCMinutes()));
+  setText('day-name', JOURS[paris.getUTCDay()]);
+  setText('date-full', paris.getUTCDate() + ' ' + MOIS[paris.getUTCMonth()] + ' ' + paris.getUTCFullYear());
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -955,11 +946,14 @@ function applyMeteoBackground(wcode, tempNow) {
 }
 
 function fetchMeteo() {
-  var url = 'https://api.open-meteo.com/v1/forecast'
+  var meteoUrl = 'https://api.open-meteo.com/v1/forecast'
     + '?latitude=48.7953&longitude=2.3097'
     + '&current_weather=true'
     + '&daily=weathercode,temperature_2m_max,temperature_2m_min'
     + '&forecast_days=2&timezone=Europe%2FParis';
+
+  /* Proxy CORS pour contourner les restrictions réseau de Magicinfo */
+  var url = 'https://api.allorigins.win/get?url=' + encodeURIComponent(meteoUrl);
 
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
@@ -969,7 +963,8 @@ function fetchMeteo() {
     if (xhr.readyState !== 4) return;
     if (xhr.status === 200) {
       try {
-        var d = JSON.parse(xhr.responseText);
+        var wrapper = JSON.parse(xhr.responseText);
+        var d = JSON.parse(wrapper.contents);
         var tempNow  = Math.round(d.current_weather.temperature);
         var wcodeNow = d.current_weather.weathercode;
         var tmax0    = Math.round(d.daily.temperature_2m_max[0]);
