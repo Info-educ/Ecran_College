@@ -207,9 +207,9 @@
     padding: 6px 18px; border-radius: 20px; display: inline-block; margin-bottom: 18px;
     align-self: flex-start;
   }
-  .actu-card-emoji { font-size: 64px; margin-bottom: 16px; line-height: 1; }
+  .actu-card-emoji { font-size: 88px; margin-bottom: 18px; line-height: 1; }
   .actu-card-text  {
-    font-size: 32px; font-weight: 900; color: var(--text); line-height: 1.4;
+    font-size: 44px; font-weight: 900; color: var(--text); line-height: 1.35;
     max-width: 860px;
   }
   .actu-card-detail {
@@ -624,9 +624,20 @@ var MOIS  = ['janvier','février','mars','avril','mai','juin','juillet','août',
 
 function updateClock() {
   var now = new Date();
-  setText('time', pad2(now.getHours()) + ':' + pad2(now.getMinutes()));
-  setText('day-name', JOURS[now.getDay()]);
-  setText('date-full', now.getDate() + ' ' + MOIS[now.getMonth()] + ' ' + now.getFullYear());
+  try {
+    var fmtTime = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', hour12: false });
+    var fmtDay  = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long' });
+    var fmtDate = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', day: 'numeric', month: 'long', year: 'numeric' });
+    setText('time', fmtTime.format(now));
+    var dayStr = fmtDay.format(now);
+    setText('day-name', dayStr.charAt(0).toUpperCase() + dayStr.slice(1));
+    setText('date-full', fmtDate.format(now));
+  } catch(e) {
+    /* Fallback si Intl non supporté */
+    setText('time', pad2(now.getHours()) + ':' + pad2(now.getMinutes()));
+    setText('day-name', JOURS[now.getDay()]);
+    setText('date-full', now.getDate() + ' ' + MOIS[now.getMonth()] + ' ' + now.getFullYear());
+  }
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -1018,7 +1029,15 @@ function fetchMeteo() {
 }
 
 fetchMeteo();
-setInterval(fetchMeteo, 600000);
+/* Rafraîchissement toutes les 5 minutes */
+setInterval(fetchMeteo, 300000);
+
+/* Rafraîchissement quand l'écran redevient visible (Magicinfo) */
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible') {
+    fetchMeteo();
+  }
+});
 </script>
 </body>
 </html>
