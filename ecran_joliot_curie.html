@@ -150,40 +150,41 @@
     box-shadow: 4px 4px 0 rgba(248,196,46,0.3);
     flex-shrink: 0;
   }
-  /* Scène de défilement des cartes — fenêtre masquante */
+  /* Scène de défilement des cartes — 2 slots côte à côte */
   .actu-scene {
     flex: 1;
     min-height: 0;
+    display: flex;
+    gap: 18px;
+    overflow: hidden;
+  }
+  /* Chaque slot occupe la moitié de la scène */
+  .actu-slot {
+    flex: 1;
+    min-width: 0;
+    position: relative;
     overflow: hidden;
     border-radius: 22px;
-    position: relative;
   }
-  /* Piste horizontale — largeur et transform fixées par JS */
-  .actu-track {
-    display: -webkit-flex;
-    display: flex;
-    height: 100%;
-    -webkit-flex-wrap: nowrap;
-    flex-wrap: nowrap;
-    transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
-  }
-  /* Cartes — largeur fixée en px par JS */
+  /* Chaque carte occupe tout l'espace de son slot */
   .actu-card {
-    -webkit-flex-shrink: 0;
-    flex-shrink: 0;
-    height: 100%;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(255,255,255,0.96);
     border-radius: 22px;
     padding: 36px 40px;
+    /* backdrop-filter: blur(10px); — non supporté Magicinfo */
     box-shadow: 6px 6px 0 rgba(0,0,0,0.07);
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    justify-content: center;
-    box-sizing: border-box;
-    margin-right: 16px;
+    display: flex; flex-direction: column; justify-content: center;
+    opacity: 0;
+    transform: translateX(50px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .actu-card.visible {
+    opacity: 1; transform: translateX(0);
+  }
+  .actu-card.exit-left {
+    opacity: 0; transform: translateX(-50px);
   }
   .actu-card-accent {
     width: 6px; height: 100%;
@@ -191,16 +192,17 @@
     border-radius: 22px 0 0 22px;
   }
   .actu-card-tag {
-    font-size: 12px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
-    padding: 6px 18px; border-radius: 20px; display: inline-block; margin-bottom: 14px;
+    font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 20px; display: inline-block; margin-bottom: 14px;
     align-self: flex-start;
   }
-  .actu-card-emoji { font-size: 68px; margin-bottom: 12px; line-height: 1; }
+  .actu-card-emoji { font-size: 64px; margin-bottom: 14px; line-height: 1; }
   .actu-card-text  {
-    font-size: 36px; font-weight: 900; color: var(--text); line-height: 1.3;
+    font-size: 32px; font-weight: 900; color: var(--text); line-height: 1.35;
+    max-width: 100%;
   }
   .actu-card-detail {
-    font-size: 18px; font-weight: 700; color: var(--muted); margin-top: 10px; line-height: 1.4;
+    font-size: 16px; font-weight: 700; color: var(--muted); margin-top: 10px; line-height: 1.4;
   }
   .actu-card-date  { font-size: 13px; color: var(--muted); margin-top: 16px; font-weight: 700; }
   /* Indicateurs pagination */
@@ -293,7 +295,7 @@
     flex-shrink: 0;
   }
   .agenda-section-sep:first-child { border-top: none; padding-top: 0; }
-  .agenda-items { display: flex; flex-direction: column; gap: 0; flex: 1; overflow: hidden; position: relative; }
+  .agenda-items { display: flex; flex-direction: column; gap: 0; flex: 1; overflow: hidden; }
   .agenda-item {
     display: flex; align-items: center; gap: 12px;
     padding: 7px 0; border-bottom: 2px dashed rgba(0,0,0,0.07);
@@ -432,7 +434,8 @@
         <div class="semaine-pill" id="semaine-pill">📅 Semaine A</div>
       </div>
       <div class="actu-scene" id="actu-scene">
-        <!-- cartes injectées par JS -->
+        <div class="actu-slot" id="actu-slot-0"><!-- carte gauche --></div>
+        <div class="actu-slot" id="actu-slot-1"><!-- carte droite --></div>
       </div>
     </div>
 
@@ -538,92 +541,50 @@ setInterval(updateClock, 1000);
 updateClock();
 
 /* ══════════════════════════════════════════════════
-   CARROUSEL D'INFOS — ES5 — défilement horizontal, 2 cartes visibles
+   CARROUSEL D'INFOS — 2 slots côte à côte, défilement vers la gauche — ES5
 ══════════════════════════════════════════════════ */
 /* ACTUS : chargées dynamiquement depuis data.json via loadData() */
 var ACTUS   = [];
-var actuIdx = 0;   /* index de la première carte visible (toujours paire) */
+var actuIdx = 0;   /* indice de la première carte visible (slot gauche) */
 var actuTimer = null;
 
-function applyActuSizes() {
-  var scene = document.getElementById('actu-scene');
-  var track = document.getElementById('actu-track');
-  if (!scene || !track || !ACTUS.length) return;
-
-  var gap    = 16;
-  var sceneW = scene.offsetWidth;
-  if (sceneW === 0) {
-    /* DOM pas encore peint — réessayer dans 100ms */
-    setTimeout(applyActuSizes, 100);
-    return;
-  }
-  var cardW = Math.floor((sceneW - gap) / 2);
-
-  /* Largeur totale de la piste */
-  track.style.width = (ACTUS.length * (cardW + gap)) + 'px';
-
-  /* Largeur de chaque carte en px — empêche tout débordement */
-  var cards = track.getElementsByClassName('actu-card');
-  for (var k = 0; k < cards.length; k++) {
-    cards[k].style.width    = cardW + 'px';
-    cards[k].style.minWidth = cardW + 'px';
-    cards[k].style.maxWidth = cardW + 'px';
-  }
-
-  /* Repositionner sans animation */
-  var prev = track.style.transition;
-  track.style.transition = 'none';
-  track.style.transform  = 'translateX(-' + (actuIdx * (cardW + gap)) + 'px)';
-  /* Réactiver la transition au prochain frame */
-  setTimeout(function() { track.style.transition = prev; }, 20);
+/* Construit le HTML d'une carte à partir d'un objet ACTUS[i] */
+function buildCardHTML(a, idx) {
+  var html = '<div class="actu-card visible" id="actu-card-' + idx + '">';
+  html += '<div class="actu-card-accent ' + a.accentClass + '"></div>';
+  html += '<span class="actu-card-tag ' + a.tagClass + '">' + a.tag + '</span>';
+  html += '<div class="actu-card-emoji">' + a.emoji + '</div>';
+  html += '<div class="actu-card-text">' + a.text + '</div>';
+  html += '<div class="actu-card-detail">' + a.detail + '</div>';
+  html += '<div class="actu-card-date">' + a.date + '</div>';
+  html += '</div>';
+  return html;
 }
 
+/* Injecte les deux premières cartes dans leurs slots */
 function buildActuCards() {
-  var scene = document.getElementById('actu-scene');
+  if (ACTUS.length === 0) return;
+  var slot0 = document.getElementById('actu-slot-0');
+  var slot1 = document.getElementById('actu-slot-1');
+  if (slot0) slot0.innerHTML = buildCardHTML(ACTUS[0], 0);
+  if (slot1 && ACTUS.length > 1) slot1.innerHTML = buildCardHTML(ACTUS[1], 1);
 
-  /* Créer la piste */
-  var track = document.getElementById('actu-track');
-  if (!track) {
-    track = document.createElement('div');
-    track.className = 'actu-track';
-    track.id = 'actu-track';
-    scene.appendChild(track);
-  }
-
-  /* Injecter le HTML des cartes */
-  var html = '';
-  for (var i = 0; i < ACTUS.length; i++) {
-    var a = ACTUS[i];
-    html += '<div class="actu-card" id="actu-card-' + i + '" style="position:relative;">';
-    html += '<div class="actu-card-accent ' + a.accentClass + '"></div>';
-    html += '<span class="actu-card-tag ' + a.tagClass + '">' + a.tag + '</span>';
-    html += '<div class="actu-card-emoji">' + a.emoji + '</div>';
-    html += '<div class="actu-card-text">' + a.text + '</div>';
-    html += '<div class="actu-card-detail">' + a.detail + '</div>';
-    html += '<div class="actu-card-date">' + a.date + '</div>';
-    html += '</div>';
-  }
-  track.innerHTML = html;
-  actuIdx = 0;
-  track.style.transform = 'translateX(0)';
-
-  /* Dots */
-  var dotsHtml = '';
-  for (var j = 0; j < ACTUS.length; j++) {
-    dotsHtml += '<div class="actu-dot' + (j === 0 ? ' active' : '') + '" id="dot-' + j + '"></div>';
-  }
+  /* Indicateurs pagination — un point par info */
   var dotsEl = document.getElementById('actu-dots-bar');
   if (!dotsEl) {
     dotsEl = document.createElement('div');
     dotsEl.className = 'actu-dots';
     dotsEl.id = 'actu-dots-bar';
-    scene.parentNode.appendChild(dotsEl);
+    var scene = document.getElementById('actu-scene');
+    if (scene && scene.parentNode) scene.parentNode.appendChild(dotsEl);
+  }
+  var dotsHtml = '';
+  for (var j = 0; j < ACTUS.length; j++) {
+    dotsHtml += '<div class="actu-dot' + (j < 2 ? ' active' : '') + '" id="dot-' + j + '"></div>';
   }
   dotsEl.innerHTML = dotsHtml;
 
-  /* Appliquer les tailles après que le navigateur ait peint */
-  setTimeout(applyActuSizes, 100);
-  setTimeout(applyActuSizes, 400);
+  actuIdx = 0;
 }
 
 function removeClass(el, cls) {
@@ -636,35 +597,53 @@ function addClass(el, cls) {
   el.className = (el.className + ' ' + cls).replace(/^\s|\s$/g, '');
 }
 
-function showActu(nextIdx) {
-  var track = document.getElementById('actu-track');
-  var scene = document.getElementById('actu-scene');
-  if (!track || !scene) return;
+/* Avance d'un cran : le slot gauche prend la carte suivante,
+   le slot droit celle d'après.
+   Animation : exit vers la gauche / entrée depuis la droite.         */
+function showNextActu() {
+  if (ACTUS.length <= 1) return;
 
-  var gap   = 16;
-  var cardW = (scene.offsetWidth - gap) / 2;
-  /* Décaler d'une carte */
-  var offsetPx = nextIdx * (cardW + gap);
-  track.style.transform = 'translateX(-' + offsetPx + 'px)';
+  var nextIdx0 = (actuIdx + 2) % ACTUS.length;  /* prochaine carte pour slot 0 */
+  var nextIdx1 = (actuIdx + 3) % ACTUS.length;  /* prochaine carte pour slot 1 */
 
-  /* Mise à jour des dots */
-  var dotCur  = document.getElementById('dot-' + actuIdx);
-  var dotNext = document.getElementById('dot-' + nextIdx);
-  if (dotCur)  removeClass(dotCur,  'active');
-  if (dotNext) addClass(dotNext, 'active');
+  var slot0 = document.getElementById('actu-slot-0');
+  var slot1 = document.getElementById('actu-slot-1');
 
-  actuIdx = nextIdx;
+  /* 1. Sortie vers la gauche des cartes courantes */
+  var cur0 = slot0 ? slot0.querySelector('.actu-card') : null;
+  var cur1 = slot1 ? slot1.querySelector('.actu-card') : null;
+  if (cur0) { removeClass(cur0, 'visible'); addClass(cur0, 'exit-left'); }
+  if (cur1) { removeClass(cur1, 'visible'); addClass(cur1, 'exit-left'); }
+
+  /* 2. Après la transition, injecter les nouvelles cartes */
+  setTimeout(function() {
+    if (slot0) slot0.innerHTML = buildCardHTML(ACTUS[nextIdx0], nextIdx0);
+    if (slot1 && ACTUS.length > 1) slot1.innerHTML = buildCardHTML(ACTUS[nextIdx1], nextIdx1);
+    /* Forcer reflow puis déclencher l'apparition */
+    setTimeout(function() {
+      var new0 = slot0 ? slot0.querySelector('.actu-card') : null;
+      var new1 = slot1 ? slot1.querySelector('.actu-card') : null;
+      if (new0) { addClass(new0, 'visible'); }
+      if (new1) { addClass(new1, 'visible'); }
+    }, 30);
+
+    /* Mise à jour des points */
+    for (var d = 0; d < ACTUS.length; d++) {
+      var dot = document.getElementById('dot-' + d);
+      if (dot) { removeClass(dot, 'active'); }
+    }
+    var dot0 = document.getElementById('dot-' + nextIdx0);
+    var dot1 = document.getElementById('dot-' + nextIdx1);
+    if (dot0) addClass(dot0, 'active');
+    if (dot1) addClass(dot1, 'active');
+
+    actuIdx = nextIdx0;
+  }, 650);
 }
 
 function startActuRotation() {
   if (ACTUS.length <= 2) return;
-  actuTimer = setInterval(function() {
-    /* On s'arrête à ACTUS.length - 1 pour ne pas dépasser (la dernière carte
-       doit rester visible à droite avec la carte précédente) */
-    var next = actuIdx + 1;
-    if (next > ACTUS.length - 2) { next = 0; }
-    showActu(next);
-  }, 6000);
+  actuTimer = setInterval(showNextActu, 6000);
 }
 
 /* buildActuCards et startActuRotation sont appelés depuis loadData() */
