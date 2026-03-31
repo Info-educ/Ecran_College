@@ -158,20 +158,20 @@
     border-radius: 22px;
     position: relative;
   }
-  /* Piste qui contient toutes les cartes en ligne */
+  /* Piste horizontale — largeur et transform fixées par JS */
   .actu-track {
     display: -webkit-flex;
     display: flex;
     height: 100%;
-    /* La largeur est fixée dynamiquement par JS selon le nombre de cartes */
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
     transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
   }
-  /* Chaque carte occupe la moitié de la scène */
+  /* Cartes — largeur fixée en px par JS */
   .actu-card {
-    -webkit-flex: 0 0 50%;
-    flex: 0 0 50%;
-    min-width: 50%;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
     height: 100%;
     background: rgba(255,255,255,0.96);
     border-radius: 22px;
@@ -183,9 +183,6 @@
     flex-direction: column;
     justify-content: center;
     box-sizing: border-box;
-  }
-  /* Espacement entre les deux cartes visibles */
-  .actu-card:not(:last-child) {
     margin-right: 16px;
   }
   .actu-card-accent {
