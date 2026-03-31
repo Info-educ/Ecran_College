@@ -459,8 +459,8 @@
     <!-- Citation -->
     <div class="quote-card">
       <div class="quote-icon">💡</div>
-      <div class="quote-txt"  id="quote-text">"L'éducation est l'arme la plus puissante pour changer le monde."</div>
-      <div class="quote-auth" id="quote-author">— Nelson Mandela</div>
+      <div class="quote-txt"  id="quote-text"></div>
+      <div class="quote-auth" id="quote-author"></div>
     </div>
 
   </div><!-- /col-right -->
@@ -536,34 +536,10 @@ updateClock();
 /* ══════════════════════════════════════════════════
    CARROUSEL D'INFOS — ES5
 ══════════════════════════════════════════════════ */
-var ACTUS = [
-  {
-    emoji: '🏭', tag: 'Sortie péda', tagClass: 'tag-blue', accentClass: 'accent-blue',
-    text: "Sortie 6ème D — Visite d'une laiterie",
-    detail: 'Mercredi 1er avril · Matin',
-    date: 'Cette semaine'
-  },
-  {
-    emoji: '🌍', tag: 'École Ouverte', tagClass: 'tag-green', accentClass: 'accent-green',
-    text: 'Jeux traditionnels du monde',
-    detail: 'Mercredi 1er avril · Après-midi',
-    date: 'Cette semaine'
-  },
-  {
-    emoji: '🏛️', tag: 'Sortie péda', tagClass: 'tag-orange', accentClass: 'accent-orange',
-    text: "Sortie 5ème D — Musée de l'Immigration",
-    detail: "Jeudi 2 avril · Après-midi · Palais de la Porte d'Orée",
-    date: 'Cette semaine'
-  },
-  {
-    emoji: '🎨', tag: 'Sortie péda', tagClass: 'tag-red', accentClass: 'accent-red',
-    text: 'Sortie 3ème B — Exposition Matisse',
-    detail: 'Vendredi 3 avril · Après-midi · Grand Palais',
-    date: 'Cette semaine'
-  }
-];
-
+/* ACTUS : chargées dynamiquement depuis data.json via loadData() */
+var ACTUS   = [];
 var actuIdx = 0;
+var actuTimer = null;
 
 
 function buildActuCards() {
@@ -624,14 +600,14 @@ function showActu(nextIdx) {
 }
 
 function startActuRotation() {
-  setInterval(function() {
+  if (ACTUS.length <= 1) return;
+  actuTimer = setInterval(function() {
     var next = (actuIdx + 1) % ACTUS.length;
     showActu(next);
   }, 6000);
 }
 
-buildActuCards();
-startActuRotation();
+/* buildActuCards et startActuRotation sont appelés depuis loadData() */
 
 /* ══════════════════════════════════════════════════
    MENUS CANTINE — lus depuis data.json
@@ -687,18 +663,13 @@ getMenuDuJour();
 setInterval(getMenuDuJour, 3600000);
 
 
-/* ── CITATIONS ROTATIVES ── */
-var QUOTES = [
-  { text: "L'éducation est l'arme la plus puissante pour changer le monde.", author: "Nelson Mandela" },
-  { text: "La connaissance s'acquiert par l'expérience, tout le reste n'est qu'information.", author: "Albert Einstein" },
-  { text: "Il faut toujours viser la lune, car même en cas d'échec, on atterrit dans les étoiles.", author: "Oscar Wilde" },
-  { text: "Le succès c'est tomber sept fois et se relever huit.", author: "Proverbe japonais" },
-  { text: "Apprendre sans réfléchir est vain. Réfléchir sans apprendre est dangereux.", author: "Confucius" },
-  { text: "Ce n'est pas parce que les choses sont difficiles que nous n'osons pas.", author: "Sénèque" }
-];
+/* CITATIONS : chargées dynamiquement depuis data.json via loadData() */
+var QUOTES = [];
 var qi = 0;
+var quoteTimer = null;
 
 function rotateQuote() {
+  if (QUOTES.length === 0) return;
   qi = (qi + 1) % QUOTES.length;
   var el = document.getElementById('quote-text');
   var au = document.getElementById('quote-author');
@@ -712,7 +683,6 @@ function rotateQuote() {
     au.style.opacity = 1;
   }, 800);
 }
-setInterval(rotateQuote, 13000);
 
 /* ══════════════════════════════════════════════════
    MÉTÉO — XMLHttpRequest ES5 (pas de fetch/async)
@@ -1152,6 +1122,42 @@ function loadData() {
         setText('semaine-badge', labelSemaine);
         setText('semaine-pill',  labelSemaine);
 
+        /* Actus — carrousel central */
+        if (d.actus && d.actus.length > 0) {
+          ACTUS = [];
+          for (var ai = 0; ai < d.actus.length; ai++) {
+            var src = d.actus[ai];
+            ACTUS.push({
+              emoji:       src.emoji  || '📌',
+              tag:         src.tag    || '',
+              tagClass:    'tag-'    + (src.couleur || 'blue'),
+              accentClass: 'accent-' + (src.couleur || 'blue'),
+              text:        src.texte  || '',
+              detail:      src.detail || '',
+              date:        src.date   || ''
+            });
+          }
+          actuIdx = 0;
+          buildActuCards();
+          if (actuTimer) { clearInterval(actuTimer); }
+          startActuRotation();
+        }
+
+        /* Citations rotatives */
+        if (d.citations && d.citations.length > 0) {
+          QUOTES = [];
+          for (var ci = 0; ci < d.citations.length; ci++) {
+            QUOTES.push({ text: d.citations[ci].texte || '', author: d.citations[ci].auteur || '' });
+          }
+          qi = 0;
+          var el = document.getElementById('quote-text');
+          var au = document.getElementById('quote-author');
+          if (el) { el.style.opacity = 1; el.textContent = '\u201c' + QUOTES[0].text + '\u201d'; }
+          if (au) { au.style.opacity = 1; au.textContent = '\u2014 ' + QUOTES[0].author; }
+          if (quoteTimer) { clearInterval(quoteTimer); }
+          if (QUOTES.length > 1) { quoteTimer = setInterval(rotateQuote, 13000); }
+        }
+
         /* Agenda */
         if (d.agenda) { buildAgenda(d.agenda); }
 
@@ -1164,6 +1170,19 @@ function loadData() {
           getMenuDuJour();
         }
 
+        /* Citations — rotation toutes les 13s */
+        if (d.citations && d.citations.length > 0) {
+          CITATIONS_DATA = d.citations;
+          showCitation(0);
+          if (citationTimer) { clearInterval(citationTimer); }
+          if (d.citations.length > 1) {
+            citationTimer = setInterval(function() {
+              CITATION_IDX = (CITATION_IDX + 1) % CITATIONS_DATA.length;
+              showCitation(CITATION_IDX);
+            }, 13000);
+          }
+        }
+
       } catch (e) {
         /* En cas d'erreur JSON, l'affichage reste vide — pas de crash */
         console && console.error('data.json : erreur de parsing', e);
@@ -1174,6 +1193,20 @@ function loadData() {
 
   xhr.ontimeout = function() { console && console.warn('data.json : délai dépassé'); };
   try { xhr.send(); } catch(e) {}
+}
+
+/* ── CITATIONS ── */
+var CITATIONS_DATA = [];
+var CITATION_IDX   = 0;
+var citationTimer  = null;
+
+function showCitation(idx) {
+  var c = CITATIONS_DATA[idx];
+  if (!c) return;
+  var txtEl  = document.getElementById('quote-text');
+  var authEl = document.getElementById('quote-author');
+  if (txtEl)  txtEl.innerHTML  = '\u201c' + c.texte + '\u201d';
+  if (authEl) authEl.innerHTML = '\u2014 ' + c.auteur;
 }
 
 loadData();
