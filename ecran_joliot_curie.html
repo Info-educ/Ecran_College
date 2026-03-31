@@ -879,7 +879,13 @@ function applyMeteoBackground(wcode, tempNow) {
   if (!bg) return;
 
   part.innerHTML = '';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:2;pointer-events:none;transition:all 3s ease;';
+  overlay.style.position   = 'fixed';
+  overlay.style.top        = '0';
+  overlay.style.right      = '0';
+  overlay.style.bottom     = '0';
+  overlay.style.left       = '0';
+  overlay.style.zIndex     = '2';
+  overlay.style.pointerEvents = 'none';
 
   var isGel   = tempNow <= 0;
   var isBroui = inArray([45,48], wcode);
@@ -940,50 +946,69 @@ function fetchMeteo() {
 
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
+  xhr.timeout = 10000; /* 10 secondes max */
+
   xhr.onreadystatechange = function() {
     if (xhr.readyState !== 4) return;
-    if (xhr.status !== 200) {
-      setText('meteo-desc', 'Météo indisponible');
-      return;
-    }
-    try {
-      var d = JSON.parse(xhr.responseText);
-      var tempNow  = Math.round(d.current_weather.temperature);
-      var wcodeNow = d.current_weather.weathercode;
-      var tmax0    = Math.round(d.daily.temperature_2m_max[0]);
-      var tmin0    = Math.round(d.daily.temperature_2m_min[0]);
+    if (xhr.status === 200) {
+      try {
+        var d = JSON.parse(xhr.responseText);
+        var tempNow  = Math.round(d.current_weather.temperature);
+        var wcodeNow = d.current_weather.weathercode;
+        var tmax0    = Math.round(d.daily.temperature_2m_max[0]);
+        var tmin0    = Math.round(d.daily.temperature_2m_min[0]);
 
-      setText('meteo-icon',   ICONS[wcodeNow] || '🌤️');
-      setText('meteo-temp',   tempNow + '°');
-      setText('meteo-desc',   DESCS[wcodeNow] || 'Variable');
-      setText('meteo-minmax', '↓' + tmin0 + '° ↑' + tmax0 + '°');
+        setText('meteo-icon',   ICONS[wcodeNow] || '🌤️');
+        setText('meteo-temp',   tempNow + '°');
+        setText('meteo-desc',   DESCS[wcodeNow] || 'Variable');
+        setText('meteo-minmax', '↓' + tmin0 + '° ↑' + tmax0 + '°');
 
-      applyMeteoBackground(wcodeNow, tempNow);
+        applyMeteoBackground(wcodeNow, tempNow);
 
-      var wcode1 = d.daily.weathercode[1];
-      var tmax1  = Math.round(d.daily.temperature_2m_max[1]);
-      var tmin1  = Math.round(d.daily.temperature_2m_min[1]);
-      var joursC = ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'];
-      var demain = new Date();
-      demain.setDate(demain.getDate() + 1);
+        var wcode1 = d.daily.weathercode[1];
+        var tmax1  = Math.round(d.daily.temperature_2m_max[1]);
+        var tmin1  = Math.round(d.daily.temperature_2m_min[1]);
+        var joursC = ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'];
+        var demain = new Date();
+        demain.setDate(demain.getDate() + 1);
 
-      setText('demain-label',    'Demain \u2014 ' + joursC[demain.getDay()]);
-      setText('meteo-icon-d1',   ICONS[wcode1] || '🌤️');
-      setText('meteo-temp-d1',   Math.round((tmax1 + tmin1) / 2) + '°');
-      setText('meteo-desc-d1',   DESCS[wcode1] || 'Variable');
-      setText('meteo-minmax-d1', '↓' + tmin1 + '° ↑' + tmax1 + '°');
+        setText('demain-label',    'Demain \u2014 ' + joursC[demain.getDay()]);
+        setText('meteo-icon-d1',   ICONS[wcode1] || '🌤️');
+        setText('meteo-temp-d1',   Math.round((tmax1 + tmin1) / 2) + '°');
+        setText('meteo-desc-d1',   DESCS[wcode1] || 'Variable');
+        setText('meteo-minmax-d1', '↓' + tmin1 + '° ↑' + tmax1 + '°');
 
-      var conseil = '🌤️ Bonne journée au collège Joliot Curie !';
-      if (isPluieCode(wcodeNow))  conseil = '☂️ Pensez à votre parapluie en sortant !';
-      else if (tempNow < 8)       conseil = '🥶 Il fait froid ! Couvrez-vous bien.';
-      else if (tempNow > 25)      conseil = '☀️ Il fait chaud ! Hydratez-vous bien.';
-      setText('meteo-conseil', conseil);
+        var conseil = '🌤️ Bonne journée au collège Joliot Curie !';
+        if (isPluieCode(wcodeNow))  conseil = '☂️ Pensez à votre parapluie en sortant !';
+        else if (tempNow < 8)       conseil = '🥶 Il fait froid ! Couvrez-vous bien.';
+        else if (tempNow > 25)      conseil = '☀️ Il fait chaud ! Hydratez-vous bien.';
+        setText('meteo-conseil', conseil);
 
-    } catch (e) {
-      setText('meteo-desc', 'Météo indisponible');
+      } catch (e) {
+        setText('meteo-desc', 'Erreur données');
+      }
+    } else {
+      setText('meteo-desc', 'Réseau indisponible');
     }
   };
-  xhr.send();
+
+  xhr.ontimeout = function() {
+    setText('meteo-desc', 'Délai dépassé');
+    /* Réessai dans 2 minutes */
+    setTimeout(fetchMeteo, 120000);
+  };
+
+  xhr.onerror = function() {
+    setText('meteo-desc', 'Hors ligne');
+    /* Réessai dans 2 minutes */
+    setTimeout(fetchMeteo, 120000);
+  };
+
+  try {
+    xhr.send();
+  } catch(e) {
+    setText('meteo-desc', 'Erreur réseau');
+  }
 }
 
 fetchMeteo();
