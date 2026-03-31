@@ -27,11 +27,8 @@
     color: var(--text);
   }
 
-  .bg-canvas {
+  #bg-canvas {
     position: fixed; inset: 0; z-index: 0;
-    background-size: 100% 100%;
-    background-image: linear-gradient(135deg,#c9e8ff 0%,#e8f4ff 50%,#fff5cc 100%);
-    transition: background-image 3s ease;
   }
   .dots {
     position: fixed; inset: 0; z-index: 1; pointer-events: none;
@@ -367,7 +364,7 @@
 </head>
 <body>
 
-<div class="bg-canvas" id="bg-canvas"></div>
+<canvas id="bg-canvas" style="position:fixed;inset:0;z-index:0;width:1920px;height:1080px;"></canvas>
 <div class="dots"></div>
 <div class="particles" id="particles"></div>
 <div id="weather-overlay" style="position:fixed;inset:0;z-index:2;pointer-events:none;transition:all 3s ease;"></div>
@@ -864,6 +861,105 @@ function isNeigeCode(c) { return inArray([71,73,75], c); }
 function isPluieFortCode(c) { return inArray([61,63,65,80,81,82], c); }
 function isNuagCode(c)  { return inArray([2,3], c); }
 
+/* ══════════════════════════════════════════════
+   CANVAS BACKGROUND — dessin JS pur du gradient
+   Compatible avec tous les navigateurs Magicinfo
+══════════════════════════════════════════════ */
+var _bgCurrentColors = null;
+var _bgTargetColors  = null;
+var _bgTransStart    = null;
+var _bgTransDur      = 3000; /* 3s de transition */
+var _bgRafId         = null;
+
+/* Parse "linear-gradient(160deg, #abc 0%, #def 50%, ...)" → tableau de {r,g,b,stop} */
+function parseGradient(gradStr) {
+  var stops = [];
+  var re = /#([0-9a-fA-F]{3,6})/g;
+  var stopRe = /(\d+(?:\.\d+)?)%/g;
+  var colors = [], percents = [];
+  var m;
+  while ((m = re.exec(gradStr)) !== null) {
+    var h = m[1];
+    if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    colors.push([parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)]);
+  }
+  while ((m = stopRe.exec(gradStr)) !== null) {
+    percents.push(parseFloat(m[1]) / 100);
+  }
+  for (var i = 0; i < colors.length; i++) {
+    stops.push({ r: colors[i][0], g: colors[i][1], b: colors[i][2], stop: percents[i] !== undefined ? percents[i] : i / (colors.length - 1) });
+  }
+  return stops;
+}
+
+/* Interpole entre deux jeux de stops */
+function lerpStops(a, b, t) {
+  var len = Math.min(a.length, b.length);
+  var out = [];
+  for (var i = 0; i < len; i++) {
+    out.push({
+      r: Math.round(a[i].r + (b[i].r - a[i].r) * t),
+      g: Math.round(a[i].g + (b[i].g - a[i].g) * t),
+      b: Math.round(a[i].b + (b[i].b - a[i].b) * t),
+      stop: a[i].stop + (b[i].stop - a[i].stop) * t
+    });
+  }
+  return out;
+}
+
+/* Dessine les stops sur le canvas (gradient vertical simple) */
+function renderStops(canvas, stops) {
+  var ctx = canvas.getContext('2d');
+  canvas.width  = 1920;
+  canvas.height = 1080;
+  var grad = ctx.createLinearGradient(0, 0, 1920, 1080);
+  for (var i = 0; i < stops.length; i++) {
+    grad.addColorStop(stops[i].stop, 'rgb(' + stops[i].r + ',' + stops[i].g + ',' + stops[i].b + ')');
+  }
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 1920, 1080);
+}
+
+function drawBgCanvas(canvas, newGradient) {
+  var newStops = parseGradient(newGradient);
+  if (!_bgCurrentColors) {
+    /* Premier rendu — pas de transition */
+    _bgCurrentColors = newStops;
+    renderStops(canvas, newStops);
+    return;
+  }
+  /* Normalise les deux tableaux à la même longueur */
+  while (_bgCurrentColors.length < newStops.length) _bgCurrentColors.push(_bgCurrentColors[_bgCurrentColors.length - 1]);
+  while (newStops.length < _bgCurrentColors.length) newStops.push(newStops[newStops.length - 1]);
+
+  _bgTargetColors = newStops;
+  _bgTransStart   = null;
+  if (_bgRafId) cancelAnimationFrame(_bgRafId);
+
+  var fromColors = _bgCurrentColors.slice();
+
+  function transStep(ts) {
+    if (!_bgTransStart) _bgTransStart = ts;
+    var t = Math.min((ts - _bgTransStart) / _bgTransDur, 1);
+    var cur = lerpStops(fromColors, _bgTargetColors, t);
+    renderStops(canvas, cur);
+    if (t < 1) {
+      _bgRafId = requestAnimationFrame(transStep);
+    } else {
+      _bgCurrentColors = _bgTargetColors;
+      _bgTargetColors  = null;
+      _bgRafId = null;
+    }
+  }
+  _bgRafId = requestAnimationFrame(transStep);
+}
+
+/* Gradient par défaut au chargement */
+(function() {
+  var canvas = document.getElementById('bg-canvas');
+  if (canvas) drawBgCanvas(canvas, 'linear-gradient(160deg,#c9e8ff 0%,#e8f4ff 50%,#fff5cc 100%)');
+})();
+
 function applyMeteoBackground(wcode, tempNow) {
   var bg      = document.getElementById('bg-canvas');
   var part    = document.getElementById('particles');
@@ -906,8 +1002,8 @@ function applyMeteoBackground(wcode, tempNow) {
   } else {
     gradient = 'linear-gradient(160deg,#80b0d0 0%,#a0c8e8 50%,#80b0d0 100%)';
   }
-  bg.style.backgroundImage = gradient;
-  bg.style.backgroundSize  = '100% 100%';
+  /* Dessin du gradient sur canvas — compatible Magicinfo */
+  drawBgCanvas(bg, gradient);
 
   /* ══════════════════════════════════════════════
      PARTICULES JS — une fonction par type
