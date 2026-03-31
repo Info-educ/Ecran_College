@@ -5,6 +5,9 @@ on:
     - cron: '*/30 * * * *'   # toutes les 30 minutes
   workflow_dispatch:          # déclenchement manuel possible
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   fetch-meteo:
     runs-on: ubuntu-latest
