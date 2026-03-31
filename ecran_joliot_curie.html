@@ -299,7 +299,7 @@
     white-space: nowrap; flex-shrink: 0; min-width: 62px; text-align: center; line-height: 1.3;
   }
   .pill-blue   { background: var(--c1); box-shadow: 2px 2px 0 rgba(26,58,110,0.3); }
-  .pill-c2, .pill-red { background: var(--c2); box-shadow: 2px 2px 0 rgba(192,57,43,0.3); }
+  .pill-red { background: var(--c2); box-shadow: 2px 2px 0 rgba(192,57,43,0.3); }
   .pill-green  { background: var(--c4); box-shadow: 2px 2px 0 rgba(46,204,113,0.3); }
   .pill-orange { background: var(--c5); box-shadow: 2px 2px 0 rgba(230,126,34,0.3); }
   .pill-purple { background: #8e44ad; box-shadow: 2px 2px 0 rgba(142,68,173,0.3); }
@@ -357,9 +357,7 @@
     to   { opacity:1; transform:translateY(0); }
   }
 
-  /* Semaine prochaine grisée */
-  .next-week-event .event-name,
-  .next-week-event .event-detail { opacity: 0.65; }
+
 </style>
 </head>
 <body>
@@ -664,25 +662,6 @@ setInterval(getMenuDuJour, 3600000);
 
 
 /* CITATIONS : chargées dynamiquement depuis data.json via loadData() */
-var QUOTES = [];
-var qi = 0;
-var quoteTimer = null;
-
-function rotateQuote() {
-  if (QUOTES.length === 0) return;
-  qi = (qi + 1) % QUOTES.length;
-  var el = document.getElementById('quote-text');
-  var au = document.getElementById('quote-author');
-  if (!el || !au) return;
-  el.style.opacity = 0;
-  au.style.opacity = 0;
-  setTimeout(function() {
-    el.textContent = '\u201c' + QUOTES[qi].text + '\u201d';
-    au.textContent = '\u2014 ' + QUOTES[qi].author;
-    el.style.opacity = 1;
-    au.style.opacity = 1;
-  }, 800);
-}
 
 /* ══════════════════════════════════════════════════
    MÉTÉO — XMLHttpRequest ES5 (pas de fetch/async)
@@ -1141,21 +1120,6 @@ function loadData() {
           buildActuCards();
           if (actuTimer) { clearInterval(actuTimer); }
           startActuRotation();
-        }
-
-        /* Citations rotatives */
-        if (d.citations && d.citations.length > 0) {
-          QUOTES = [];
-          for (var ci = 0; ci < d.citations.length; ci++) {
-            QUOTES.push({ text: d.citations[ci].texte || '', author: d.citations[ci].auteur || '' });
-          }
-          qi = 0;
-          var el = document.getElementById('quote-text');
-          var au = document.getElementById('quote-author');
-          if (el) { el.style.opacity = 1; el.textContent = '\u201c' + QUOTES[0].text + '\u201d'; }
-          if (au) { au.style.opacity = 1; au.textContent = '\u2014 ' + QUOTES[0].author; }
-          if (quoteTimer) { clearInterval(quoteTimer); }
-          if (QUOTES.length > 1) { quoteTimer = setInterval(rotateQuote, 13000); }
         }
 
         /* Agenda */
