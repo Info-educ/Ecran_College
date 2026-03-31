@@ -150,33 +150,43 @@
     box-shadow: 4px 4px 0 rgba(248,196,46,0.3);
     flex-shrink: 0;
   }
-  /* Scène de défilement des cartes */
+  /* Scène de défilement des cartes — fenêtre masquante */
   .actu-scene {
     flex: 1;
     min-height: 0;
-    position: relative;
     overflow: hidden;
     border-radius: 22px;
+    position: relative;
   }
-  /* Chaque carte occupe tout l'espace de la scène */
+  /* Piste qui contient toutes les cartes en ligne */
+  .actu-track {
+    display: -webkit-flex;
+    display: flex;
+    height: 100%;
+    /* La largeur est fixée dynamiquement par JS selon le nombre de cartes */
+    transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+  /* Chaque carte occupe la moitié de la scène */
   .actu-card {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    -webkit-flex: 0 0 50%;
+    flex: 0 0 50%;
+    min-width: 50%;
+    height: 100%;
     background: rgba(255,255,255,0.96);
     border-radius: 22px;
-    padding: 44px 52px;
-    /* backdrop-filter: blur(10px); — non supporté Magicinfo */
+    padding: 36px 40px;
     box-shadow: 6px 6px 0 rgba(0,0,0,0.07);
-    display: flex; flex-direction: column; justify-content: center;
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
   }
-  .actu-card.visible {
-    opacity: 1; transform: translateY(0);
-  }
-  .actu-card.exit-up {
-    opacity: 0; transform: translateY(-40px);
+  /* Espacement entre les deux cartes visibles */
+  .actu-card:not(:last-child) {
+    margin-right: 16px;
   }
   .actu-card-accent {
     width: 6px; height: 100%;
@@ -185,18 +195,17 @@
   }
   .actu-card-tag {
     font-size: 12px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
-    padding: 6px 18px; border-radius: 20px; display: inline-block; margin-bottom: 18px;
+    padding: 6px 18px; border-radius: 20px; display: inline-block; margin-bottom: 14px;
     align-self: flex-start;
   }
-  .actu-card-emoji { font-size: 88px; margin-bottom: 18px; line-height: 1; }
+  .actu-card-emoji { font-size: 68px; margin-bottom: 12px; line-height: 1; }
   .actu-card-text  {
-    font-size: 44px; font-weight: 900; color: var(--text); line-height: 1.35;
-    max-width: 860px;
+    font-size: 36px; font-weight: 900; color: var(--text); line-height: 1.3;
   }
   .actu-card-detail {
-    font-size: 20px; font-weight: 700; color: var(--muted); margin-top: 14px; line-height: 1.4;
+    font-size: 18px; font-weight: 700; color: var(--muted); margin-top: 10px; line-height: 1.4;
   }
-  .actu-card-date  { font-size: 14px; color: var(--muted); margin-top: 24px; font-weight: 700; }
+  .actu-card-date  { font-size: 13px; color: var(--muted); margin-top: 16px; font-weight: 700; }
   /* Indicateurs pagination */
   .actu-dots {
     display: flex; gap: 6px; justify-content: center;
@@ -532,20 +541,29 @@ setInterval(updateClock, 1000);
 updateClock();
 
 /* ══════════════════════════════════════════════════
-   CARROUSEL D'INFOS — ES5
+   CARROUSEL D'INFOS — ES5 — défilement horizontal, 2 cartes visibles
 ══════════════════════════════════════════════════ */
 /* ACTUS : chargées dynamiquement depuis data.json via loadData() */
 var ACTUS   = [];
-var actuIdx = 0;
+var actuIdx = 0;   /* index de la première carte visible (toujours paire) */
 var actuTimer = null;
-
 
 function buildActuCards() {
   var scene = document.getElementById('actu-scene');
+
+  /* Créer la piste si elle n'existe pas encore */
+  var track = document.getElementById('actu-track');
+  if (!track) {
+    track = document.createElement('div');
+    track.className = 'actu-track';
+    track.id = 'actu-track';
+    scene.appendChild(track);
+  }
+
   var html = '';
   for (var i = 0; i < ACTUS.length; i++) {
     var a = ACTUS[i];
-    html += '<div class="actu-card' + (i === 0 ? ' visible' : '') + '" id="actu-card-' + i + '">';
+    html += '<div class="actu-card" id="actu-card-' + i + '" style="position:relative;">';
     html += '<div class="actu-card-accent ' + a.accentClass + '"></div>';
     html += '<span class="actu-card-tag ' + a.tagClass + '">' + a.tag + '</span>';
     html += '<div class="actu-card-emoji">' + a.emoji + '</div>';
@@ -554,10 +572,36 @@ function buildActuCards() {
     html += '<div class="actu-card-date">' + a.date + '</div>';
     html += '</div>';
   }
-  scene.innerHTML = html;
+  /* Si nombre impair, ajouter une carte vide pour compléter la dernière paire */
+  var totalCards = ACTUS.length;
+  if (totalCards % 2 !== 0) {
+    html += '<div class="actu-card" style="background:rgba(255,255,255,0.3);box-shadow:none;"></div>';
+    totalCards += 1;
+  }
+  track.innerHTML = html;
 
+  /* Calcul des dimensions en pixels */
+  var sceneW = scene.offsetWidth;
+  var gap    = 16; /* px entre les deux cartes d'une paire */
+  var cardW  = (sceneW - gap) / 2;
+
+  /* Largeur de la piste = toutes les cartes + gap à droite de chacune */
+  track.style.width = (totalCards * (cardW + gap)) + 'px';
+
+  /* Appliquer la largeur fixe à chaque carte — gap uniforme de 16px à droite */
+  var cards = track.getElementsByClassName('actu-card');
+  for (var k = 0; k < cards.length; k++) {
+    cards[k].style.width     = cardW + 'px';
+    cards[k].style.minWidth  = cardW + 'px';
+    cards[k].style.maxWidth  = cardW + 'px';
+    cards[k].style.marginRight = gap + 'px';
+    cards[k].style.flexShrink = '0';
+  }
+
+  /* Dots : un point par paire */
+  var pairs = Math.ceil(ACTUS.length / 2);
   var dotsHtml = '';
-  for (var j = 0; j < ACTUS.length; j++) {
+  for (var j = 0; j < pairs; j++) {
     dotsHtml += '<div class="actu-dot' + (j === 0 ? ' active' : '') + '" id="dot-' + j + '"></div>';
   }
   var dotsEl = document.getElementById('actu-dots-bar');
@@ -568,6 +612,10 @@ function buildActuCards() {
     scene.parentNode.appendChild(dotsEl);
   }
   dotsEl.innerHTML = dotsHtml;
+
+  /* Position initiale */
+  track.style.transform = 'translateX(0)';
+  actuIdx = 0;
 }
 
 function removeClass(el, cls) {
@@ -580,28 +628,34 @@ function addClass(el, cls) {
   el.className = (el.className + ' ' + cls).replace(/^\s|\s$/g, '');
 }
 
-function showActu(nextIdx) {
-  var current = document.getElementById('actu-card-' + actuIdx);
-  var next    = document.getElementById('actu-card-' + nextIdx);
-  var dotCur  = document.getElementById('dot-' + actuIdx);
-  var dotNext = document.getElementById('dot-' + nextIdx);
+function showActu(nextPairIdx) {
+  var track = document.getElementById('actu-track');
+  var scene = document.getElementById('actu-scene');
+  if (!track || !scene) return;
 
-  if (current) { removeClass(current, 'visible'); addClass(current, 'exit-up'); }
-  setTimeout(function() {
-    if (current) { removeClass(current, 'exit-up'); }
-    if (next)    { addClass(next, 'visible'); }
-  }, 700);
+  var gap   = 16;
+  var sceneW = scene.offsetWidth;
+  var cardW  = (sceneW - gap) / 2;
+  /* Chaque paire avance de 2 * (cardW + gap) */
+  var offsetPx = nextPairIdx * 2 * (cardW + gap);
+  track.style.transform = 'translateX(-' + offsetPx + 'px)';
 
+  /* Mise à jour des dots */
+  var dotCur  = document.getElementById('dot-' + Math.floor(actuIdx / 2));
+  var dotNext = document.getElementById('dot-' + nextPairIdx);
   if (dotCur)  removeClass(dotCur,  'active');
   if (dotNext) addClass(dotNext, 'active');
-  actuIdx = nextIdx;
+
+  actuIdx = nextPairIdx * 2;
 }
 
 function startActuRotation() {
-  if (ACTUS.length <= 1) return;
+  var pairs = Math.ceil(ACTUS.length / 2);
+  if (pairs <= 1) return;
   actuTimer = setInterval(function() {
-    var next = (actuIdx + 1) % ACTUS.length;
-    showActu(next);
+    var currentPair = Math.floor(actuIdx / 2);
+    var nextPair = (currentPair + 1) % pairs;
+    showActu(nextPair);
   }, 6000);
 }
 
