@@ -545,10 +545,43 @@ var ACTUS   = [];
 var actuIdx = 0;   /* index de la première carte visible (toujours paire) */
 var actuTimer = null;
 
+function applyActuSizes() {
+  var scene = document.getElementById('actu-scene');
+  var track = document.getElementById('actu-track');
+  if (!scene || !track || !ACTUS.length) return;
+
+  var gap    = 16;
+  var sceneW = scene.offsetWidth;
+  if (sceneW === 0) {
+    /* DOM pas encore peint — réessayer dans 100ms */
+    setTimeout(applyActuSizes, 100);
+    return;
+  }
+  var cardW = Math.floor((sceneW - gap) / 2);
+
+  /* Largeur totale de la piste */
+  track.style.width = (ACTUS.length * (cardW + gap)) + 'px';
+
+  /* Largeur de chaque carte en px — empêche tout débordement */
+  var cards = track.getElementsByClassName('actu-card');
+  for (var k = 0; k < cards.length; k++) {
+    cards[k].style.width    = cardW + 'px';
+    cards[k].style.minWidth = cardW + 'px';
+    cards[k].style.maxWidth = cardW + 'px';
+  }
+
+  /* Repositionner sans animation */
+  var prev = track.style.transition;
+  track.style.transition = 'none';
+  track.style.transform  = 'translateX(-' + (actuIdx * (cardW + gap)) + 'px)';
+  /* Réactiver la transition au prochain frame */
+  setTimeout(function() { track.style.transition = prev; }, 20);
+}
+
 function buildActuCards() {
   var scene = document.getElementById('actu-scene');
 
-  /* Créer la piste si elle n'existe pas encore */
+  /* Créer la piste */
   var track = document.getElementById('actu-track');
   if (!track) {
     track = document.createElement('div');
@@ -557,6 +590,7 @@ function buildActuCards() {
     scene.appendChild(track);
   }
 
+  /* Injecter le HTML des cartes */
   var html = '';
   for (var i = 0; i < ACTUS.length; i++) {
     var a = ACTUS[i];
@@ -570,26 +604,10 @@ function buildActuCards() {
     html += '</div>';
   }
   track.innerHTML = html;
+  actuIdx = 0;
+  track.style.transform = 'translateX(0)';
 
-  /* Calcul des dimensions en pixels */
-  var sceneW = scene.offsetWidth;
-  var gap    = 16; /* px entre les deux cartes visibles */
-  var cardW  = (sceneW - gap) / 2;
-
-  /* Largeur de la piste = toutes les cartes alignées */
-  track.style.width = (ACTUS.length * (cardW + gap)) + 'px';
-
-  /* Appliquer la largeur fixe à chaque carte */
-  var cards = track.getElementsByClassName('actu-card');
-  for (var k = 0; k < cards.length; k++) {
-    cards[k].style.width      = cardW + 'px';
-    cards[k].style.minWidth   = cardW + 'px';
-    cards[k].style.maxWidth   = cardW + 'px';
-    cards[k].style.marginRight = gap + 'px';
-    cards[k].style.flexShrink = '0';
-  }
-
-  /* Dots : un point par carte */
+  /* Dots */
   var dotsHtml = '';
   for (var j = 0; j < ACTUS.length; j++) {
     dotsHtml += '<div class="actu-dot' + (j === 0 ? ' active' : '') + '" id="dot-' + j + '"></div>';
@@ -603,9 +621,9 @@ function buildActuCards() {
   }
   dotsEl.innerHTML = dotsHtml;
 
-  /* Position initiale */
-  track.style.transform = 'translateX(0)';
-  actuIdx = 0;
+  /* Appliquer les tailles après que le navigateur ait peint */
+  setTimeout(applyActuSizes, 100);
+  setTimeout(applyActuSizes, 400);
 }
 
 function removeClass(el, cls) {
