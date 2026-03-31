@@ -367,7 +367,7 @@
 <canvas id="bg-canvas" style="position:fixed;inset:0;z-index:0;width:1920px;height:1080px;"></canvas>
 <div class="dots"></div>
 <div class="particles" id="particles"></div>
-<div id="weather-overlay" style="position:fixed;inset:0;z-index:2;pointer-events:none;transition:all 3s ease;"></div>
+<div id="weather-overlay" style="position:fixed;inset:0;z-index:4;pointer-events:none;transition:all 3s ease;"></div>
 <div id="vignette"></div>
 
 <div class="layout">
@@ -840,7 +840,7 @@ function applyMeteoBackground(wcode, tempNow) {
   if (window._lightningTimer) { clearTimeout(window._lightningTimer); window._lightningTimer = null; }
 
   overlay.style.position = 'fixed'; overlay.style.top = '0'; overlay.style.right = '0';
-  overlay.style.bottom = '0'; overlay.style.left = '0'; overlay.style.zIndex = '2';
+  overlay.style.bottom = '0'; overlay.style.left = '0'; overlay.style.zIndex = '4';
   overlay.style.pointerEvents = 'none';
 
   var isGel   = tempNow <= 0;
