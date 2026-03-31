@@ -947,8 +947,8 @@ function applyMeteoBackground(wcode, tempNow) {
 }
 
 function fetchMeteo() {
-  /* Proxy Google Apps Script — retourne directement le JSON Open-Meteo */
-  var url = 'https://script.google.com/macros/s/AKfycbzkgTnBIrcoqMk2_ya9Dm-f6xNx_skOJu_hFqvfycFDRvL-7t5e7rU8TACOVqXdlG7f-Q/exec';
+  /* Fichier JSON statique mis à jour par GitHub Action toutes les 30 min */
+  var url = 'meteo.json?t=' + new Date().getTime(); /* cache-busting */
 
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
