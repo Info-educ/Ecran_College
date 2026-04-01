@@ -150,33 +150,41 @@
     box-shadow: 4px 4px 0 rgba(248,196,46,0.3);
     flex-shrink: 0;
   }
-  /* Scène de défilement des cartes */
+  /* Scène de défilement des cartes — 2 slots côte à côte */
   .actu-scene {
     flex: 1;
     min-height: 0;
+    display: flex;
+    gap: 18px;
+    overflow: hidden;
+  }
+  /* Chaque slot occupe la moitié de la scène */
+  .actu-slot {
+    flex: 1;
+    min-width: 0;
     position: relative;
     overflow: hidden;
     border-radius: 22px;
   }
-  /* Chaque carte occupe tout l'espace de la scène */
+  /* Chaque carte occupe tout l'espace de son slot */
   .actu-card {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(255,255,255,0.96);
     border-radius: 22px;
-    padding: 44px 52px;
+    padding: 36px 40px;
     /* backdrop-filter: blur(10px); — non supporté Magicinfo */
     box-shadow: 6px 6px 0 rgba(0,0,0,0.07);
     display: flex; flex-direction: column; justify-content: center;
     opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    transform: translateX(50px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
   }
   .actu-card.visible {
-    opacity: 1; transform: translateY(0);
+    opacity: 1; transform: translateX(0);
   }
-  .actu-card.exit-up {
-    opacity: 0; transform: translateY(-40px);
+  .actu-card.exit-left {
+    opacity: 0; transform: translateX(-50px);
   }
   .actu-card-accent {
     width: 6px; height: 100%;
@@ -184,19 +192,19 @@
     border-radius: 22px 0 0 22px;
   }
   .actu-card-tag {
-    font-size: 12px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
-    padding: 6px 18px; border-radius: 20px; display: inline-block; margin-bottom: 18px;
+    font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 20px; display: inline-block; margin-bottom: 14px;
     align-self: flex-start;
   }
-  .actu-card-emoji { font-size: 88px; margin-bottom: 18px; line-height: 1; }
+  .actu-card-emoji { font-size: 64px; margin-bottom: 14px; line-height: 1; }
   .actu-card-text  {
-    font-size: 44px; font-weight: 900; color: var(--text); line-height: 1.35;
-    max-width: 860px;
+    font-size: 32px; font-weight: 900; color: var(--text); line-height: 1.35;
+    max-width: 100%;
   }
   .actu-card-detail {
-    font-size: 20px; font-weight: 700; color: var(--muted); margin-top: 14px; line-height: 1.4;
+    font-size: 16px; font-weight: 700; color: var(--muted); margin-top: 10px; line-height: 1.4;
   }
-  .actu-card-date  { font-size: 14px; color: var(--muted); margin-top: 24px; font-weight: 700; }
+  .actu-card-date  { font-size: 13px; color: var(--muted); margin-top: 16px; font-weight: 700; }
   /* Indicateurs pagination */
   .actu-dots {
     display: flex; gap: 6px; justify-content: center;
@@ -299,7 +307,7 @@
     white-space: nowrap; flex-shrink: 0; min-width: 62px; text-align: center; line-height: 1.3;
   }
   .pill-blue   { background: var(--c1); box-shadow: 2px 2px 0 rgba(26,58,110,0.3); }
-  .pill-c2, .pill-red { background: var(--c2); box-shadow: 2px 2px 0 rgba(192,57,43,0.3); }
+  .pill-red { background: var(--c2); box-shadow: 2px 2px 0 rgba(192,57,43,0.3); }
   .pill-green  { background: var(--c4); box-shadow: 2px 2px 0 rgba(46,204,113,0.3); }
   .pill-orange { background: var(--c5); box-shadow: 2px 2px 0 rgba(230,126,34,0.3); }
   .pill-purple { background: #8e44ad; box-shadow: 2px 2px 0 rgba(142,68,173,0.3); }
@@ -357,9 +365,7 @@
     to   { opacity:1; transform:translateY(0); }
   }
 
-  /* Semaine prochaine grisée */
-  .next-week-event .event-name,
-  .next-week-event .event-detail { opacity: 0.65; }
+
 </style>
 </head>
 <body>
@@ -428,7 +434,8 @@
         <div class="semaine-pill" id="semaine-pill">📅 Semaine A</div>
       </div>
       <div class="actu-scene" id="actu-scene">
-        <!-- cartes injectées par JS -->
+        <div class="actu-slot" id="actu-slot-0"><!-- carte gauche --></div>
+        <div class="actu-slot" id="actu-slot-1"><!-- carte droite --></div>
       </div>
     </div>
 
@@ -534,42 +541,50 @@ setInterval(updateClock, 1000);
 updateClock();
 
 /* ══════════════════════════════════════════════════
-   CARROUSEL D'INFOS — ES5
+   CARROUSEL D'INFOS — 2 slots côte à côte, défilement vers la gauche — ES5
 ══════════════════════════════════════════════════ */
 /* ACTUS : chargées dynamiquement depuis data.json via loadData() */
 var ACTUS   = [];
-var actuIdx = 0;
+var actuIdx = 0;   /* indice de la première carte visible (slot gauche) */
 var actuTimer = null;
 
+/* Construit le HTML d'une carte à partir d'un objet ACTUS[i] */
+function buildCardHTML(a, idx) {
+  var html = '<div class="actu-card visible" id="actu-card-' + idx + '">';
+  html += '<div class="actu-card-accent ' + a.accentClass + '"></div>';
+  html += '<span class="actu-card-tag ' + a.tagClass + '">' + a.tag + '</span>';
+  html += '<div class="actu-card-emoji">' + a.emoji + '</div>';
+  html += '<div class="actu-card-text">' + a.text + '</div>';
+  html += '<div class="actu-card-detail">' + a.detail + '</div>';
+  html += '<div class="actu-card-date">' + a.date + '</div>';
+  html += '</div>';
+  return html;
+}
 
+/* Injecte les deux premières cartes dans leurs slots */
 function buildActuCards() {
-  var scene = document.getElementById('actu-scene');
-  var html = '';
-  for (var i = 0; i < ACTUS.length; i++) {
-    var a = ACTUS[i];
-    html += '<div class="actu-card' + (i === 0 ? ' visible' : '') + '" id="actu-card-' + i + '">';
-    html += '<div class="actu-card-accent ' + a.accentClass + '"></div>';
-    html += '<span class="actu-card-tag ' + a.tagClass + '">' + a.tag + '</span>';
-    html += '<div class="actu-card-emoji">' + a.emoji + '</div>';
-    html += '<div class="actu-card-text">' + a.text + '</div>';
-    html += '<div class="actu-card-detail">' + a.detail + '</div>';
-    html += '<div class="actu-card-date">' + a.date + '</div>';
-    html += '</div>';
-  }
-  scene.innerHTML = html;
+  if (ACTUS.length === 0) return;
+  var slot0 = document.getElementById('actu-slot-0');
+  var slot1 = document.getElementById('actu-slot-1');
+  if (slot0) slot0.innerHTML = buildCardHTML(ACTUS[0], 0);
+  if (slot1 && ACTUS.length > 1) slot1.innerHTML = buildCardHTML(ACTUS[1], 1);
 
-  var dotsHtml = '';
-  for (var j = 0; j < ACTUS.length; j++) {
-    dotsHtml += '<div class="actu-dot' + (j === 0 ? ' active' : '') + '" id="dot-' + j + '"></div>';
-  }
+  /* Indicateurs pagination — un point par info */
   var dotsEl = document.getElementById('actu-dots-bar');
   if (!dotsEl) {
     dotsEl = document.createElement('div');
     dotsEl.className = 'actu-dots';
     dotsEl.id = 'actu-dots-bar';
-    scene.parentNode.appendChild(dotsEl);
+    var scene = document.getElementById('actu-scene');
+    if (scene && scene.parentNode) scene.parentNode.appendChild(dotsEl);
+  }
+  var dotsHtml = '';
+  for (var j = 0; j < ACTUS.length; j++) {
+    dotsHtml += '<div class="actu-dot' + (j < 2 ? ' active' : '') + '" id="dot-' + j + '"></div>';
   }
   dotsEl.innerHTML = dotsHtml;
+
+  actuIdx = 0;
 }
 
 function removeClass(el, cls) {
@@ -582,29 +597,53 @@ function addClass(el, cls) {
   el.className = (el.className + ' ' + cls).replace(/^\s|\s$/g, '');
 }
 
-function showActu(nextIdx) {
-  var current = document.getElementById('actu-card-' + actuIdx);
-  var next    = document.getElementById('actu-card-' + nextIdx);
-  var dotCur  = document.getElementById('dot-' + actuIdx);
-  var dotNext = document.getElementById('dot-' + nextIdx);
+/* Avance d'un cran : le slot gauche prend la carte suivante,
+   le slot droit celle d'après.
+   Animation : exit vers la gauche / entrée depuis la droite.         */
+function showNextActu() {
+  if (ACTUS.length <= 1) return;
 
-  if (current) { removeClass(current, 'visible'); addClass(current, 'exit-up'); }
+  var nextIdx0 = (actuIdx + 2) % ACTUS.length;  /* prochaine carte pour slot 0 */
+  var nextIdx1 = (actuIdx + 3) % ACTUS.length;  /* prochaine carte pour slot 1 */
+
+  var slot0 = document.getElementById('actu-slot-0');
+  var slot1 = document.getElementById('actu-slot-1');
+
+  /* 1. Sortie vers la gauche des cartes courantes */
+  var cur0 = slot0 ? slot0.querySelector('.actu-card') : null;
+  var cur1 = slot1 ? slot1.querySelector('.actu-card') : null;
+  if (cur0) { removeClass(cur0, 'visible'); addClass(cur0, 'exit-left'); }
+  if (cur1) { removeClass(cur1, 'visible'); addClass(cur1, 'exit-left'); }
+
+  /* 2. Après la transition, injecter les nouvelles cartes */
   setTimeout(function() {
-    if (current) { removeClass(current, 'exit-up'); }
-    if (next)    { addClass(next, 'visible'); }
-  }, 700);
+    if (slot0) slot0.innerHTML = buildCardHTML(ACTUS[nextIdx0], nextIdx0);
+    if (slot1 && ACTUS.length > 1) slot1.innerHTML = buildCardHTML(ACTUS[nextIdx1], nextIdx1);
+    /* Forcer reflow puis déclencher l'apparition */
+    setTimeout(function() {
+      var new0 = slot0 ? slot0.querySelector('.actu-card') : null;
+      var new1 = slot1 ? slot1.querySelector('.actu-card') : null;
+      if (new0) { addClass(new0, 'visible'); }
+      if (new1) { addClass(new1, 'visible'); }
+    }, 30);
 
-  if (dotCur)  removeClass(dotCur,  'active');
-  if (dotNext) addClass(dotNext, 'active');
-  actuIdx = nextIdx;
+    /* Mise à jour des points */
+    for (var d = 0; d < ACTUS.length; d++) {
+      var dot = document.getElementById('dot-' + d);
+      if (dot) { removeClass(dot, 'active'); }
+    }
+    var dot0 = document.getElementById('dot-' + nextIdx0);
+    var dot1 = document.getElementById('dot-' + nextIdx1);
+    if (dot0) addClass(dot0, 'active');
+    if (dot1) addClass(dot1, 'active');
+
+    actuIdx = nextIdx0;
+  }, 650);
 }
 
 function startActuRotation() {
-  if (ACTUS.length <= 1) return;
-  actuTimer = setInterval(function() {
-    var next = (actuIdx + 1) % ACTUS.length;
-    showActu(next);
-  }, 6000);
+  if (ACTUS.length <= 2) return;
+  actuTimer = setInterval(showNextActu, 6000);
 }
 
 /* buildActuCards et startActuRotation sont appelés depuis loadData() */
@@ -664,25 +703,6 @@ setInterval(getMenuDuJour, 3600000);
 
 
 /* CITATIONS : chargées dynamiquement depuis data.json via loadData() */
-var QUOTES = [];
-var qi = 0;
-var quoteTimer = null;
-
-function rotateQuote() {
-  if (QUOTES.length === 0) return;
-  qi = (qi + 1) % QUOTES.length;
-  var el = document.getElementById('quote-text');
-  var au = document.getElementById('quote-author');
-  if (!el || !au) return;
-  el.style.opacity = 0;
-  au.style.opacity = 0;
-  setTimeout(function() {
-    el.textContent = '\u201c' + QUOTES[qi].text + '\u201d';
-    au.textContent = '\u2014 ' + QUOTES[qi].author;
-    el.style.opacity = 1;
-    au.style.opacity = 1;
-  }, 800);
-}
 
 /* ══════════════════════════════════════════════════
    MÉTÉO — XMLHttpRequest ES5 (pas de fetch/async)
@@ -1141,21 +1161,6 @@ function loadData() {
           buildActuCards();
           if (actuTimer) { clearInterval(actuTimer); }
           startActuRotation();
-        }
-
-        /* Citations rotatives */
-        if (d.citations && d.citations.length > 0) {
-          QUOTES = [];
-          for (var ci = 0; ci < d.citations.length; ci++) {
-            QUOTES.push({ text: d.citations[ci].texte || '', author: d.citations[ci].auteur || '' });
-          }
-          qi = 0;
-          var el = document.getElementById('quote-text');
-          var au = document.getElementById('quote-author');
-          if (el) { el.style.opacity = 1; el.textContent = '\u201c' + QUOTES[0].text + '\u201d'; }
-          if (au) { au.style.opacity = 1; au.textContent = '\u2014 ' + QUOTES[0].author; }
-          if (quoteTimer) { clearInterval(quoteTimer); }
-          if (QUOTES.length > 1) { quoteTimer = setInterval(rotateQuote, 13000); }
         }
 
         /* Agenda */
