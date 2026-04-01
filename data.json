@@ -86,6 +86,20 @@
       "nom": "La Tablée des Chefs",
       "lieu": "Activité culinaire",
       "semaine_prochaine": true
+    },
+    {
+      "label": "Mar 7/4pm",
+      "couleur": "orange",
+      "nom": "Gestes Qui Sauvent 3A",
+      "lieu": "Salle Lucie Aubrac",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "Vend 10/4am",
+      "couleur": "orange",
+      "nom": "Gestes Qui Sauvent 3B",
+      "lieu": "Salle Lucie Aubrac",
+      "semaine_prochaine": true
     }
   ],
   "menus": {
