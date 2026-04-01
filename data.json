@@ -39,63 +39,63 @@
   ],
   "agenda": [
     {
-      "label": "Mer 1/4\nmatin",
+      "label": "Mer 1/4 matin",
       "couleur": "blue",
       "nom": "Sortie 6ème D — Laiterie",
       "lieu": "Sortie pédagogique",
       "semaine_prochaine": false
     },
     {
-      "label": "Mer 1/4\napm",
+      "label": "Mer 1/4 après-midi",
       "couleur": "green",
       "nom": "École Ouverte",
       "lieu": "Jeux traditionnels du monde",
       "semaine_prochaine": false
     },
     {
-      "label": "Jeu 2/4\napm",
+      "label": "Jeu 2/4 après-midi",
       "couleur": "orange",
       "nom": "Sortie 5ème D — Musée Immigration",
       "lieu": "Palais de la Porte d'Orée",
       "semaine_prochaine": false
     },
     {
-      "label": "Ven 3/4\napm",
+      "label": "Ven 3/4 après-midi",
       "couleur": "red",
       "nom": "Sortie 3ème B — Matisse",
       "lieu": "Grand Palais",
       "semaine_prochaine": false
     },
     {
-      "label": "Mer 8/4\napm",
+      "label": "Mer 8/4 après-midi",
       "couleur": "green",
       "nom": "École Ouverte 6ème",
       "lieu": "Renforcement Maths & Français",
       "semaine_prochaine": true
     },
     {
-      "label": "Jeu 9/4\nmatin",
+      "label": "Jeu 9/4 matin",
       "couleur": "blue",
       "nom": "Réunion du CVC",
       "lieu": "Conseil de Vie Collégienne",
       "semaine_prochaine": true
     },
     {
-      "label": "Jeu 9/4\napm",
+      "label": "Jeu 9/4 après-midi",
       "couleur": "orange",
       "nom": "La Tablée des Chefs",
       "lieu": "Activité culinaire",
       "semaine_prochaine": true
     },
     {
-      "label": "Mar 7/4pm",
+      "label": "Mar 7/4 après-midi",
       "couleur": "orange",
       "nom": "Gestes Qui Sauvent 3A",
       "lieu": "Salle Lucie Aubrac",
       "semaine_prochaine": true
     },
     {
-      "label": "Vend 10/4am",
+      "label": "Vend 10/4 matin",
       "couleur": "orange",
       "nom": "Gestes Qui Sauvent 3B",
       "lieu": "Salle Lucie Aubrac",
