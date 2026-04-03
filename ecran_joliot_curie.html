@@ -229,29 +229,17 @@
   .accent-purple { background: #8e44ad; }
 
   /* ── CARTE AVEC IMAGE (pleine carte) ──
-     L'image couvre toute la carte en fond.
-     Un voile degrade noir en bas assure la lisibilite du texte.
-     Robuste MagicInfo : pas de object-fit, pas de backdrop-filter,
-     pas de flexbox moderne. Tout en position:absolute. */
+     background-image + background-size:cover + background-position
+     sont supportes partout, y compris MagicInfo.
+     Le cadrage est controle via imagePosition dans data.json
+     (ex: "center", "top", "bottom", "center 30%"…).            */
   .actu-card.has-image {
     padding: 0;
     overflow: hidden;
-    background: #000;
-  }
-  .actu-card-img-wrap {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    overflow: hidden;
-  }
-  /* Centrage sans object-fit */
-  .actu-card-img-inner {
-    position: absolute;
-    top: 50%; left: 50%;
-    min-width: 100%; min-height: 100%;
-    width: auto; height: auto;
-    -webkit-transform: translate(-50%, -50%);
-    -ms-transform:     translate(-50%, -50%);
-    transform:         translate(-50%, -50%);
+    background-color: #000;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center; /* ecrase par le style inline */
   }
   /* Voile degrade transparent -> noir en bas */
   .actu-card-img-fade {
@@ -627,17 +615,21 @@ var actuTimer = null;
 function buildCardHTML(a, idx) {
   var hasImage = !!(a.image && a.image.length > 3);
   var extraClass = hasImage ? ' has-image' : '';
-  var html = '<div class="actu-card visible' + extraClass + '" id="actu-card-' + idx + '">';
+  /* background-image + background-position en style inline :
+     - background-size:cover garanti par la classe has-image
+     - imagePosition controle le cadrage ("center", "top", "bottom", "center 30%"…)
+       valeur par defaut : "center center"                                          */
+  var pos  = (a.imagePosition && a.imagePosition.length) ? a.imagePosition : 'center center';
+  var bgStyle = hasImage
+    ? ' style="background-image:url(\'' + a.image + '\');background-position:' + pos + ';"'
+    : '';
+  var html = '<div class="actu-card visible' + extraClass + '"' + bgStyle + ' id="actu-card-' + idx + '">';
   html += '<div class="actu-card-accent ' + a.accentClass + '"></div>';
 
   if (hasImage) {
-    /* Image pleine carte */
-    html += '<div class="actu-card-img-wrap">';
-    html += '<img class="actu-card-img-inner" src="' + a.image + '" alt="">';
-    html += '</div>';
-    /* Voile degrade */
+    /* Voile degrade (pas de balise img) */
     html += '<div class="actu-card-img-fade"></div>';
-    /* Texte en bas */
+    /* Texte en bas, z-index > voile */
     html += '<div class="actu-card-text-zone">';
     html += '<span class="actu-card-tag ' + a.tagClass + '">' + a.tag + '</span>';
     html += '<div><span class="actu-card-emoji">' + a.emoji + '</span><span class="actu-card-text">' + a.text + '</span></div>';
@@ -645,7 +637,7 @@ function buildCardHTML(a, idx) {
     html += '<div class="actu-card-date">' + a.date + '</div>';
     html += '</div>';
   } else {
-    /* Mode texte classique */
+    /* Mode texte classique inchange */
     html += '<span class="actu-card-tag ' + a.tagClass + '">' + a.tag + '</span>';
     html += '<div class="actu-card-emoji">' + a.emoji + '</div>';
     html += '<div class="actu-card-text">' + a.text + '</div>';
@@ -1244,14 +1236,15 @@ function loadData() {
           for (var ai = 0; ai < d.actus.length; ai++) {
             var src = d.actus[ai];
             ACTUS.push({
-              emoji:       src.emoji  || '📌',
-              tag:         src.tag    || '',
-              tagClass:    'tag-'    + (src.couleur || 'blue'),
-              accentClass: 'accent-' + (src.couleur || 'blue'),
-              text:        src.texte  || '',
-              detail:      src.detail || '',
-              date:        src.date   || '',
-              image:       src.image  || ''
+              emoji:         src.emoji         || '📌',
+              tag:           src.tag           || '',
+              tagClass:      'tag-'    + (src.couleur || 'blue'),
+              accentClass:   'accent-' + (src.couleur || 'blue'),
+              text:          src.texte         || '',
+              detail:        src.detail        || '',
+              date:          src.date          || '',
+              image:         src.image         || '',
+              imagePosition: src.imagePosition || 'center center'
             });
           }
           actuIdx = 0;
