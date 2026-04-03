@@ -65,6 +65,27 @@
       "nom": "Gestes Qui Sauvent 3B",
       "lieu": "Salle Lucie Aubrac",
       "semaine_prochaine": false
+    },
+    {
+      "label": "Mardi 14 avril matin",
+      "couleur": "blue",
+      "nom": "5EME B&D Sortie Pédagogique - Collège au cinéma",
+      "lieu": "Théâtre Victor Hugo",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "Mercredi 15 avril Aprsè-midi",
+      "couleur": "blue",
+      "nom": "Pépinière des Mathématiques",
+      "lieu": "Salle Lucie Aubrac",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "Vendredi 17 avril - Matin",
+      "couleur": "green",
+      "nom": "4EME LCE - Sortie Pédagogique",
+      "lieu": "Musée Picasso",
+      "semaine_prochaine": true
     }
   ],
   "menus": {
