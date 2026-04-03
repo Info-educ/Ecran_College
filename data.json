@@ -5,7 +5,7 @@
   },
   "actus": [
     {
-      "emoji": "📅",
+      "emoji": "📚",
       "tag": "Mer 8/4 après-midi",
       "couleur": "green",
       "texte": "École Ouverte 6ème",
@@ -21,7 +21,7 @@
       "date": "Cette semaine"
     },
     {
-      "emoji": "📅",
+      "emoji": "🍽️",
       "tag": "Jeu 9/4 après-midi",
       "couleur": "orange",
       "texte": "La Tablée des Chefs",
