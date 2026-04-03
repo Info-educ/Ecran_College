@@ -228,6 +228,79 @@
   .accent-orange { background: var(--c5); }
   .accent-purple { background: #8e44ad; }
 
+  /* ── CARTE AVEC IMAGE (pleine carte) ──
+     L'image couvre toute la carte en fond.
+     Un voile degrade noir en bas assure la lisibilite du texte.
+     Robuste MagicInfo : pas de object-fit, pas de backdrop-filter,
+     pas de flexbox moderne. Tout en position:absolute. */
+  .actu-card.has-image {
+    padding: 0;
+    overflow: hidden;
+    background: #000;
+  }
+  .actu-card-img-wrap {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+  }
+  /* Centrage sans object-fit */
+  .actu-card-img-inner {
+    position: absolute;
+    top: 50%; left: 50%;
+    min-width: 100%; min-height: 100%;
+    width: auto; height: auto;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform:     translate(-50%, -50%);
+    transform:         translate(-50%, -50%);
+  }
+  /* Voile degrade transparent -> noir en bas */
+  .actu-card-img-fade {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: -webkit-linear-gradient(top, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.82) 100%);
+    background:         linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.82) 100%);
+    z-index: 1;
+  }
+  .actu-card.has-image .actu-card-accent { z-index: 3; }
+  /* Texte en bas, par-dessus le voile */
+  .actu-card-text-zone {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 22px 36px 28px 42px;
+    z-index: 2;
+  }
+  .actu-card.has-image .actu-card-tag {
+    background: rgba(0,0,0,0.45);
+    color: #fff;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+  .actu-card.has-image .actu-card-emoji {
+    font-size: 32px;
+    display: inline-block;
+    margin-bottom: 0;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .actu-card.has-image .actu-card-text {
+    font-size: 30px;
+    color: #fff;
+    display: inline;
+    vertical-align: middle;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+  }
+  .actu-card.has-image .actu-card-detail {
+    font-size: 15px;
+    color: rgba(255,255,255,0.85);
+    margin-top: 6px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  }
+  .actu-card.has-image .actu-card-date {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 4px;
+  }
+
   /* ══ REPAS COMPACT (colonne droite, bas) ══ */
   .repas-card {
     background: linear-gradient(135deg, #1a3a6e, #0f2650);
@@ -548,15 +621,38 @@ var ACTUS   = [];
 var actuIdx = 0;   /* indice de la première carte visible (slot gauche) */
 var actuTimer = null;
 
-/* Construit le HTML d'une carte à partir d'un objet ACTUS[i] */
+/* Construit le HTML d'une carte à partir d'un objet ACTUS[i].
+   Si a.image est defini, la carte passe en mode pleine image avec texte en bas.
+   Sinon : affichage textuel classique inchange. */
 function buildCardHTML(a, idx) {
-  var html = '<div class="actu-card visible" id="actu-card-' + idx + '">';
+  var hasImage = !!(a.image && a.image.length > 3);
+  var extraClass = hasImage ? ' has-image' : '';
+  var html = '<div class="actu-card visible' + extraClass + '" id="actu-card-' + idx + '">';
   html += '<div class="actu-card-accent ' + a.accentClass + '"></div>';
-  html += '<span class="actu-card-tag ' + a.tagClass + '">' + a.tag + '</span>';
-  html += '<div class="actu-card-emoji">' + a.emoji + '</div>';
-  html += '<div class="actu-card-text">' + a.text + '</div>';
-  html += '<div class="actu-card-detail">' + a.detail + '</div>';
-  html += '<div class="actu-card-date">' + a.date + '</div>';
+
+  if (hasImage) {
+    /* Image pleine carte */
+    html += '<div class="actu-card-img-wrap">';
+    html += '<img class="actu-card-img-inner" src="' + a.image + '" alt="">';
+    html += '</div>';
+    /* Voile degrade */
+    html += '<div class="actu-card-img-fade"></div>';
+    /* Texte en bas */
+    html += '<div class="actu-card-text-zone">';
+    html += '<span class="actu-card-tag ' + a.tagClass + '">' + a.tag + '</span>';
+    html += '<div><span class="actu-card-emoji">' + a.emoji + '</span><span class="actu-card-text">' + a.text + '</span></div>';
+    html += '<div class="actu-card-detail">' + a.detail + '</div>';
+    html += '<div class="actu-card-date">' + a.date + '</div>';
+    html += '</div>';
+  } else {
+    /* Mode texte classique */
+    html += '<span class="actu-card-tag ' + a.tagClass + '">' + a.tag + '</span>';
+    html += '<div class="actu-card-emoji">' + a.emoji + '</div>';
+    html += '<div class="actu-card-text">' + a.text + '</div>';
+    html += '<div class="actu-card-detail">' + a.detail + '</div>';
+    html += '<div class="actu-card-date">' + a.date + '</div>';
+  }
+
   html += '</div>';
   return html;
 }
@@ -1154,7 +1250,8 @@ function loadData() {
               accentClass: 'accent-' + (src.couleur || 'blue'),
               text:        src.texte  || '',
               detail:      src.detail || '',
-              date:        src.date   || ''
+              date:        src.date   || '',
+              image:       src.image  || ''
             });
           }
           actuIdx = 0;
