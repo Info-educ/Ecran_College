@@ -1,105 +1,69 @@
 {
   "semaine": {
-    "type": "A",
-    "periode": "31 mars au 4 avril 2026"
+    "type": "B",
+    "periode": "4 au 8 mai 2026"
   },
   "actus": [
     {
-      "emoji": "🏭",
-      "tag": "Sortie péda",
-      "couleur": "blue",
-      "texte": "Sortie 6ème D — Visite d'une laiterie",
-      "detail": "Mercredi 1er avril · Matin",
-      "date": "Cette semaine"
-    },
-    {
-      "emoji": "🌍",
-      "tag": "École Ouverte",
+      "emoji": "📅",
+      "tag": "Mer 8/4 après-midi",
       "couleur": "green",
-      "texte": "Jeux traditionnels du monde",
-      "detail": "Mercredi 1er avril · Après-midi",
+      "texte": "École Ouverte 6ème",
+      "detail": "Mer 8/4 après-midi · Renforcement Maths & Français",
       "date": "Cette semaine"
     },
     {
-      "emoji": "🏛️",
-      "tag": "Sortie péda",
+      "emoji": "👥",
+      "tag": "Jeu 9/4 matin",
+      "couleur": "blue",
+      "texte": "Réunion du CVC",
+      "detail": "Jeu 9/4 matin · Conseil de Vie Collégienne",
+      "date": "Cette semaine"
+    },
+    {
+      "emoji": "📅",
+      "tag": "Jeu 9/4 après-midi",
       "couleur": "orange",
-      "texte": "Sortie 5ème D — Musée de l'Immigration",
-      "detail": "Jeudi 2 avril · Après-midi · Palais de la Porte d'Orée",
-      "date": "Cette semaine"
-    },
-    {
-      "emoji": "🎨",
-      "tag": "Sortie péda",
-      "couleur": "red",
-      "texte": "Sortie 3ème B — Exposition Matisse",
-      "detail": "Vendredi 3 avril · Après-midi · Grand Palais",
+      "texte": "La Tablée des Chefs",
+      "detail": "Jeu 9/4 après-midi · Activité culinaire",
       "date": "Cette semaine"
     }
   ],
   "agenda": [
     {
-      "label": "Mer 1/4 matin",
-      "couleur": "blue",
-      "nom": "Sortie 6ème D — Laiterie",
-      "lieu": "Sortie pédagogique",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Mer 1/4 après-midi",
-      "couleur": "green",
-      "nom": "École Ouverte",
-      "lieu": "Jeux traditionnels du monde",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Jeu 2/4 après-midi",
-      "couleur": "orange",
-      "nom": "Sortie 5ème D — Musée Immigration",
-      "lieu": "Palais de la Porte d'Orée",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Ven 3/4 après-midi",
-      "couleur": "red",
-      "nom": "Sortie 3ème B — Matisse",
-      "lieu": "Grand Palais",
-      "semaine_prochaine": false
-    },
-    {
       "label": "Mer 8/4 après-midi",
       "couleur": "green",
       "nom": "École Ouverte 6ème",
       "lieu": "Renforcement Maths & Français",
-      "semaine_prochaine": true
+      "semaine_prochaine": false
     },
     {
       "label": "Jeu 9/4 matin",
       "couleur": "blue",
       "nom": "Réunion du CVC",
       "lieu": "Conseil de Vie Collégienne",
-      "semaine_prochaine": true
+      "semaine_prochaine": false
     },
     {
       "label": "Jeu 9/4 après-midi",
       "couleur": "orange",
       "nom": "La Tablée des Chefs",
       "lieu": "Activité culinaire",
-      "semaine_prochaine": true
+      "semaine_prochaine": false
     },
     {
       "label": "Mar 7/4 après-midi",
       "couleur": "orange",
       "nom": "Gestes Qui Sauvent 3A",
       "lieu": "Salle Lucie Aubrac",
-      "semaine_prochaine": true
+      "semaine_prochaine": false
     },
     {
       "label": "Vend 10/4 matin",
       "couleur": "orange",
       "nom": "Gestes Qui Sauvent 3B",
       "lieu": "Salle Lucie Aubrac",
-      "semaine_prochaine": true
+      "semaine_prochaine": false
     }
   ],
   "menus": {
@@ -198,28 +162,28 @@
       ]
     },
     "2026-04-07": {
-      "entree": [
-        "Salade de tomates",
-        "Concombre <span class=\"bio-tag\">BIO</span> vinaigrette"
-      ],
+      "entree": [],
       "plat": [
-        "Steak de colin sauce sétoise",
-        "Bouchée de blé <span class=\"vege-tag\">Végé</span>"
+        "Semoule et <span class=\"bio-tag\">BIO</span>",
+        "jambalaya <span class=\"bio-tag\">BIO</span>",
+        "Dahl de lentilles corail et",
+        "riz"
       ],
-      "accomp": [
-        "Chou-fleur <span class=\"bio-tag\">BIO</span> aux saveurs du soleil",
-        "Blé <span class=\"bio-tag\">BIO</span> à la tomate"
-      ],
+      "accomp": [],
       "fromage": [
-        "Yaourt nature <span class=\"bio-tag\">BIO</span> et sucre"
+        "Fromage frais aux fruits"
       ],
       "dessert": [
-        "Compote de pommes",
-        "Compote de pomme-banane"
+        "Ananas",
+        "Orange"
       ]
     },
     "2026-04-09": {
-      "entree": [],
+      "entree": [
+        "Salade de tomates",
+        "Concombre <span class=\"bio-tag\">BIO</span>",
+        "vinaigrette"
+      ],
       "plat": [
         "Cordon bleu de dinde",
         "Calamars à la romaine"
@@ -237,33 +201,161 @@
     "2026-04-10": {
       "entree": [],
       "plat": [
-        "Boulettes d'agneau sauce navarin",
-        "Omelette <span class=\"bio-tag\">BIO</span> <span class=\"vege-tag\">Végé</span>"
+        "Boulettes d'agneau",
+        "sauce navarin",
+        "Omelette <span class=\"bio-tag\">BIO</span>"
       ],
       "accomp": [
         "Flageolets à l'ail",
-        "Mélange légumes haricots plats"
+        "Mélange légumes",
+        "haricots plats"
       ],
       "fromage": [
-        "Saint Nectaire <span class=\"bio-tag\">AOC</span>",
+        "Saint Nectaire",
         "Tomme noire"
       ],
       "dessert": [
         "Entremet chocolat festif"
       ]
+    },
+    "2026-04-13": {
+      "entree": [
+        "Coeur de frisée",
+        "Salade de crudités <span class=\"bio-tag\">BIO</span>"
+      ],
+      "plat": [
+        "Pavé de merlu huile",
+        "parfumée curry",
+        "Blé à l'italienne"
+      ],
+      "accomp": [
+        "Printanière de légumes",
+        "Blé <span class=\"bio-tag\">BIO</span>"
+      ],
+      "fromage": [
+        "Yaourt brassé aux fruits",
+        "Yaourt nature et <span class=\"bio-tag\">BIO</span>",
+        "sucre"
+      ],
+      "dessert": []
+    },
+    "2026-04-14": {
+      "entree": [],
+      "plat": [
+        "Spirale à la <span class=\"bio-tag\">BIO</span>",
+        "bolognaise <span class=\"bio-tag\">BIO</span>",
+        "Spirales à la <span class=\"bio-tag\">BIO</span>",
+        "carbonara au thon"
+      ],
+      "accomp": [],
+      "fromage": [
+        "Camembert",
+        "Brie"
+      ],
+      "dessert": [
+        "Cake à la fraise",
+        "Beignet à la framboise"
+      ]
+    },
+    "2026-04-16": {
+      "entree": [],
+      "plat": [
+        "Curry de pois chiche et",
+        "semoule",
+        "Haricots rouge sauce",
+        "chili et riz"
+      ],
+      "accomp": [],
+      "fromage": [
+        "Pont l'Evêque",
+        "Saint Paulin"
+      ],
+      "dessert": [
+        "Pomme rouge",
+        "Orange"
+      ]
+    },
+    "2026-04-17": {
+      "entree": [
+        "Salade du chef",
+        "Salade verte <span class=\"bio-tag\">BIO</span>"
+      ],
+      "plat": [
+        "Rôti de veau FR sauce",
+        "basquaise",
+        "Hachis lentilles tomate"
+      ],
+      "accomp": [
+        "Courgettes à la <span class=\"bio-tag\">BIO</span>",
+        "ciboulette",
+        "Pommes rissolées"
+      ],
+      "fromage": [],
+      "dessert": [
+        "Purée de pommes",
+        "myrtilles",
+        "Compote de pommes"
+      ]
+    },
+    "2026-05-04": {
+      "entree": [
+        "Salade de Betteraves"
+      ],
+      "plat": [
+        "Plat principal local 03",
+        "Raviolis aux légumes"
+      ],
+      "accomp": [],
+      "fromage": [],
+      "dessert": [
+        "Crème dessert au",
+        "chocolat",
+        "vanille"
+      ]
+    },
+    "2026-05-05": {
+      "entree": [],
+      "plat": [
+        "Blé pilaf et base <span class=\"bio-tag\">BIO</span>",
+        "indienne <span class=\"vege-tag\">Végé</span>",
+        "Riz à l'andalouse"
+      ],
+      "accomp": [],
+      "fromage": [
+        "Yaourt nature sucré <span class=\"bio-tag\">BIO</span>",
+        "Yaourt brassé banane"
+      ],
+      "dessert": [
+        "Ananas",
+        "Kiwi"
+      ]
+    },
+    "2026-05-07": {
+      "entree": [
+        "Crêpe au fromage",
+        "Crêpe aux champignons"
+      ],
+      "plat": [
+        "Poulet sauté sauce",
+        "frigousse",
+        "Filet de hoki sauce",
+        "beurre blanc"
+      ],
+      "accomp": [
+        "Purée de pommes de",
+        "terre",
+        "Chou-fleur béchamel <span class=\"bio-tag\">BIO</span>"
+      ],
+      "fromage": [
+        "Fromage/laitage"
+      ],
+      "dessert": []
     }
   },
   "ticker": [
-    "Bienvenue au Collège Joliot Curie ! 👋",
-    "📅 Semaine A — du 31 mars au 4 avril 2026",
-    "🏭 Mercredi 1er avril matin : Sortie 6ème D — Visite d'une laiterie",
-    "🌍 Mercredi 1er avril après-midi : École Ouverte — Jeux traditionnels du monde",
-    "🏛️ Jeudi 2 avril après-midi : Sortie 5ème D — Musée de l'Immigration",
-    "🎨 Vendredi 3 avril après-midi : Sortie 3ème B — Exposition Matisse au Grand Palais",
-    "📚 Mercredi 8 avril : École Ouverte — Renforcement Maths & Français 6ème",
-    "🗳️ Jeudi 9 avril matin : Réunion du CVC",
-    "🍽️ Jeudi 9 avril après-midi : La Tablée des Chefs",
-    "🌿 Vacances de printemps à partir du 19 avril !"
+    "✅ Mer 8/4 après-midi : École Ouverte 6ème — Renforcement Maths & Français",
+    "🔔 Jeu 9/4 après-midi : La Tablée des Chefs — Activité culinaire",
+    "📅 Jeu 9/4 matin : Réunion du CVC — Conseil de Vie Collégienne"
   ],
   "citations": [
     {
