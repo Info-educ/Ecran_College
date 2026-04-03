@@ -1,0 +1,58 @@
+name: Nettoyage images carrousel
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'   # Chaque lundi à 3h du matin
+  workflow_dispatch:        # Déclenchement manuel possible
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Supprimer les images de plus de 3 semaines
+        run: |
+          # Seuil : 21 jours
+          CUTOFF=$(date -d '21 days ago' +%Y%m%d)
+          echo "Suppression des images antérieures au $CUTOFF"
+
+          DELETED=0
+
+          # Les fichiers dans images/ sont nommés AAAAMMJJ_HHmm_nom.ext
+          # On extrait la date du préfixe et on compare avec le seuil
+          if [ -d images ]; then
+            for f in images/*; do
+              [ -f "$f" ] || continue
+              BASENAME=$(basename "$f")
+              # Extraire les 8 premiers caractères = AAAAMMJJ
+              FILEDATE="${BASENAME:0:8}"
+              # Vérifier que c'est bien un nombre (format attendu)
+              if echo "$FILEDATE" | grep -qE '^[0-9]{8}$'; then
+                if [ "$FILEDATE" -lt "$CUTOFF" ]; then
+                  echo "  → Suppression : $f (date $FILEDATE)"
+                  git rm "$f"
+                  DELETED=$((DELETED + 1))
+                fi
+              else
+                echo "  · Ignoré (nom sans date) : $f"
+              fi
+            done
+          fi
+
+          if [ "$DELETED" -gt 0 ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -m "🧹 Nettoyage : $DELETED image(s) de plus de 3 semaines supprimée(s)"
+            git push
+            echo "✅ $DELETED image(s) supprimée(s)."
+          else
+            echo "✅ Aucune image à supprimer."
+          fi
