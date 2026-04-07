@@ -18,7 +18,9 @@
       "couleur": "blue",
       "texte": "Réunion du CVC",
       "detail": "Jeu 9/4 matin · Conseil de Vie Collégienne",
-      "date": "Cette semaine"
+      "date": "Cette semaine",
+      "image": "images/20260403_1706_Bouton_CVC.jpg",
+      "imagePosition": "51.4% 41.9%"
     },
     {
       "emoji": "🍽️",
@@ -27,7 +29,8 @@
       "texte": "La Tablée des Chefs",
       "detail": "Jeu 9/4 après-midi · Activité culinaire",
       "date": "Cette semaine",
-      "image": "images/20260403_1612_441cc0341e546781cc0341e546c1ccv1.jpg"
+      "image": "images/20260403_1703_441cc0341e546781cc0341e546c1ccv1.jpg",
+      "imagePosition": "26.3% 45.7%"
     }
   ],
   "agenda": [
@@ -165,22 +168,6 @@
       "dessert": [
         "Purée de pomme <span class=\"bio-tag\">BIO</span>",
         "Compote de pommes fraises"
-      ]
-    },
-    "2026-04-06": {
-      "entree": [],
-      "plat": [
-        "Semoule <span class=\"bio-tag\">BIO</span> et jambalaya <span class=\"bio-tag\">BIO</span>",
-        "Dahl de lentilles corail et riz <span class=\"vege-tag\">Végé</span>"
-      ],
-      "accomp": [],
-      "fromage": [
-        "Fromage frais aux fruits <span class=\"bio-tag\">BIO</span>",
-        "Fromage frais sucré"
-      ],
-      "dessert": [
-        "Ananas",
-        "Orange Global Gap"
       ]
     },
     "2026-04-07": {
