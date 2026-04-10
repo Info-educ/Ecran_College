@@ -1,189 +1,76 @@
 {
   "semaine": {
-    "type": "B",
-    "periode": "4 au 8 mai 2026"
+    "type": "A",
+    "periode": "13 au 17 avril 2026"
   },
   "actus": [
     {
-      "emoji": "📚",
-      "tag": "Mer 8/4 après-midi",
+      "emoji": "🤝",
+      "tag": "Mardi 14 avril",
+      "couleur": "red",
+      "texte": "3C Gestes qui sauvent",
+      "detail": "Mardi 14 avril · Salle Lucie Aubrac",
+      "date": "Cette semaine",
+      "image": "images/20260410_1625_fnpc_saynete_formation.jpg"
+    },
+    {
+      "emoji": "🤝",
+      "tag": "Vendredi 17 avril - Matin",
+      "couleur": "red",
+      "texte": "3D - Gestes qui sauvent",
+      "detail": "Vendredi 17 avril - Matin · Salle Lucie Aubrac",
+      "date": "Cette semaine",
+      "image": "images/20260410_1627_fnpc_saynete_formation.jpg"
+    },
+    {
+      "emoji": "🎨",
+      "tag": "Vendredi 17 avril - Matin",
       "couleur": "green",
-      "texte": "École Ouverte 6ème",
-      "detail": "Mer 8/4 après-midi · Renforcement Maths & Français",
-      "date": "Cette semaine"
-    },
-    {
-      "emoji": "👥",
-      "tag": "Jeu 9/4 matin",
-      "couleur": "blue",
-      "texte": "Réunion du CVC",
-      "detail": "Jeu 9/4 matin · Conseil de Vie Collégienne",
-      "date": "Cette semaine"
-    },
-    {
-      "emoji": "🍽️",
-      "tag": "Jeu 9/4 après-midi",
-      "couleur": "orange",
-      "texte": "La Tablée des Chefs",
-      "detail": "Jeu 9/4 après-midi · Activité culinaire",
+      "texte": "4EME LCE - Sortie Pédagogique",
+      "detail": "Vendredi 17 avril - Matin · Musée Picasso",
       "date": "Cette semaine",
-      "image": "images/20260403_1612_441cc0341e546781cc0341e546c1ccv1.jpg"
-    },
-    {
-      "emoji": "🎭",
-      "tag": "Info",
-      "couleur": "orange",
-      "texte": "5A - Sortie Pédagogique Plus Petit Cirque du Monde",
-      "detail": "7 8 et 10 avril - Plus Petit Cirque du Monde",
-      "date": "Cette semaine",
-      "image": "images/20260407_0801_187560-capture_d_e_cran_2023-03-27_a_15.26.05.png",
-      "imagePosition": "19.4% 47.3%"
+      "image": "images/20260410_1629_paris-musee-picasso-peinture-hd.jpg",
+      "imagePosition": "50.0% 36.4%"
     }
   ],
   "agenda": [
-    {
-      "label": "Mer 8/4 après-midi",
-      "couleur": "green",
-      "nom": "École Ouverte 6ème",
-      "lieu": "Renforcement Maths & Français",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Jeu 9/4 matin",
-      "couleur": "blue",
-      "nom": "Réunion du CVC",
-      "lieu": "Conseil de Vie Collégienne",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Jeu 9/4 après-midi",
-      "couleur": "orange",
-      "nom": "La Tablée des Chefs",
-      "lieu": "Activité culinaire",
-      "semaine_prochaine": false
-    },
     {
       "label": "Mardi 14 avril matin",
       "couleur": "blue",
       "nom": "5EME B&D Sortie Pédagogique - Collège au cinéma",
       "lieu": "Théâtre Victor Hugo",
-      "semaine_prochaine": true
+      "semaine_prochaine": false
     },
     {
       "label": "Mercredi 15 avril Aprsè-midi",
       "couleur": "blue",
       "nom": "Pépinière des Mathématiques",
       "lieu": "Salle Lucie Aubrac",
-      "semaine_prochaine": true
+      "semaine_prochaine": false
     },
     {
       "label": "Vendredi 17 avril - Matin",
       "couleur": "green",
       "nom": "4EME LCE - Sortie Pédagogique",
       "lieu": "Musée Picasso",
-      "semaine_prochaine": true
-    },
-    {
-      "label": "Mardi 7 avril - Après-midi",
-      "couleur": "orange",
-      "nom": "5EME B - Sortie Pédagogique",
-      "lieu": "Plus petit cirque du monde",
       "semaine_prochaine": false
     },
     {
-      "label": "8 avril - Matin",
-      "couleur": "orange",
-      "nom": "5EME B - Sortie Pédagogique",
-      "lieu": "Plus petit cirque du monde",
+      "label": "Mardi 14 avril",
+      "couleur": "red",
+      "nom": "3C Gestes qui sauvent",
+      "lieu": "Salle Lucie Aubrac",
       "semaine_prochaine": false
     },
     {
-      "label": "10 avril - Après-midi",
-      "couleur": "orange",
-      "nom": "5EME B - Sortie Pédagogique",
-      "lieu": "Plus Petit cirque du monde",
+      "label": "Vendredi 17 avril - Matin",
+      "couleur": "red",
+      "nom": "3D - Gestes qui sauvent",
+      "lieu": "Salle Lucie Aubrac",
       "semaine_prochaine": false
     }
   ],
   "menus": {
-    "2026-03-30": {
-      "entree": [
-        "Escalope de veau haché FR basquaise",
-        "Riz à la mexicaine <span class=\"vege-tag\">Végé</span>"
-      ],
-      "plat": [
-        "Escalope de veau haché FR basquaise",
-        "Croq veggie tomate <span class=\"vege-tag\">Végé</span>"
-      ],
-      "accomp": [
-        "Petits pois <span class=\"bio-tag\">BIO</span> à la lyonnaise",
-        "Riz créole"
-      ],
-      "fromage": [
-        "Pont l'Évêque <span class=\"bio-tag\">AOC</span>",
-        "Tomme croûte fleurie"
-      ],
-      "dessert": [
-        "Pomme rouge Ecoresponsable",
-        "Orange Global Gap"
-      ]
-    },
-    "2026-03-31": {
-      "entree": [],
-      "plat": [
-        "Poulet LR sauté",
-        "Croq veggie tomate <span class=\"vege-tag\">Végé</span>"
-      ],
-      "accomp": [
-        "Ratatouille",
-        "Pommes rissolées"
-      ],
-      "fromage": [
-        "Fromage / laitage ORTEMS 01"
-      ],
-      "dessert": [
-        "Gâteau provence aux amandes citron",
-        "Muffin à la vanille et pépites de chocolat"
-      ]
-    },
-    "2026-04-02": {
-      "entree": [],
-      "plat": [
-        "Gâteau d'œufs <span class=\"bio-tag\">BIO</span> sauce tomate",
-        "Boulgour <span class=\"bio-tag\">BIO</span> égrené vég. marocaine <span class=\"vege-tag\">Végé</span>"
-      ],
-      "accomp": [
-        "Haricots beurre à la tomate",
-        "Boulgour <span class=\"bio-tag\">BIO</span> et jus de légumes"
-      ],
-      "fromage": [
-        "Fromage frais aux fruits <span class=\"bio-tag\">BIO</span>",
-        "Fromage frais sucré"
-      ],
-      "dessert": [
-        "Banane",
-        "Kiwi"
-      ]
-    },
-    "2026-04-03": {
-      "entree": [
-        "Concombre <span class=\"bio-tag\">BIO</span> vinaigrette",
-        "Salade verte <span class=\"bio-tag\">BIO</span>"
-      ],
-      "plat": [
-        "Filet de colin meunière",
-        "Gnocchetti <span class=\"bio-tag\">BIO</span> sauce fromagère végé <span class=\"vege-tag\">Végé</span>"
-      ],
-      "accomp": [
-        "Épinards <span class=\"bio-tag\">BIO</span> à la béchamel",
-        "Gnocchetti Sardi <span class=\"bio-tag\">BIO</span>"
-      ],
-      "fromage": [],
-      "dessert": [
-        "Purée de pomme <span class=\"bio-tag\">BIO</span>",
-        "Compote de pommes fraises"
-      ]
-    },
     "2026-04-06": {
       "entree": [],
       "plat": [
@@ -392,10 +279,8 @@
     }
   },
   "ticker": [
-    "✅ Mer 8/4 après-midi : École Ouverte 6ème — Renforcement Maths & Français",
-    "🔔 Jeu 9/4 après-midi : La Tablée des Chefs — Activité culinaire",
-    "📅 Jeu 9/4 matin : Réunion du CVC — Conseil de Vie Collégienne",
-    "📅 Mardi 7 avril - Après-midi : Sortie Pédagogique — Plus petit cirque du monde"
+    "⚠️ Mardi 14 avril : 3C Gestes qui sauvent — Salle Lucie Aubrac",
+    "⚠️ Vendredi 17 avril - Matin : 3D - Gestes qui sauvent — Salle Lucie Aubrac"
   ],
   "citations": [
     {
