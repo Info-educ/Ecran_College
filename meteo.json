@@ -1,7 +1,1 @@
-<html>
-<head><title>502 Bad Gateway</title></head>
-<body>
-<center><h1>502 Bad Gateway</h1></center>
-<hr><center>nginx</center>
-</body>
-</html>
+{"latitude":48.8,"longitude":2.2999997,"generationtime_ms":0.12826919555664062,"utc_offset_seconds":7200,"timezone":"Europe/Paris","timezone_abbreviation":"GMT+2","elevation":100.0,"current_weather_units":{"time":"iso8601","interval":"seconds","temperature":"°C","windspeed":"km/h","winddirection":"°","is_day":"","weathercode":"wmo code"},"current_weather":{"time":"2026-04-23T20:00","interval":900,"temperature":20.5,"windspeed":16.0,"winddirection":67,"is_day":1,"weathercode":0},"daily_units":{"time":"iso8601","weathercode":"wmo code","temperature_2m_max":"°C","temperature_2m_min":"°C"},"daily":{"time":["2026-04-23","2026-04-24"],"weathercode":[0,0],"temperature_2m_max":[22.2,22.7],"temperature_2m_min":[8.8,9.3]}}
