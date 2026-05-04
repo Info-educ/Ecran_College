@@ -1,228 +1,108 @@
 {
   "semaine": {
-    "type": "A",
-    "periode": "13 au 17 avril 2026"
+    "type": "B",
+    "periode": "4 au 8 mai 2026"
   },
   "actus": [
     {
-      "emoji": "🤝",
-      "tag": "Mardi 14 avril",
-      "couleur": "red",
-      "texte": "3C Gestes qui sauvent",
-      "detail": "Mardi 14 avril · Salle Lucie Aubrac",
-      "date": "Cette semaine",
-      "image": "images/20260410_1625_fnpc_saynete_formation.jpg"
+      "emoji": "📚",
+      "tag": "Lundi 04 mai",
+      "couleur": "blue",
+      "texte": "3B - Formation Gestes qui sauvent",
+      "detail": "Lundi 04 mai · Salle Lucie Aubrac",
+      "date": "Cette semaine"
     },
     {
-      "emoji": "🤝",
-      "tag": "Vendredi 17 avril - Matin",
-      "couleur": "red",
-      "texte": "3D - Gestes qui sauvent",
-      "detail": "Vendredi 17 avril - Matin · Salle Lucie Aubrac",
-      "date": "Cette semaine",
-      "image": "images/20260410_1627_fnpc_saynete_formation.jpg"
+      "emoji": "👥",
+      "tag": "Mardi 05 mai",
+      "couleur": "blue",
+      "texte": "3A - Formation Gestes qui sauvent",
+      "detail": "Mardi 05 mai · Salle 01",
+      "date": "Cette semaine"
     },
     {
-      "emoji": "🎨",
-      "tag": "Vendredi 17 avril - Matin",
+      "emoji": "📚",
+      "tag": "Mardi 05 mai",
       "couleur": "green",
-      "texte": "4EME LCE - Sortie Pédagogique",
-      "detail": "Vendredi 17 avril - Matin · Musée Picasso",
+      "texte": "6ème - Intervention JIBUS",
+      "detail": "Mardi 05 mai · Salle de classe",
       "date": "Cette semaine",
-      "image": "images/20260410_1629_paris-musee-picasso-peinture-hd.jpg",
-      "imagePosition": "50.0% 36.4%"
+      "image": "images/20260504_1032_Affiche-campagne-prevention-ecrans-2022.jpg",
+      "imagePosition": "40.8% 43.8%"
+    },
+    {
+      "emoji": "🤝",
+      "tag": "Mercredi 06 mai",
+      "couleur": "orange",
+      "texte": "École ouverte - Coach à l'école",
+      "detail": "Mercredi 06 mai · Salle Lucie Aubrac",
+      "date": "Cette semaine",
+      "image": "images/20260504_1037_adaptations-cycle-2i06.png",
+      "imagePosition": "23.9% 3.5%"
+    },
+    {
+      "emoji": "🏫",
+      "tag": "Info",
+      "couleur": "blue",
+      "texte": "BONNE REPRISE À TOUS",
+      "detail": "",
+      "date": "Cette semaine",
+      "image": "images/20260504_1052_Capture.jpg",
+      "imagePosition": "center center"
     }
   ],
   "agenda": [
     {
-      "label": "Mardi 14 avril matin",
+      "label": "Lundi 04 mai",
       "couleur": "blue",
-      "nom": "5EME B&D Sortie Pédagogique - Collège au cinéma",
-      "lieu": "Théâtre Victor Hugo",
+      "nom": "3B - Formation Gestes qui sauvent",
+      "lieu": "Salle Lucie Aubrac",
       "semaine_prochaine": false
     },
     {
-      "label": "Mercredi 15 avril Aprsè-midi",
+      "label": "Mardi 05 mai",
       "couleur": "blue",
-      "nom": "Pépinière des Mathématiques",
+      "nom": "3A - Formation Gestes qui sauvent",
+      "lieu": "Salle 01",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "Mardi 05 mai",
+      "couleur": "blue",
+      "nom": "6ème - Intervention JIBUS",
+      "lieu": "Salle de classe",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "Mercredi 06 mai",
+      "couleur": "orange",
+      "nom": "École ouverte - Coach à l'école",
       "lieu": "Salle Lucie Aubrac",
       "semaine_prochaine": false
     },
     {
-      "label": "Vendredi 17 avril - Matin",
-      "couleur": "green",
-      "nom": "4EME LCE - Sortie Pédagogique",
-      "lieu": "Musée Picasso",
+      "label": "Jeudi 07 mai - Après-midi",
+      "couleur": "purple",
+      "nom": "3ème C - Intervention Protection maternelle et infantile",
+      "lieu": "",
       "semaine_prochaine": false
     },
     {
-      "label": "Mardi 14 avril",
+      "label": "Lundi 11 et mardi 12 mai",
       "couleur": "red",
-      "nom": "3C Gestes qui sauvent",
-      "lieu": "Salle Lucie Aubrac",
-      "semaine_prochaine": false
+      "nom": "3ème - DNB Blanc n°2",
+      "lieu": "",
+      "semaine_prochaine": true
     },
     {
-      "label": "Vendredi 17 avril - Matin",
+      "label": "Vendredi 08 mai",
       "couleur": "red",
-      "nom": "3D - Gestes qui sauvent",
-      "lieu": "Salle Lucie Aubrac",
+      "nom": "Jour Férié - Fin de la 2nd Guerre Mondiale",
+      "lieu": "",
       "semaine_prochaine": false
     }
   ],
   "menus": {
-    "2026-04-06": {
-      "entree": [],
-      "plat": [
-        "Semoule <span class=\"bio-tag\">BIO</span> et jambalaya <span class=\"bio-tag\">BIO</span>",
-        "Dahl de lentilles corail et riz <span class=\"vege-tag\">Végé</span>"
-      ],
-      "accomp": [],
-      "fromage": [
-        "Fromage frais aux fruits <span class=\"bio-tag\">BIO</span>",
-        "Fromage frais sucré"
-      ],
-      "dessert": [
-        "Ananas",
-        "Orange Global Gap"
-      ]
-    },
-    "2026-04-07": {
-      "entree": [],
-      "plat": [
-        "Semoule et <span class=\"bio-tag\">BIO</span>",
-        "jambalaya <span class=\"bio-tag\">BIO</span>",
-        "Dahl de lentilles corail et",
-        "riz"
-      ],
-      "accomp": [],
-      "fromage": [
-        "Fromage frais aux fruits"
-      ],
-      "dessert": [
-        "Ananas",
-        "Orange"
-      ]
-    },
-    "2026-04-09": {
-      "entree": [
-        "Salade de tomates",
-        "Concombre <span class=\"bio-tag\">BIO</span>",
-        "vinaigrette"
-      ],
-      "plat": [
-        "Cordon bleu de dinde",
-        "Calamars à la romaine"
-      ],
-      "accomp": [
-        "Ratatouille",
-        "Pommes campagnardes"
-      ],
-      "fromage": [],
-      "dessert": [
-        "Liégeois au chocolat",
-        "Liégeois à la vanille"
-      ]
-    },
-    "2026-04-10": {
-      "entree": [],
-      "plat": [
-        "Boulettes d'agneau",
-        "sauce navarin",
-        "Omelette <span class=\"bio-tag\">BIO</span>"
-      ],
-      "accomp": [
-        "Flageolets à l'ail",
-        "Mélange légumes",
-        "haricots plats"
-      ],
-      "fromage": [
-        "Saint Nectaire",
-        "Tomme noire"
-      ],
-      "dessert": [
-        "Entremet chocolat festif"
-      ]
-    },
-    "2026-04-13": {
-      "entree": [
-        "Coeur de frisée",
-        "Salade de crudités <span class=\"bio-tag\">BIO</span>"
-      ],
-      "plat": [
-        "Pavé de merlu huile",
-        "parfumée curry",
-        "Blé à l'italienne"
-      ],
-      "accomp": [
-        "Printanière de légumes",
-        "Blé <span class=\"bio-tag\">BIO</span>"
-      ],
-      "fromage": [
-        "Yaourt brassé aux fruits",
-        "Yaourt nature et <span class=\"bio-tag\">BIO</span>",
-        "sucre"
-      ],
-      "dessert": []
-    },
-    "2026-04-14": {
-      "entree": [],
-      "plat": [
-        "Spirale à la <span class=\"bio-tag\">BIO</span>",
-        "bolognaise <span class=\"bio-tag\">BIO</span>",
-        "Spirales à la <span class=\"bio-tag\">BIO</span>",
-        "carbonara au thon"
-      ],
-      "accomp": [],
-      "fromage": [
-        "Camembert",
-        "Brie"
-      ],
-      "dessert": [
-        "Cake à la fraise",
-        "Beignet à la framboise"
-      ]
-    },
-    "2026-04-16": {
-      "entree": [],
-      "plat": [
-        "Curry de pois chiche et",
-        "semoule",
-        "Haricots rouge sauce",
-        "chili et riz"
-      ],
-      "accomp": [],
-      "fromage": [
-        "Pont l'Evêque",
-        "Saint Paulin"
-      ],
-      "dessert": [
-        "Pomme rouge",
-        "Orange"
-      ]
-    },
-    "2026-04-17": {
-      "entree": [
-        "Salade du chef",
-        "Salade verte <span class=\"bio-tag\">BIO</span>"
-      ],
-      "plat": [
-        "Rôti de veau FR sauce",
-        "basquaise",
-        "Hachis lentilles tomate"
-      ],
-      "accomp": [
-        "Courgettes à la <span class=\"bio-tag\">BIO</span>",
-        "ciboulette",
-        "Pommes rissolées"
-      ],
-      "fromage": [],
-      "dessert": [
-        "Purée de pommes",
-        "myrtilles",
-        "Compote de pommes"
-      ]
-    },
     "2026-05-04": {
       "entree": [
         "Salade de Betteraves"
@@ -279,8 +159,8 @@
     }
   },
   "ticker": [
-    "⚠️ Mardi 14 avril : 3C Gestes qui sauvent — Salle Lucie Aubrac",
-    "⚠️ Vendredi 17 avril - Matin : 3D - Gestes qui sauvent — Salle Lucie Aubrac"
+    "⚠️ Lundi 11 et mardi 12 mai : 3ème - DNB Blanc n°2",
+    "Mercredi 29 avril : Interview exclusive de L'astronaute Sophie Adenot depuis l'ISS"
   ],
   "citations": [
     {
@@ -297,11 +177,7 @@
     },
     {
       "texte": "Chuck Norris a compté jusqu'à l'infini... 2 fois...",
-      "auteur": ""
-    },
-    {
-      "texte": "Chuck Norris a compté jusqu'à l'infini... 2 fois...",
-      "auteur": ""
+      "auteur": "Chuck Norris"
     }
   ]
 }
