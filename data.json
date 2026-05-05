@@ -49,6 +49,16 @@
       "date": "Cette semaine",
       "image": "images/20260504_1052_Capture.jpg",
       "imagePosition": "center center"
+    },
+    {
+      "emoji": "⚽",
+      "tag": "Ouverture du terrain sportif",
+      "couleur": "green",
+      "texte": "Ouverture du terrain sportif sur les temps de récréation",
+      "detail": "Récréations",
+      "date": "",
+      "image": "images/20260505_1331_Bleu_Blanc_Rouge_Jeux_Sportifs_Affiche_Illustratif.png",
+      "imagePosition": "45.4% 0.0%"
     }
   ],
   "agenda": [
