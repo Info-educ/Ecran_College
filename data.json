@@ -1,55 +1,9 @@
 {
   "semaine": {
-    "type": "B",
-    "periode": "4 au 8 mai 2026"
+    "type": "A",
+    "periode": "8 au 12 juin 2026"
   },
   "actus": [
-    {
-      "emoji": "📚",
-      "tag": "Lundi 04 mai",
-      "couleur": "blue",
-      "texte": "3B - Formation Gestes qui sauvent",
-      "detail": "Lundi 04 mai · Salle Lucie Aubrac",
-      "date": "Cette semaine"
-    },
-    {
-      "emoji": "👥",
-      "tag": "Mardi 05 mai",
-      "couleur": "blue",
-      "texte": "3A - Formation Gestes qui sauvent",
-      "detail": "Mardi 05 mai · Salle 01",
-      "date": "Cette semaine"
-    },
-    {
-      "emoji": "📚",
-      "tag": "Mardi 05 mai",
-      "couleur": "green",
-      "texte": "6ème - Intervention JIBUS",
-      "detail": "Mardi 05 mai · Salle de classe",
-      "date": "Cette semaine",
-      "image": "images/20260504_1032_Affiche-campagne-prevention-ecrans-2022.jpg",
-      "imagePosition": "40.8% 43.8%"
-    },
-    {
-      "emoji": "🤝",
-      "tag": "Mercredi 06 mai",
-      "couleur": "orange",
-      "texte": "École ouverte - Coach à l'école",
-      "detail": "Mercredi 06 mai · Salle Lucie Aubrac",
-      "date": "Cette semaine",
-      "image": "images/20260504_1037_adaptations-cycle-2i06.png",
-      "imagePosition": "23.9% 3.5%"
-    },
-    {
-      "emoji": "🏫",
-      "tag": "Info",
-      "couleur": "blue",
-      "texte": "BONNE REPRISE À TOUS",
-      "detail": "",
-      "date": "Cette semaine",
-      "image": "images/20260504_1052_Capture.jpg",
-      "imagePosition": "center center"
-    },
     {
       "emoji": "⚽",
       "tag": "Ouverture du terrain sportif",
@@ -82,48 +36,66 @@
       "image": "images/20260507_0933_conf_rence_tout-petits_28-05.png",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 0.6999999999999997
+    },
+    {
+      "emoji": "📚",
+      "tag": "EXAMEN",
+      "couleur": "red",
+      "texte": "BREVET BLANC",
+      "detail": "Mardi et Mercredi",
+      "date": "Cette semaine",
+      "image": "images/20260507_1750_ChatGPT_Image_7_mai_2026__17_42_31.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 0.5999999999999996
     }
   ],
   "agenda": [
     {
-      "label": "Lundi 04 mai",
-      "couleur": "blue",
-      "nom": "3B - Formation Gestes qui sauvent",
-      "lieu": "Salle Lucie Aubrac",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Mardi 05 mai",
-      "couleur": "blue",
-      "nom": "3A - Formation Gestes qui sauvent",
-      "lieu": "Salle 01",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Mardi 05 mai",
-      "couleur": "blue",
-      "nom": "6ème - Intervention JIBUS",
-      "lieu": "Salle de classe",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Mercredi 06 mai",
-      "couleur": "orange",
-      "nom": "École ouverte - Coach à l'école",
-      "lieu": "Salle Lucie Aubrac",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Vendredi 08 mai",
+      "label": "Lundi 11 et mardi 12 mai",
       "couleur": "red",
-      "nom": "Jour Férié - Fin de la 2nd Guerre Mondiale",
+      "nom": "3ème - DNB Blanc n°2",
       "lieu": "",
       "semaine_prochaine": false
     },
     {
-      "label": "Lundi 11 et mardi 12 mai",
-      "couleur": "red",
-      "nom": "3ème - DNB Blanc n°2",
+      "label": "Mardi 19 mai - Après midi",
+      "couleur": "blue",
+      "nom": "Élève O'Lab - Eloquentia",
+      "lieu": "",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "Jeudi 21 mai - Matin",
+      "couleur": "purple",
+      "nom": "4A & 4D - Intervention JE TU IL",
+      "lieu": "",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "Jeudi 21 mai  - Après-Midi",
+      "couleur": "purple",
+      "nom": "4B & 4C - Intervention JE TU IL",
+      "lieu": "",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "Jeudi 21 mai ",
+      "couleur": "orange",
+      "nom": "Intervention PMI - 3B",
+      "lieu": "",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "Jeudi 21 mai - Après-midi",
+      "couleur": "orange",
+      "nom": "Intervention PMI - 3D",
+      "lieu": "",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "Jeudi 21 mai - Soir (17h-20h)",
+      "couleur": "purple",
+      "nom": "Aide à la saisie des voeux Educonnect",
       "lieu": "",
       "semaine_prochaine": true
     }
@@ -182,11 +154,345 @@
         "Fromage/laitage"
       ],
       "dessert": []
+    },
+    "2026-05-11": {
+      "entree": [
+        "Betteraves sauce <span class=\"bio-tag\">BIO</span>",
+        "vinaigrette",
+        "Salade de tomates <span class=\"bio-tag\">BIO</span>"
+      ],
+      "plat": [
+        "Riz à la mexicaine",
+        "Plat principal local 21"
+      ],
+      "accomp": [],
+      "fromage": [],
+      "dessert": [
+        "Liégeois au chocolat",
+        "Liégeois à la vanille"
+      ]
+    },
+    "2026-05-12": {
+      "entree": [],
+      "plat": [
+        "Saucisse de Toulouse",
+        "Steak de colin sauce",
+        "sétoise"
+      ],
+      "accomp": [
+        "Semoule <span class=\"bio-tag\">BIO</span>",
+        "Légumes couscous sans",
+        "viande"
+      ],
+      "fromage": [
+        "Petit moulé nature",
+        "Camembert"
+      ],
+      "dessert": [
+        "Kiwi",
+        "Ananas"
+      ]
+    },
+    "2026-05-18": {
+      "entree": [
+        "Salade de tomates",
+        "Concombre en salade"
+      ],
+      "plat": [
+        "Colombo de poisson et",
+        "riz",
+        "Riz à l'indienne"
+      ],
+      "accomp": [],
+      "fromage": [],
+      "dessert": [
+        "Purée de pommes",
+        "romarin <span class=\"bio-tag\">BIO</span>",
+        "Compote de pomme-"
+      ]
+    },
+    "2026-05-19": {
+      "entree": [],
+      "plat": [
+        "Boulettes de colin pané",
+        "Bouchée de blé"
+      ],
+      "accomp": [
+        "Pommes rissolées",
+        "Ratatouille"
+      ],
+      "fromage": [
+        "Edam",
+        "Pont l'Evêque"
+      ],
+      "dessert": [
+        "Pomme rouge",
+        "Ananas"
+      ]
+    },
+    "2026-05-21": {
+      "entree": [],
+      "plat": [
+        "Boulgour aux légumes et",
+        "haricots blancs au",
+        "colombo",
+        "Dahl de pois cassés et",
+        "boulgour pilaf <span class=\"bio-tag\">BIO</span>"
+      ],
+      "accomp": [],
+      "fromage": [
+        "Yaourt aromatisé vanille",
+        "Yaourt nature et <span class=\"bio-tag\">BIO</span>",
+        "sucre"
+      ],
+      "dessert": [
+        "Moelleux garniture",
+        "framboise",
+        "Beignet aux pommes"
+      ]
+    },
+    "2026-05-22": {
+      "entree": [],
+      "plat": [
+        "Pilon de poulet <span class=\"bio-tag\">BIO</span>",
+        "Stick <span class=\"vege-tag\">Végé</span>"
+      ],
+      "accomp": [
+        "Spirales <span class=\"bio-tag\">BIO</span>",
+        "Epinards hachés <span class=\"bio-tag\">BIO</span>",
+        "béchamel"
+      ],
+      "fromage": [
+        "Coulommiers",
+        "tomme croute fleurie"
+      ],
+      "dessert": [
+        "Flan nappé caramel",
+        "Gélifié chocolat"
+      ]
+    },
+    "2026-05-26": {
+      "entree": [],
+      "plat": [
+        "Semoule façon couscous",
+        "Blé aux légumes au 4",
+        "épices <span class=\"bio-tag\">BIO</span>"
+      ],
+      "accomp": [],
+      "fromage": [
+        "Yaourt brassé banane",
+        "Yaourt nature et <span class=\"bio-tag\">BIO</span>",
+        "sucre"
+      ],
+      "dessert": [
+        "Beignet à la framboise"
+      ]
+    },
+    "2026-05-28": {
+      "entree": [],
+      "plat": [
+        "Calamars à la romaine",
+        "Pané mozzarella"
+      ],
+      "accomp": [
+        "Pommes campagnardes",
+        "Petits pois au jus"
+      ],
+      "fromage": [
+        "Cantal",
+        "Tomme noire"
+      ],
+      "dessert": [
+        "Banane",
+        "Ananas"
+      ]
+    },
+    "2026-05-29": {
+      "entree": [
+        "Pastèque",
+        "Melon charentais"
+      ],
+      "plat": [
+        "Rôti de boeuf RAV nappé",
+        "de sauce hongroise",
+        "Filet de limande",
+        "meunière"
+      ],
+      "accomp": [
+        "Riz créole",
+        "Courgettes béchamel"
+      ],
+      "fromage": [
+        "Fromage frais sucré"
+      ],
+      "dessert": []
+    },
+    "2026-06-01": {
+      "entree": [],
+      "plat": [
+        "Sauté de poulet au",
+        "basilic",
+        "Bouchée azukis"
+      ],
+      "accomp": [
+        "Semoule <span class=\"bio-tag\">BIO</span>",
+        "Mélange légumes",
+        "haricots plats"
+      ],
+      "fromage": [
+        "Tomme noire",
+        "Pont l'Evêque"
+      ],
+      "dessert": [
+        "Ananas",
+        "Pomme rouge"
+      ]
+    },
+    "2026-06-02": {
+      "entree": [
+        "Concombre en salade",
+        "Salade de tomates"
+      ],
+      "plat": [
+        "Pizza au fromage"
+      ],
+      "accomp": [
+        "Salade verte <span class=\"bio-tag\">BIO</span>"
+      ],
+      "fromage": [],
+      "dessert": [
+        "Purée de pommes miel",
+        "Compote de pomme-",
+        "banane"
+      ]
+    },
+    "2026-06-04": {
+      "entree": [],
+      "plat": [
+        "Riz créole et base le",
+        "lobio",
+        "Blé tomate",
+        "méditerranéenne <span class=\"bio-tag\">BIO</span>"
+      ],
+      "accomp": [],
+      "fromage": [
+        "Fromage/laitage",
+        "Yaourt nature et <span class=\"bio-tag\">BIO</span>",
+        "sucre"
+      ],
+      "dessert": [
+        "Moelleux pâte de",
+        "noisettes",
+        "Muffin's à la vanille et",
+        "pépites de chocolat"
+      ]
+    },
+    "2026-06-05": {
+      "entree": [],
+      "plat": [
+        "Rôti de veau à",
+        "l'estragon",
+        "hoki pané"
+      ],
+      "accomp": [
+        "Ratatouille <span class=\"bio-tag\">BIO</span>",
+        "Purée de pommes de",
+        "terre et carottes <span class=\"bio-tag\">BIO</span>"
+      ],
+      "fromage": [
+        "Camembert <span class=\"bio-tag\">BIO</span>",
+        "Pointe de Brie <span class=\"bio-tag\">BIO</span>"
+      ],
+      "dessert": [
+        "Banane",
+        "Ananas"
+      ]
+    },
+    "2026-06-08": {
+      "entree": [],
+      "plat": [
+        "Steak de colin au curry",
+        "Gnocchetti sauce <span class=\"bio-tag\">BIO</span>",
+        "fromagère végé"
+      ],
+      "accomp": [
+        "Gnocchetti Sardi <span class=\"bio-tag\">BIO</span>",
+        "Jardinière de légumes",
+        "saveur soleil <span class=\"bio-tag\">BIO</span>"
+      ],
+      "fromage": [
+        "Saint Nectaire",
+        "Cantal"
+      ],
+      "dessert": [
+        "Pommes bicolore <span class=\"bio-tag\">BIO</span>",
+        "Ananas <span class=\"bio-tag\">BIO</span>"
+      ]
+    },
+    "2026-06-09": {
+      "entree": [
+        "Salade de maïs",
+        "Betteraves sauce <span class=\"bio-tag\">BIO</span>",
+        "vinaigrette"
+      ],
+      "plat": [
+        "Tarte au chèvre, à la",
+        "tomate et au basilic",
+        "Tarte aux poireaux"
+      ],
+      "accomp": [
+        "Salade verte <span class=\"bio-tag\">BIO</span>"
+      ],
+      "fromage": [],
+      "dessert": [
+        "Ananas",
+        "Pomme Golden"
+      ]
+    },
+    "2026-06-11": {
+      "entree": [
+        "Melon charentais",
+        "Pastèque"
+      ],
+      "plat": [
+        "Escalope de poulet",
+        "basquaise",
+        "Pavé de merlu sauce",
+        "huile d'olive et citron"
+      ],
+      "accomp": [
+        "Riz créole",
+        "Mélange légumes",
+        "haricots plats"
+      ],
+      "fromage": [
+        "Yaourt nature sucré <span class=\"bio-tag\">BIO</span>",
+        "Yaourt aromatisé vanille"
+      ],
+      "dessert": []
+    },
+    "2026-06-12": {
+      "entree": [],
+      "plat": [
+        "Cordon bleu de dinde",
+        "Pané mozzarella"
+      ],
+      "accomp": [
+        "Carottes à l'ail <span class=\"bio-tag\">BIO</span>",
+        "Lentilles <span class=\"bio-tag\">BIO</span>"
+      ],
+      "fromage": [
+        "Fromage frais aux fruits",
+        "50Grs"
+      ],
+      "dessert": [
+        "Cake à la fraise",
+        "Beignet aux pommes"
+      ]
     }
   },
   "ticker": [
-    "⚠️ Lundi 11 et mardi 12 mai : 3ème - DNB Blanc n°2",
-    "Mercredi 29 avril : Interview exclusive de L'astronaute Sophie Adenot depuis l'ISS"
+    "⚠️ Lundi 11 et mardi 12 mai : 3ème - DNB Blanc n°2"
   ],
   "citations": [
     {
@@ -202,7 +508,7 @@
       "auteur": "John Powell"
     },
     {
-      "texte": "Chuck Norris a compté jusqu'à l'infini... 2 fois...",
+      "texte": "Chuck Norris se souvient très bien du futur",
       "auteur": "Chuck Norris"
     }
   ]
