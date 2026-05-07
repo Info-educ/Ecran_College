@@ -620,8 +620,10 @@ function buildCardHTML(a, idx) {
      - imagePosition controle le cadrage ("center", "top", "bottom", "center 30%"…)
        valeur par defaut : "center center"                                          */
   var pos  = (a.imagePosition && a.imagePosition.length) ? a.imagePosition : 'center center';
+  var scale = (a.imageScale && a.imageScale !== 1) ? a.imageScale : null;
+  var bgSize = scale ? (scale * 100).toFixed(0) + '%' : 'cover';
   var bgStyle = hasImage
-    ? ' style="background-image:url(\'' + a.image + '\');background-position:' + pos + ';"'
+    ? ' style="background-image:url(\'' + a.image + '\');background-position:' + pos + ';background-size:' + bgSize + ';"'
     : '';
   var html = '<div class="actu-card visible' + extraClass + '"' + bgStyle + ' id="actu-card-' + idx + '">';
   html += '<div class="actu-card-accent ' + a.accentClass + '"></div>';
@@ -1170,29 +1172,46 @@ function buildAgenda(agenda) {
   var container = document.getElementById('agenda-items');
   if (!container) return;
 
-  var html = '';
-  var enSemaineProchaineSection = false;
-
+  /* Séparer les deux groupes en respectant l'ordre manuel de chacun */
+  var cetteSemaine   = [];
+  var semaineProchai = [];
   for (var i = 0; i < agenda.length; i++) {
-    var ev = agenda[i];
-
-    /* Séparateur de section au premier événement "semaine prochaine" */
-    if (ev.semaine_prochaine && !enSemaineProchaineSection) {
-      html += '<div class="agenda-section-sep" style="color:var(--muted);">⏭️ Semaine prochaine</div>';
-      enSemaineProchaineSection = true;
-    } else if (!ev.semaine_prochaine && !enSemaineProchaineSection && i === 0) {
-      html += '<div class="agenda-section-sep" style="color:var(--c1);">✅ Cette semaine</div>';
-    }
-
-    var label = ev.label.replace('\n', '<br>');
-    var opacite = ev.semaine_prochaine ? ' style="opacity:0.65;"' : '';
-    html += '<div class="agenda-item"' + opacite + '>';
-    html += '<span class="agenda-date-pill pill-' + ev.couleur + '">' + label + '</span>';
-    html += '<div class="agenda-info">';
-    html += '<div class="agenda-name">' + ev.nom + '</div>';
-    html += '<div class="agenda-lieu">' + ev.lieu + '</div>';
-    html += '</div></div>';
+    if (agenda[i].semaine_prochaine) { semaineProchai.push(agenda[i]); }
+    else                             { cetteSemaine.push(agenda[i]); }
   }
+
+  var html = '';
+
+  /* ── Groupe "Cette semaine" ── */
+  if (cetteSemaine.length > 0) {
+    html += '<div class="agenda-section-sep" style="color:var(--c1);">✅ Cette semaine</div>';
+    for (var j = 0; j < cetteSemaine.length; j++) {
+      var ev = cetteSemaine[j];
+      var label = ev.label.replace('\n', '<br>');
+      html += '<div class="agenda-item">';
+      html += '<span class="agenda-date-pill pill-' + ev.couleur + '">' + label + '</span>';
+      html += '<div class="agenda-info">';
+      html += '<div class="agenda-name">' + ev.nom + '</div>';
+      html += '<div class="agenda-lieu">' + ev.lieu + '</div>';
+      html += '</div></div>';
+    }
+  }
+
+  /* ── Groupe "Semaine prochaine" ── */
+  if (semaineProchai.length > 0) {
+    html += '<div class="agenda-section-sep" style="color:var(--muted);">⏭️ Semaine prochaine</div>';
+    for (var k = 0; k < semaineProchai.length; k++) {
+      var ev2 = semaineProchai[k];
+      var label2 = ev2.label.replace('\n', '<br>');
+      html += '<div class="agenda-item" style="opacity:0.65;">';
+      html += '<span class="agenda-date-pill pill-' + ev2.couleur + '">' + label2 + '</span>';
+      html += '<div class="agenda-info">';
+      html += '<div class="agenda-name">' + ev2.nom + '</div>';
+      html += '<div class="agenda-lieu">' + ev2.lieu + '</div>';
+      html += '</div></div>';
+    }
+  }
+
   container.innerHTML = html;
 }
 
@@ -1244,7 +1263,8 @@ function loadData() {
               detail:        src.detail        || '',
               date:          src.date          || '',
               image:         src.image         || '',
-              imagePosition: src.imagePosition || 'center center'
+              imagePosition: src.imagePosition || 'center center',
+              imageScale:    src.imageScale    || 1
             });
           }
           actuIdx = 0;
@@ -1306,7 +1326,7 @@ function showCitation(idx) {
 
 loadData();
 /* Rafraîchissement toutes les 15 min — l'admin peut pousser une MAJ à tout moment */
-setInterval(loadData, 900000);
+setInterval(loadData, 180000); /* rafraîchissement toutes les 3 min */
 
 function fetchMeteo() {
   /* Fichier JSON statique mis à jour par GitHub Action toutes les 30 min */
