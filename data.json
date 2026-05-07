@@ -92,9 +92,9 @@
       "semaine_prochaine": false
     },
     {
-      "label": "Jeudi 07 mai - Après-midi",
-      "couleur": "purple",
-      "nom": "3ème C - Intervention Protection maternelle et infantile",
+      "label": "Vendredi 08 mai",
+      "couleur": "red",
+      "nom": "Jour Férié - Fin de la 2nd Guerre Mondiale",
       "lieu": "",
       "semaine_prochaine": false
     },
@@ -104,13 +104,6 @@
       "nom": "3ème - DNB Blanc n°2",
       "lieu": "",
       "semaine_prochaine": true
-    },
-    {
-      "label": "Vendredi 08 mai",
-      "couleur": "red",
-      "nom": "Jour Férié - Fin de la 2nd Guerre Mondiale",
-      "lieu": "",
-      "semaine_prochaine": false
     }
   ],
   "menus": {
