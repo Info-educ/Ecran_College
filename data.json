@@ -60,6 +60,17 @@
       "image": "images/20260507_0910_Bleu_Blanc_Rouge_Jeux_Sportifs_Affiche_Illustratif.png",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 0.6499999999999997
+    },
+    {
+      "emoji": "📢",
+      "tag": "Mairie de Bagneux",
+      "couleur": "blue",
+      "texte": "Conférence : Mai, Ton écran en pause",
+      "detail": "mardi 12 mai - 19h - CSC La fontaine Gueffier",
+      "date": "Semaine prochaine",
+      "image": "images/20260507_0931_conf_rence_famille_12-05.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 0.6499999999999997
     }
   ],
   "agenda": [
