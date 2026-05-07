@@ -71,6 +71,17 @@
       "image": "images/20260507_0931_conf_rence_famille_12-05.png",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 0.6499999999999997
+    },
+    {
+      "emoji": "📢",
+      "tag": "Marie de Bagneux",
+      "couleur": "purple",
+      "texte": "Conférence - Mai, ton écran en pause",
+      "detail": "Jeudi 28 mai - 18h30 - RPE Clé de Sol",
+      "date": "",
+      "image": "images/20260507_0933_conf_rence_tout-petits_28-05.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 0.6499999999999997
     }
   ],
   "agenda": [
