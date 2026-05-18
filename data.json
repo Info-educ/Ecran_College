@@ -1,198 +1,162 @@
 {
   "semaine": {
-    "type": "A",
-    "periode": "8 au 12 juin 2026"
+    "type": "B",
+    "periode": "15 au 19 juin 2026"
   },
   "actus": [
     {
-      "emoji": "⚽",
-      "tag": "Ouverture du terrain sportif",
-      "couleur": "green",
-      "texte": "Ouverture du terrain sportif sur les temps de récréation",
-      "detail": "Récréations",
-      "date": "",
-      "image": "images/20260507_0910_Bleu_Blanc_Rouge_Jeux_Sportifs_Affiche_Illustratif.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 0.6499999999999997
-    },
-    {
-      "emoji": "📢",
-      "tag": "Mairie de Bagneux",
-      "couleur": "blue",
-      "texte": "Conférence : Mai, Ton écran en pause",
-      "detail": "mardi 12 mai - 19h - CSC La fontaine Gueffier",
-      "date": "Semaine prochaine",
-      "image": "images/20260507_0931_conf_rence_famille_12-05.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 0.6499999999999997
-    },
-    {
-      "emoji": "📢",
-      "tag": "Marie de Bagneux",
-      "couleur": "purple",
-      "texte": "Conférence - Mai, ton écran en pause",
-      "detail": "Jeudi 28 mai - 18h30 - RPE Clé de Sol",
-      "date": "",
-      "image": "images/20260507_0933_conf_rence_tout-petits_28-05.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 0.6999999999999997
-    },
-    {
-      "emoji": "📚",
-      "tag": "EXAMEN",
+      "emoji": "🎓",
+      "tag": "20/05 - Après-midi",
       "couleur": "red",
-      "texte": "BREVET BLANC",
-      "detail": "Mardi et Mercredi",
+      "texte": "Ecole ouverte - Préparation Oral DNB",
+      "detail": "20/05 - Aprsè-midi",
       "date": "Cette semaine",
-      "image": "images/20260507_1750_ChatGPT_Image_7_mai_2026__17_42_31.png",
+      "image": "images/20260518_1028_carre_oral_dnb-3ffde.png",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 0.5999999999999996
+    },
+    {
+      "emoji": "🏆",
+      "tag": "21/05 - Matin",
+      "couleur": "green",
+      "texte": "Remise Prix NAH",
+      "detail": "21/05 - Matin · Levallois-Perret",
+      "date": "Cette semaine",
+      "image": "images/20260518_1032_concours-nah-jpg-51657_2.jpg",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 0.99
+    },
+    {
+      "emoji": "📅",
+      "tag": "21/05 - Soir ",
+      "couleur": "blue",
+      "texte": "Aide à la saisie de vœux 3ème",
+      "detail": "21/05 - Soir ",
+      "date": "Cette semaine",
+      "image": "images/20260518_1035_aide-informatique.jpg",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
+    },
+    {
+      "emoji": "🎵",
+      "tag": "26/05 - Après-midi",
+      "couleur": "purple",
+      "texte": "Répétition Chorale",
+      "detail": "26/05 - Après-midi · Salle Lucie Aubrac",
+      "date": "Semaine prochaine",
+      "image": "images/20260518_1038_image-chorale-03.jpg",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
     }
   ],
   "agenda": [
     {
-      "label": "Lundi 11 et mardi 12 mai",
+      "label": "19/05 Après-midi",
+      "couleur": "blue",
+      "nom": "Élèves O'Lab - Eloquentia",
+      "lieu": "Salle Lucie Aubrac",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "20/05 - Après-midi",
       "couleur": "red",
-      "nom": "3ème - DNB Blanc n°2",
+      "nom": "Ecole ouverte - Préparation Oral DNB",
       "lieu": "",
       "semaine_prochaine": false
     },
     {
-      "label": "Mardi 19 mai - Après midi",
+      "label": "21/05 - Matin",
+      "couleur": "green",
+      "nom": "Remise Prix NAH",
+      "lieu": "Levallois-Perret",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "21/05 - Matin",
+      "couleur": "red",
+      "nom": "3B - Intervention PMI",
+      "lieu": "",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "21/05 - Aprsè-midi",
+      "couleur": "green",
+      "nom": "3D - Intervention PMI",
+      "lieu": "",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "21/05 - Soir ",
       "couleur": "blue",
-      "nom": "Élève O'Lab - Eloquentia",
+      "nom": "Aide à la saisie de vœux 3ème",
+      "lieu": "",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "22/05 - Matin",
+      "couleur": "orange",
+      "nom": "4A et 4D - Intervention JE TU IL",
+      "lieu": "",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "22/05 - Après-midi",
+      "couleur": "orange",
+      "nom": "4B et 4C - Intervention JE TU IL",
+      "lieu": "",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "26/05 - Après-midi",
+      "couleur": "purple",
+      "nom": "Répétition Chorale",
+      "lieu": "Salle Lucie Aubrac",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "26/05 - Soir",
+      "couleur": "orange",
+      "nom": "3B & 3C - Conseils de Classe",
+      "lieu": "Salle Lucie Aubrac et Salle 01",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "27/05 - Après-Midi",
+      "couleur": "purple",
+      "nom": "Ecole Ouverte - Sortie à la Forêt de Meudon",
+      "lieu": "Forêt de Meudon",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "28/05 - Matin",
+      "couleur": "red",
+      "nom": "3ème - Oral blanc du DNB",
       "lieu": "",
       "semaine_prochaine": true
     },
     {
-      "label": "Jeudi 21 mai - Matin",
-      "couleur": "purple",
-      "nom": "4A & 4D - Intervention JE TU IL",
-      "lieu": "",
+      "label": "28/05 - Soir",
+      "couleur": "orange",
+      "nom": "3A & 3D - Conseils de Classe",
+      "lieu": "Salle Lucie Aubrac et Salle 01",
       "semaine_prochaine": true
     },
     {
-      "label": "Jeudi 21 mai  - Après-Midi",
-      "couleur": "purple",
+      "label": "29/05 - Matin ",
+      "couleur": "green",
       "nom": "4B & 4C - Intervention JE TU IL",
       "lieu": "",
       "semaine_prochaine": true
     },
     {
-      "label": "Jeudi 21 mai ",
-      "couleur": "orange",
-      "nom": "Intervention PMI - 3B",
-      "lieu": "",
-      "semaine_prochaine": true
-    },
-    {
-      "label": "Jeudi 21 mai - Après-midi",
-      "couleur": "orange",
-      "nom": "Intervention PMI - 3D",
-      "lieu": "",
-      "semaine_prochaine": true
-    },
-    {
-      "label": "Jeudi 21 mai - Soir (17h-20h)",
-      "couleur": "purple",
-      "nom": "Aide à la saisie des voeux Educonnect",
+      "label": "29/05 - Après-midi",
+      "couleur": "green",
+      "nom": "4A & 4D - Intervention JE TU IL",
       "lieu": "",
       "semaine_prochaine": true
     }
   ],
   "menus": {
-    "2026-05-04": {
-      "entree": [
-        "Salade de Betteraves"
-      ],
-      "plat": [
-        "Plat principal local 03",
-        "Raviolis aux légumes"
-      ],
-      "accomp": [],
-      "fromage": [],
-      "dessert": [
-        "Crème dessert au",
-        "chocolat",
-        "vanille"
-      ]
-    },
-    "2026-05-05": {
-      "entree": [],
-      "plat": [
-        "Blé pilaf et base <span class=\"bio-tag\">BIO</span>",
-        "indienne <span class=\"vege-tag\">Végé</span>",
-        "Riz à l'andalouse"
-      ],
-      "accomp": [],
-      "fromage": [
-        "Yaourt nature sucré <span class=\"bio-tag\">BIO</span>",
-        "Yaourt brassé banane"
-      ],
-      "dessert": [
-        "Ananas",
-        "Kiwi"
-      ]
-    },
-    "2026-05-07": {
-      "entree": [
-        "Crêpe au fromage",
-        "Crêpe aux champignons"
-      ],
-      "plat": [
-        "Poulet sauté sauce",
-        "frigousse",
-        "Filet de hoki sauce",
-        "beurre blanc"
-      ],
-      "accomp": [
-        "Purée de pommes de",
-        "terre",
-        "Chou-fleur béchamel <span class=\"bio-tag\">BIO</span>"
-      ],
-      "fromage": [
-        "Fromage/laitage"
-      ],
-      "dessert": []
-    },
-    "2026-05-11": {
-      "entree": [
-        "Betteraves sauce <span class=\"bio-tag\">BIO</span>",
-        "vinaigrette",
-        "Salade de tomates <span class=\"bio-tag\">BIO</span>"
-      ],
-      "plat": [
-        "Riz à la mexicaine",
-        "Plat principal local 21"
-      ],
-      "accomp": [],
-      "fromage": [],
-      "dessert": [
-        "Liégeois au chocolat",
-        "Liégeois à la vanille"
-      ]
-    },
-    "2026-05-12": {
-      "entree": [],
-      "plat": [
-        "Saucisse de Toulouse",
-        "Steak de colin sauce",
-        "sétoise"
-      ],
-      "accomp": [
-        "Semoule <span class=\"bio-tag\">BIO</span>",
-        "Légumes couscous sans",
-        "viande"
-      ],
-      "fromage": [
-        "Petit moulé nature",
-        "Camembert"
-      ],
-      "dessert": [
-        "Kiwi",
-        "Ananas"
-      ]
-    },
     "2026-05-18": {
       "entree": [
         "Salade de tomates",
@@ -489,27 +453,91 @@
         "Cake à la fraise",
         "Beignet aux pommes"
       ]
+    },
+    "2026-06-15": {
+      "entree": [
+        "Crêpe au fromage",
+        "Crêpe aux champignons"
+      ],
+      "plat": [
+        "Nuggets de volaille",
+        "Bouchée de blé"
+      ],
+      "accomp": [
+        "Haricots verts à la <span class=\"bio-tag\">BIO</span>",
+        "ciboulette",
+        "Blé et jus de légumes <span class=\"bio-tag\">BIO</span>"
+      ],
+      "fromage": [
+        "Yaourt brassé aux fruits",
+        "Yaourt nature et <span class=\"bio-tag\">BIO</span>",
+        "sucre"
+      ],
+      "dessert": []
+    },
+    "2026-06-16": {
+      "entree": [
+        "Melon charentais",
+        "Pastèque"
+      ],
+      "plat": [
+        "Parmentier de poisson",
+        "polenta carotte",
+        "Boulgour aux lentilles et",
+        "au maïs <span class=\"bio-tag\">BIO</span> <span class=\"vege-tag\">Végé</span>"
+      ],
+      "accomp": [],
+      "fromage": [
+        "Fromage frais sucré"
+      ],
+      "dessert": []
+    },
+    "2026-06-18": {
+      "entree": [],
+      "plat": [
+        "Axoa de veau",
+        "Risoni à la basque"
+      ],
+      "accomp": [
+        "Riz pilaf",
+        "Compotée de tomate"
+      ],
+      "fromage": [
+        "Saint Nectaire",
+        "Bûchette mi-chèvre"
+      ],
+      "dessert": [
+        "Clafoutis aux cerises"
+      ]
+    },
+    "2026-06-19": {
+      "entree": [
+        "Concombre <span class=\"bio-tag\">BIO</span>",
+        "vinaigrette",
+        "Salade de tomates <span class=\"bio-tag\">BIO</span>"
+      ],
+      "plat": [
+        "Sauté de bœuf RAV au",
+        "miel",
+        "Colin gratiné au fromage"
+      ],
+      "accomp": [
+        "Semoule <span class=\"bio-tag\">BIO</span>",
+        "Courgettes à la <span class=\"bio-tag\">BIO</span>",
+        "tomate"
+      ],
+      "fromage": [],
+      "dessert": [
+        "Banane",
+        "Ananas"
+      ]
     }
   },
   "ticker": [
-    "⚠️ Lundi 11 et mardi 12 mai : 3ème - DNB Blanc n°2"
+    "✅ 21/05 - Matin : Remise Prix NAH — Levallois-Perret",
+    "📅 21/05 - Soir  : Aide à la saisie de vœux 3ème",
+    "🔔 26/05 - Soir : 3B & 3C - Conseils de Classe — Salle Lucie Aubrac et Salle 01",
+    "🎭 27/05 - Après-Midi : Ecole Ouverte - Sortie à la Forêt de Meudon — Forêt de Meudon"
   ],
-  "citations": [
-    {
-      "texte": "L'éducation est l'arme la plus puissante pour changer le monde.",
-      "auteur": "Nelson Mandela"
-    },
-    {
-      "texte": "Il n’y a qu’une façon d’échouer, c’est d’abandonner avant d’avoir réussi",
-      "auteur": "Olivier Lockert"
-    },
-    {
-      "texte": "La seule véritable erreur est celle dont on ne retire aucun enseignement",
-      "auteur": "John Powell"
-    },
-    {
-      "texte": "Chuck Norris se souvient très bien du futur",
-      "auteur": "Chuck Norris"
-    }
-  ]
+  "citations": []
 }
