@@ -1,157 +1,112 @@
 {
   "semaine": {
     "type": "B",
-    "periode": "15 au 19 juin 2026"
+    "periode": "08 au 19 juin 2026"
   },
   "actus": [
     {
-      "emoji": "🎓",
-      "tag": "20/05 - Après-midi",
-      "couleur": "red",
-      "texte": "Ecole ouverte - Préparation Oral DNB",
-      "detail": "20/05 - Aprsè-midi",
-      "date": "Cette semaine",
-      "image": "images/20260518_1028_carre_oral_dnb-3ffde.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 0.5999999999999996
-    },
-    {
-      "emoji": "🏆",
-      "tag": "21/05 - Matin",
-      "couleur": "green",
-      "texte": "Remise Prix NAH",
-      "detail": "21/05 - Matin · Levallois-Perret",
-      "date": "Cette semaine",
-      "image": "images/20260518_1032_concours-nah-jpg-51657_2.jpg",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 0.99
-    },
-    {
-      "emoji": "📅",
-      "tag": "21/05 - Soir ",
+      "emoji": "📣",
+      "tag": "Info",
       "couleur": "blue",
-      "texte": "Aide à la saisie de vœux 3ème",
-      "detail": "21/05 - Soir ",
-      "date": "Cette semaine",
-      "image": "images/20260518_1035_aide-informatique.jpg",
+      "texte": "Inscription des futurs 6ème",
+      "detail": "Salle Lucie Aubrac",
+      "date": "Jeudi 11 juin - 17h - 20h",
+      "image": "images/20260611_0931_Capture.jpg",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 1
     },
     {
-      "emoji": "🎵",
-      "tag": "26/05 - Après-midi",
+      "emoji": "🎓",
+      "tag": "Info",
+      "couleur": "blue",
+      "texte": "ORAL DU DNB - BON COURAGE À TOUS",
+      "detail": "Vendredi 12 juin",
+      "date": "Cette semaine",
+      "image": "images/20260611_0934_carre_oral_dnb-3ffde.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
+    },
+    {
+      "emoji": "📚",
+      "tag": "Mercredi 17 juin - Après-midi",
       "couleur": "purple",
-      "texte": "Répétition Chorale",
-      "detail": "26/05 - Après-midi · Salle Lucie Aubrac",
+      "texte": "Ecole ouverte - Révisions Brevet",
+      "detail": "Mercredi 17 juin - Après-midi · PENSER À VOUS INSCRIRE",
       "date": "Semaine prochaine",
-      "image": "images/20260518_1038_image-chorale-03.jpg",
+      "image": "images/20260611_0940_Capture.jpg",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1.3500000000000003
+    },
+    {
+      "emoji": "🌟",
+      "tag": "Jeudi 18 juin - 16h30",
+      "couleur": "blue",
+      "texte": "Spectacle de cirque",
+      "detail": "Jeudi 18 juin - 16h30 · Petit Dojo",
+      "date": "Semaine prochaine",
+      "image": "images/20260611_0943_Capture.jpg",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
+    },
+    {
+      "emoji": "🚌",
+      "tag": "Du 17 au 19 juin",
+      "couleur": "purple",
+      "texte": "Voyage en Auvergne",
+      "detail": "Du 17 au 19 juin - Départ 6h",
+      "date": "Semaine prochaine",
+      "image": "images/20260611_0949_Capture.jpg",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 1
     }
   ],
   "agenda": [
     {
-      "label": "19/05 Après-midi",
-      "couleur": "blue",
-      "nom": "Élèves O'Lab - Eloquentia",
-      "lieu": "Salle Lucie Aubrac",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "20/05 - Après-midi",
-      "couleur": "red",
-      "nom": "Ecole ouverte - Préparation Oral DNB",
-      "lieu": "",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "21/05 - Matin",
-      "couleur": "green",
-      "nom": "Remise Prix NAH",
-      "lieu": "Levallois-Perret",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "21/05 - Matin",
-      "couleur": "red",
-      "nom": "3B - Intervention PMI",
-      "lieu": "",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "21/05 - Aprsè-midi",
-      "couleur": "green",
-      "nom": "3D - Intervention PMI",
-      "lieu": "",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "21/05 - Soir ",
-      "couleur": "blue",
-      "nom": "Aide à la saisie de vœux 3ème",
-      "lieu": "",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "22/05 - Matin",
+      "label": "Jeudi 11 juin",
       "couleur": "orange",
-      "nom": "4A et 4D - Intervention JE TU IL",
+      "nom": "3B - Sortie IRCAM",
       "lieu": "",
       "semaine_prochaine": false
     },
     {
-      "label": "22/05 - Après-midi",
+      "label": "Jeudi 11 juin",
+      "couleur": "green",
+      "nom": "5C - Sortie Citée de l'architecture et du patrimoine",
+      "lieu": "",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "Lundi 15 juin",
       "couleur": "orange",
-      "nom": "4B et 4C - Intervention JE TU IL",
+      "nom": "3B - Sortie IRCAM",
       "lieu": "",
-      "semaine_prochaine": false
+      "semaine_prochaine": true
     },
     {
-      "label": "26/05 - Après-midi",
+      "label": "Mercredi 17 juin - Après-midi",
       "couleur": "purple",
-      "nom": "Répétition Chorale",
-      "lieu": "Salle Lucie Aubrac",
+      "nom": "Ecole ouverte - Révisions Brevet",
+      "lieu": "PENSER À VOUS INSCRIRE",
       "semaine_prochaine": true
     },
     {
-      "label": "26/05 - Soir",
-      "couleur": "orange",
-      "nom": "3B & 3C - Conseils de Classe",
-      "lieu": "Salle Lucie Aubrac et Salle 01",
+      "label": "Jeudi 18 juin - 16h30",
+      "couleur": "blue",
+      "nom": "Spectacle de cirque",
+      "lieu": "Petit Dojo",
       "semaine_prochaine": true
     },
     {
-      "label": "27/05 - Après-Midi",
+      "label": "Semaine du 15 au 19 juin",
+      "couleur": "green",
+      "nom": "Restitution des Manuels scolaire",
+      "lieu": "Penser à préparer tous vos manuels",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "Du 17 au 19 juin",
       "couleur": "purple",
-      "nom": "Ecole Ouverte - Sortie à la Forêt de Meudon",
-      "lieu": "Forêt de Meudon",
-      "semaine_prochaine": true
-    },
-    {
-      "label": "28/05 - Matin",
-      "couleur": "red",
-      "nom": "3ème - Oral blanc du DNB",
-      "lieu": "",
-      "semaine_prochaine": true
-    },
-    {
-      "label": "28/05 - Soir",
-      "couleur": "orange",
-      "nom": "3A & 3D - Conseils de Classe",
-      "lieu": "Salle Lucie Aubrac et Salle 01",
-      "semaine_prochaine": true
-    },
-    {
-      "label": "29/05 - Matin ",
-      "couleur": "green",
-      "nom": "4B & 4C - Intervention JE TU IL",
-      "lieu": "",
-      "semaine_prochaine": true
-    },
-    {
-      "label": "29/05 - Après-midi",
-      "couleur": "green",
-      "nom": "4A & 4D - Intervention JE TU IL",
+      "nom": "Voyage en Auvergne",
       "lieu": "",
       "semaine_prochaine": true
     }
@@ -534,10 +489,25 @@
     }
   },
   "ticker": [
-    "✅ 21/05 - Matin : Remise Prix NAH — Levallois-Perret",
-    "📅 21/05 - Soir  : Aide à la saisie de vœux 3ème",
-    "🔔 26/05 - Soir : 3B & 3C - Conseils de Classe — Salle Lucie Aubrac et Salle 01",
-    "🎭 27/05 - Après-Midi : Ecole Ouverte - Sortie à la Forêt de Meudon — Forêt de Meudon"
+    "✅ Semaine du 15 au 19 juin : Restitution des Manuels scolaire — Penser à préparer tous vos manuels",
+    "🎭 Du 17 au 19 juin : Voyage en Auvergne"
   ],
-  "citations": []
+  "citations": [
+    {
+      "texte": "Une école où es écoliers feraient la loi seraient une triste école.",
+      "auteur": "Ernest Renan"
+    },
+    {
+      "texte": "Les maitres d'école sont les jardiniers en intelligences humaines",
+      "auteur": "Victor Hugo"
+    },
+    {
+      "texte": "Mieux vaut une tête bien faite qu'une tête bien pleine",
+      "auteur": "Michel de Montaigne"
+    },
+    {
+      "texte": "La seule véritable erreur est celle dont on ne retire aucun enseignement",
+      "auteur": "John Wesley Powell"
+    }
+  ]
 }
