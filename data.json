@@ -58,6 +58,28 @@
       "image": "images/20260611_0949_Capture.jpg",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 1
+    },
+    {
+      "emoji": "📌",
+      "tag": "Info",
+      "couleur": "blue",
+      "texte": "Nouvelle information",
+      "detail": "",
+      "date": "Cette semaine",
+      "image": "",
+      "imagePosition": "center center",
+      "imageScale": 1
+    },
+    {
+      "emoji": "🚌",
+      "tag": "Sortie scolaire",
+      "couleur": "green",
+      "texte": "Visite de la laiterie la chapelle",
+      "detail": "1er avril 2026",
+      "date": "il y a quelques semaines",
+      "image": "images/20260611_1038_2026_04_Sortie_6eme_Laiterie_la_Chapelle.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
     }
   ],
   "agenda": [
@@ -104,7 +126,7 @@
       "semaine_prochaine": true
     },
     {
-      "label": "Du 17 au 19 juin",
+      "label": "du 17 au 19 juin 2026",
       "couleur": "purple",
       "nom": "Voyage en Auvergne",
       "lieu": "",
