@@ -80,6 +80,17 @@
       "image": "images/20260611_1038_2026_04_Sortie_6eme_Laiterie_la_Chapelle.png",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 1
+    },
+    {
+      "emoji": "📚",
+      "tag": "Collecte",
+      "couleur": "red",
+      "texte": "COLLECTE DE LIVRES",
+      "detail": "Jusqu'au 1er Juillet",
+      "date": "Cette semaine",
+      "image": "images/20260611_1322_collecte_de_livres.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 0.5999999999999996
     }
   ],
   "agenda": [
