@@ -25,6 +25,17 @@
       "image": "images/20260617_1442_Capture.jpg",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 1
+    },
+    {
+      "emoji": "✏️",
+      "tag": "Vendredi 26 juin - MATIN",
+      "couleur": "red",
+      "texte": "Epreuve de Français du DNB",
+      "detail": "Vendredi 26 juin - MATIN",
+      "date": "Semaine prochaine",
+      "image": "images/20260617_1445_Capture.jpg",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
     }
   ],
   "agenda": [
@@ -61,6 +72,13 @@
       "couleur": "red",
       "nom": "Conseils de classe 6/5/4",
       "lieu": "Salle Lucie Aubrac et Salle 01",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "Vendredi 26 juin - MATIN",
+      "couleur": "red",
+      "nom": "Epreuve de Français du DNB",
+      "lieu": "",
       "semaine_prochaine": true
     }
   ],
