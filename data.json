@@ -80,6 +80,13 @@
       "nom": "Epreuve de Français du DNB",
       "lieu": "",
       "semaine_prochaine": true
+    },
+    {
+      "label": "Mercredi 24 juin",
+      "couleur": "green",
+      "nom": "Ecole Ouverte",
+      "lieu": "Citée universitaire",
+      "semaine_prochaine": true
     }
   ],
   "menus": {
