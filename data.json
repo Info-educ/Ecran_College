@@ -1,92 +1,44 @@
 {
   "semaine": {
-    "type": "B",
-    "periode": "15 au 19 juin 2026"
+    "type": "A",
+    "periode": "31 août au 4 septembre 2026"
   },
   "actus": [
     {
-      "emoji": "🏫",
-      "tag": "Lundi 22 et mardi 23 - 17h à 20h",
-      "couleur": "red",
-      "texte": "Conseils de classe 6/5/4",
-      "detail": "Lundi 22 et mardi 23 - 17h à 20h · Salle Lucie Aubrac et Salle 01",
-      "date": "Semaine prochaine",
-      "image": "images/20260617_1442_Capture1.jpg",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 1
-    },
-    {
-      "emoji": "🎭",
-      "tag": "Jeudi 18 juin - 16h30",
+      "emoji": "🔔",
+      "tag": "Info",
       "couleur": "blue",
-      "texte": "Spectacle de cirque",
-      "detail": "Jeudi 18 juin - 16h30 · Petit Dojo",
+      "texte": "Bienvenue à tous et bonne rentrée !!",
+      "detail": "",
       "date": "Cette semaine",
-      "image": "images/20260617_1442_Capture.jpg",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 1
+      "image": "images/20260827_1443_10-facons-originales-de-souhaiter-une-bonne-rentree.jpg",
+      "imagePosition": "81.8% 33.5%"
     },
     {
-      "emoji": "✏️",
-      "tag": "Vendredi 26 juin - MATIN",
-      "couleur": "red",
-      "texte": "Epreuve de Français du DNB",
-      "detail": "Vendredi 26 juin - MATIN",
-      "date": "Semaine prochaine",
-      "image": "images/20260617_1445_Capture.jpg",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 1
+      "emoji": "📚",
+      "tag": "Info",
+      "couleur": "green",
+      "texte": "Distribution des manuels scolaires",
+      "detail": "Permanence",
+      "date": "Cette semaine",
+      "image": "images/20260827_1445_Capture.jpg",
+      "imagePosition": "center center"
     }
   ],
   "agenda": [
     {
-      "label": "Lundi 15 juin",
-      "couleur": "orange",
-      "nom": "3B - Sortie IRCAM",
-      "lieu": "",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Mercredi 17 juin - Après-midi",
+      "label": "Mardi 1er septembre",
       "couleur": "purple",
-      "nom": "Ecole ouverte - Révisions Brevet",
-      "lieu": "PENSER À VOUS INSCRIRE",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Jeudi 18 juin - 16h30",
-      "couleur": "blue",
-      "nom": "Spectacle de cirque",
-      "lieu": "Petit Dojo",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Semaine du 15 au 19 juin",
-      "couleur": "green",
-      "nom": "Restitution des Manuels scolaire",
-      "lieu": "Penser à préparer tous vos manuels",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Lundi 22 et mardi 23 - 17h à 20h",
-      "couleur": "red",
-      "nom": "Conseils de classe 6/5/4",
-      "lieu": "Salle Lucie Aubrac et Salle 01",
-      "semaine_prochaine": true
-    },
-    {
-      "label": "Vendredi 26 juin - MATIN",
-      "couleur": "red",
-      "nom": "Epreuve de Français du DNB",
+      "nom": "Rentrée scolaires",
       "lieu": "",
-      "semaine_prochaine": true
+      "semaine_prochaine": false
     },
     {
-      "label": "Mercredi 24 juin",
-      "couleur": "green",
-      "nom": "Ecole Ouverte",
-      "lieu": "Citée universitaire",
-      "semaine_prochaine": true
+      "label": "Mercredi 2 septembre",
+      "couleur": "orange",
+      "nom": "Début des cours",
+      "lieu": "",
+      "semaine_prochaine": false
     }
   ],
   "menus": {
@@ -169,23 +121,29 @@
       ]
     }
   },
-  "ticker": [],
+  "ticker": [
+    "Emplois du temps provisoires du 2 septembre au 18 septembre."
+  ],
   "citations": [
-    {
-      "texte": "Une école où es écoliers feraient la loi seraient une triste école.",
-      "auteur": "Ernest Renan"
-    },
     {
       "texte": "Les maitres d'école sont les jardiniers en intelligences humaines",
       "auteur": "Victor Hugo"
     },
     {
-      "texte": "Mieux vaut une tête bien faite qu'une tête bien pleine",
-      "auteur": "Michel de Montaigne"
-    },
-    {
       "texte": "La seule véritable erreur est celle dont on ne retire aucun enseignement",
       "auteur": "John Wesley Powell"
+    },
+    {
+      "texte": "Le seul véritable voyage, ce n’est pas d’aller vers de nouveaux paysages, mais d’avoir de nouveaux yeux.",
+      "auteur": "Marcel Proust"
+    },
+    {
+      "texte": "L’éducation est l’arme la plus puissante qu’on puisse utiliser pour changer le monde.",
+      "auteur": "Nelson Mandela"
+    },
+    {
+      "texte": "La folie, c’est de faire toujours la même chose et de s’attendre à un résultat différent",
+      "auteur": "Albert Einstein"
     }
   ]
 }
