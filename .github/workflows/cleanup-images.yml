@@ -18,21 +18,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Supprimer les images de plus de 3 semaines
+      - name: Supprimer les images de plus de 3 semaines (sauf celles encore affichées)
         run: |
           # Seuil : 21 jours
           CUTOFF=$(date -d '21 days ago' +%Y%m%d)
           echo "Suppression des images antérieures au $CUTOFF"
 
           DELETED=0
+          KEPT=0
 
-          # Les fichiers dans images/ sont nommés AAAAMMJJ_HHmm_nom.ext
-          # On extrait la date du préfixe et on compare avec le seuil
+          # CORRECTION : on ne supprime plus une image encore référencée par
+          # data.json. Avant, une information laissée plus de 3 semaines au
+          # carrousel (ou un interstitiel plein écran de longue durée) voyait
+          # son image disparaître du dépôt, et l'écran affichait un cadre vide.
+          # L'intention du nettoyage est de supprimer les images INUTILISÉES.
           if [ -d images ]; then
             for f in images/*; do
               [ -f "$f" ] || continue
               BASENAME=$(basename "$f")
-              # Extraire les 8 premiers caractères = AAAAMMJJ
+
+              # Image encore citée dans data.json -> on garde, quel que soit son âge
+              if [ -f data.json ] && grep -qF "$BASENAME" data.json; then
+                echo "  · Conservé (encore affiché) : $f"
+                KEPT=$((KEPT + 1))
+                continue
+              fi
+
+              # Les fichiers dans images/ sont nommés AAAAMMJJ_HHmm_nom.ext
+              # On extrait la date du préfixe et on compare avec le seuil
               FILEDATE="${BASENAME:0:8}"
               # Vérifier que c'est bien un nombre (format attendu)
               if echo "$FILEDATE" | grep -qE '^[0-9]{8}$'; then
@@ -46,6 +59,8 @@ jobs:
               fi
             done
           fi
+
+          echo "Images conservées car encore affichées : $KEPT"
 
           if [ "$DELETED" -gt 0 ]; then
             git config user.name "github-actions[bot]"
