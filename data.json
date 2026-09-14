@@ -25,6 +25,17 @@
       "image": "images/20260914_0825_Capture.png",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 1
+    },
+    {
+      "emoji": "⚽",
+      "tag": "Mercredi 16 septembre",
+      "couleur": "orange",
+      "texte": "JNSS - Journée Nationale du sport scolaire",
+      "detail": "Mercredi 16 septembre",
+      "date": "Cette semaine",
+      "image": "images/20260914_0958_Capture.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 0.8999999999999999
     }
   ],
   "agenda": [
@@ -39,6 +50,13 @@
       "label": "Mardi 15 septembre 2026",
       "couleur": "green",
       "nom": "Réunion de rentrée - Parents",
+      "lieu": "",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "Mercredi 16 septembre",
+      "couleur": "orange",
+      "nom": "JNSS - Journée Nationale du sport scolaire",
       "lieu": "",
       "semaine_prochaine": false
     }
@@ -289,5 +307,10 @@
       "texte": "La folie, c’est de faire toujours la même chose et de s’attendre à un résultat différent",
       "auteur": "Albert Einstein"
     }
-  ]
+  ],
+  "plein_ecran": {
+    "actif": false,
+    "intervalle": 10,
+    "items": []
+  }
 }
