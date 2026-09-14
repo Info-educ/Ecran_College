@@ -456,6 +456,20 @@
     box-shadow: 0 34px 90px rgba(0,0,0,0.55);
   }
 
+  /* Deux couches empilées dans .fs-stage : l'élément qui arrive glisse
+     depuis la droite pendant que celui qui part glisse vers la gauche.
+     Même mécanique quel que soit le type d'élément (image, PDF converti
+     en image, message) — c'est le contenu HTML posé dedans qui varie. */
+  .fs-slide {
+    position: absolute; inset: 0;
+    background: var(--dark);
+    transform: translateX(100%);
+    transition: transform 0.8s cubic-bezier(.45,0,.2,1);
+    will-change: transform;
+  }
+  .fs-slide.current { transform: translateX(0); }
+  .fs-slide.exit     { transform: translateX(-100%); }
+
   .fs-img {
     position: absolute; inset: 0;
     background-repeat: no-repeat;
@@ -1488,6 +1502,27 @@ var overlayItemTimer= null;   /* durée de l'élément en cours         */
 var overlaySig      = null;   /* évite de relancer si rien n'a changé */
 var overlayGen      = 0;      /* numéro de génération : un passage lancé avec
                                  une ancienne configuration s'arrête de lui-même */
+var overlayActiveSlideKey = null;   /* 'a' | 'b' | null : couche actuellement visible */
+var OVERLAY_FIRST_DELAY_MS = 15000; /* tout premier passage (jamais encore eu lieu) : 15 s,
+                                        pour vérifier tout de suite que ça marche —
+                                        pas besoin d'attendre l'intervalle complet */
+var OVERLAY_STORAGE_KEY = 'jc_fs_last_pass_start';
+
+/* MagicInfo recharge entièrement cette page toutes les ~10 minutes (réglage
+   du lecteur, indépendant de ce fichier) : à chaque rechargement, toutes les
+   variables JS repartent de zéro. localStorage, lui, survit au rechargement
+   — on s'en sert pour retenir quand le dernier passage a réellement
+   commencé, et calculer depuis le VRAI temps écoulé plutôt que redémarrer
+   un minuteur à chaque fois. */
+function overlayReadLastStart() {
+  try {
+    var v = localStorage.getItem(OVERLAY_STORAGE_KEY);
+    return v ? Number(v) : null;
+  } catch (e) { return null; }
+}
+function overlayWriteLastStart(ts) {
+  try { localStorage.setItem(OVERLAY_STORAGE_KEY, String(ts)); } catch (e) {}
+}
 
 function fsEsc(v) {
   return String(v == null ? '' : v)
@@ -1519,10 +1554,15 @@ function overlayActiveItems() {
   return out;
 }
 
-/* Appelée à chaque chargement de data.json */
+/* Appelée à chaque chargement de data.json — y compris juste après un
+   rechargement complet de la page par MagicInfo, plusieurs fois par heure. */
 function applyOverlayConfig(cfg) {
   var sig = JSON.stringify(cfg || null);
-  if (sig === overlaySig) return;   /* rien n'a changé : ne pas interrompre */
+  if (sig === overlaySig) return;   /* rien n'a changé DANS CETTE VIE DE PAGE : ne pas
+                                        interrompre un passage en cours. Après un
+                                        rechargement, overlaySig repart à null, donc ce
+                                        test ne suffit plus à lui seul à savoir si un
+                                        passage est réellement dû : voir scheduleNextOverlay. */
   overlaySig  = sig;
   OVERLAY_CFG = cfg || null;
 
@@ -1535,17 +1575,38 @@ function applyOverlayConfig(cfg) {
   scheduleNextOverlay();
 }
 
+// Calcule QUAND doit avoir lieu le prochain passage, à partir du temps
+// RÉELLEMENT écoulé depuis le dernier (mémorisé dans localStorage, donc
+// valable même après un rechargement complet de la page). C'est ce calcul —
+// et non plus un simple minuteur remis à zéro à chaque chargement — qui
+// permet à un intervalle de 20, 30 ou 60 minutes d'être respecté malgré les
+// rechargements de MagicInfo toutes les ~10 minutes.
 function scheduleNextOverlay() {
   if (overlayTimer) { clearTimeout(overlayTimer); }
   var mins = (OVERLAY_CFG && OVERLAY_CFG.intervalle) ? Number(OVERLAY_CFG.intervalle) : 10;
   if (!(mins > 0)) mins = 10;
-  overlayTimer = setTimeout(runOverlayPass, mins * 60000);
+  var intervalMs = mins * 60000;
+
+  var lastStart = overlayReadLastStart();
+  var delay;
+  if (lastStart === null) {
+    // Jamais encore eu de passage sur cet écran (ou stockage local vide) :
+    // on se lance vite pour permettre une vérification immédiate.
+    delay = OVERLAY_FIRST_DELAY_MS;
+  } else {
+    var elapsed = Date.now() - lastStart;
+    delay = (elapsed >= intervalMs) ? OVERLAY_FIRST_DELAY_MS : (intervalMs - elapsed);
+  }
+  overlayTimer = setTimeout(runOverlayPass, delay);
 }
 
 /* Un passage complet : tous les items actifs à la suite */
 function runOverlayPass() {
   var items = overlayActiveItems();
   if (items.length === 0) { scheduleNextOverlay(); return; }
+  // Le passage démarre réellement MAINTENANT : c'est ce top qui compte pour
+  // le prochain calcul d'intervalle, y compris après un rechargement.
+  overlayWriteLastStart(Date.now());
   playOverlayItem(items, 0, overlayGen);
 }
 
@@ -1563,24 +1624,18 @@ function playOverlayItem(items, i, gen) {
 
   showOverlayItem(it, secs);
 
+  /* L'élément suivant démarre exactement quand celui-ci se termine — jamais
+     avant (donc jamais deux au même instant), et sans pause noire entre les
+     deux : showOverlayItem fait glisser le nouveau par-dessus l'ancien. */
   overlayItemTimer = setTimeout(function() {
     if (gen !== overlayGen) return;
-    /* Fondu de sortie avant l'élément suivant (ou avant le retour à l'écran) */
-    var ov = document.getElementById('fs-overlay');
-    if (ov) removeClass(ov, 'show');
-    setTimeout(function() { playOverlayItem(items, i + 1, gen); }, 700);
+    playOverlayItem(items, i + 1, gen);
   }, secs * 1000);
 }
 
-function showOverlayItem(it, secs) {
-  var ov    = document.getElementById('fs-overlay');
-  var stage = document.getElementById('fs-stage');
-  var bar   = document.getElementById('fs-bar');
-  if (!ov || !stage) return;
-
-  removeClass(ov, 'panneau');
-  if (it.taille === 'panneau') addClass(ov, 'panneau');
-
+/* Construit le contenu d'un élément — identique quel que soit le type
+   (image, PDF converti en image, message) : c'est ce même bloc qui glisse. */
+function buildOverlaySlideHTML(it) {
   var html = '';
   if (it.type === 'texte') {
     var corps = fsEsc(it.texte);
@@ -1609,12 +1664,70 @@ function showOverlayItem(it, secs) {
       html += '</div>';
     }
   }
+  return html;
+}
 
-  stage.innerHTML = html;
+/* Prépare les deux couches empilées de .fs-stage (créées une seule fois). */
+function overlaySlideLayers() {
+  var stage = document.getElementById('fs-stage');
+  if (!stage) return null;
+  var a = document.getElementById('fs-slide-a');
+  if (!a) {
+    stage.innerHTML = '<div class="fs-slide" id="fs-slide-a"></div><div class="fs-slide" id="fs-slide-b"></div>';
+    a = document.getElementById('fs-slide-a');
+  }
+  return { a: a, b: document.getElementById('fs-slide-b') };
+}
+
+function overlayNextFrame(fn) {
+  if (window.requestAnimationFrame) { window.requestAnimationFrame(fn); }
+  else { setTimeout(fn, 16); }
+}
+
+function showOverlayItem(it, secs) {
+  var ov  = document.getElementById('fs-overlay');
+  var bar = document.getElementById('fs-bar');
+  if (!ov) return;
+
+  removeClass(ov, 'panneau');
+  if (it.taille === 'panneau') addClass(ov, 'panneau');
+
+  var layers = overlaySlideLayers();
+  if (!layers) return;
+  var outKey = overlayActiveSlideKey;
+  var inKey  = (outKey === 'a') ? 'b' : 'a';
+  var inLayer  = layers[inKey];
+  var outLayer = outKey ? layers[outKey] : null;
+
+  // La nouvelle couche est préparée hors champ, à droite, SANS transition
+  // (sinon elle glisserait depuis le centre au lieu d'arriver de l'extérieur).
+  inLayer.innerHTML = buildOverlaySlideHTML(it);
+  inLayer.style.transition = 'none';
+  removeClass(inLayer, 'current');
+  removeClass(inLayer, 'exit');
+  inLayer.style.transform = 'translateX(100%)';
+  inLayer.offsetWidth;               /* force le recalcul avant de réactiver la transition */
+  inLayer.style.transition = '';
+
+  addClass(ov, 'on');
+  setTimeout(function() { addClass(ov, 'show'); }, outKey ? 0 : 40);
+
+  // Un seul passage : la nouvelle couche entre, l'ancienne sort vers la
+  // gauche — même mouvement quel que soit le type des deux éléments.
+  overlayNextFrame(function() {
+    addClass(inLayer, 'current');
+    inLayer.style.transform = '';
+    if (outLayer) {
+      removeClass(outLayer, 'current');
+      addClass(outLayer, 'exit');
+    }
+  });
+
+  overlayActiveSlideKey = inKey;
 
   /* Défilement du texte : durée calée sur la durée d'affichage */
   if (it.type === 'texte' && it.defilant) {
-    var crawl = document.getElementById('fs-crawl');
+    var crawl = inLayer.querySelector('.fs-crawl');
     if (crawl) {
       crawl.style.animation = 'fsCrawl ' + secs + 's linear 0s 1 normal forwards';
       crawl.style.webkitAnimation = 'fsCrawl ' + secs + 's linear 0s 1 normal forwards';
@@ -1630,22 +1743,26 @@ function showOverlayItem(it, secs) {
       bar.style.width = '100%';
     }, 60);
   }
-
-  addClass(ov, 'on');
-  setTimeout(function() { addClass(ov, 'show'); }, 40);
 }
 
 function hideOverlay() {
   var ov  = document.getElementById('fs-overlay');
   var bar = document.getElementById('fs-bar');
   if (!ov) return;
+  var layers = overlaySlideLayers();
+  if (layers && overlayActiveSlideKey) {
+    var cur = layers[overlayActiveSlideKey];
+    removeClass(cur, 'current');
+    addClass(cur, 'exit');
+  }
   removeClass(ov, 'show');
   if (bar) { bar.style.transition = 'none'; bar.style.width = '0'; }
   setTimeout(function() {
     removeClass(ov, 'on');
     var stage = document.getElementById('fs-stage');
     if (stage) stage.innerHTML = '';   /* libère les images en mémoire */
-  }, 750);
+    overlayActiveSlideKey = null;
+  }, 800);
 }
 
 loadData();
