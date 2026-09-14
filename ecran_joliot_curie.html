@@ -427,6 +427,95 @@
   }
 
 
+
+  /* ══════════════════════════════════════════════════════════
+     COUCHE PLEIN ÉCRAN (interstitiels)
+     Passe par-dessus tout l'écran d'accueil, y compris le bandeau
+     défilant, pendant une durée paramétrée dans data.json.
+     ══════════════════════════════════════════════════════════ */
+  #fs-overlay {
+    position: fixed; inset: 0; z-index: 60;
+    display: none; opacity: 0;
+    transition: opacity 0.7s ease;
+    background: var(--dark);
+  }
+  #fs-overlay.on   { display: block; }
+  #fs-overlay.show { opacity: 1; }
+  /* Mode "panneau" : l'écran d'accueil reste visible autour */
+  #fs-overlay.panneau { background: rgba(15,30,58,0.78); }
+
+  .fs-stage {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    background: var(--dark);
+  }
+  #fs-overlay.panneau .fs-stage {
+    top: 96px; right: 150px; bottom: 96px; left: 150px;
+    border-radius: 34px;
+    border: 7px solid rgba(255,255,255,0.92);
+    box-shadow: 0 34px 90px rgba(0,0,0,0.55);
+  }
+
+  .fs-img {
+    position: absolute; inset: 0;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+  }
+  .fs-img.cover { background-size: cover; }
+
+  .fs-text-wrap {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    padding: 90px 120px;
+  }
+  .fs-text-center {
+    position: absolute; inset: 90px 120px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .fs-title {
+    font-family: 'Righteous', cursive;
+    font-size: 92px; line-height: 1.1; color: #fff;
+    margin-bottom: 34px;
+    text-shadow: 0 8px 28px rgba(0,0,0,0.55);
+  }
+  .fs-body {
+    font-size: 56px; line-height: 1.45; font-weight: 800; color: #fff;
+    text-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    white-space: pre-line;
+  }
+  .fs-crawl {
+    position: absolute; left: 120px; right: 120px; top: 0;
+    text-align: center;
+  }
+  @keyframes fsCrawl {
+    from { transform: translateY(1000px); }
+    to   { transform: translateY(-110%); }
+  }
+
+  .fs-caption {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+    padding: 90px 70px 52px;
+    background: linear-gradient(to top, rgba(15,30,58,0.94) 35%, rgba(15,30,58,0));
+    color: #fff;
+  }
+  .fs-caption-title { font-family:'Righteous',cursive; font-size: 66px; line-height:1.1; }
+  .fs-caption-sub   { font-size: 36px; font-weight: 800; opacity: 0.92; margin-top: 10px; }
+
+  .fs-badge {
+    position: absolute; top: 44px; left: 52px; z-index: 4;
+    background: var(--c3); color: var(--dark);
+    font-weight: 900; font-size: 28px;
+    padding: 11px 26px; border-radius: 999px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+  }
+
+  .fs-bar {
+    position: absolute; left: 0; bottom: 0; height: 9px; z-index: 5;
+    background: var(--c3); width: 0;
+  }
 </style>
 </head>
 <body>
@@ -535,6 +624,9 @@
 
 </div><!-- /layout -->
 
+<!-- COUCHE PLEIN ÉCRAN (interstitiels) — alimentée par data.json > plein_ecran -->
+<div id="fs-overlay"><div class="fs-stage" id="fs-stage"></div><div class="fs-bar" id="fs-bar"></div></div>
+
 <!-- BANDEAU DÉFILANT -->
 <div class="ticker-bottom">
   <div class="ticker-badge"><div class="live-dot"></div>📢 Infos</div>
@@ -605,6 +697,10 @@ updateClock();
    CARROUSEL D'INFOS — 2 slots côte à côte, défilement vers la gauche — ES5
 ══════════════════════════════════════════════════ */
 /* ACTUS : chargées dynamiquement depuis data.json via loadData() */
+/* Signatures du dernier contenu appliqué : évite de reconstruire (et donc de
+   remettre à zéro) le carrousel et les citations quand rien n'a changé. */
+var LAST_ACTUS_SIG     = null;
+var LAST_CITATIONS_SIG = null;
 var ACTUS   = [];
 var actuIdx = 0;   /* indice de la première carte visible (slot gauche) */
 var actuTimer = null;
@@ -675,6 +771,16 @@ function buildActuCards() {
   dotsEl.innerHTML = dotsHtml;
 
   actuIdx = 0;
+}
+
+/* Vide les deux emplacements du carrousel (plus aucune info à afficher) */
+function clearActuSlots() {
+  var slot0 = document.getElementById('actu-slot-0');
+  var slot1 = document.getElementById('actu-slot-1');
+  if (slot0) slot0.innerHTML = '';
+  if (slot1) slot1.innerHTML = '';
+  var dotsEl = document.getElementById('actu-dots-bar');
+  if (dotsEl) dotsEl.innerHTML = '';
 }
 
 function removeClass(el, cls) {
@@ -1249,11 +1355,22 @@ function loadData() {
         setText('semaine-badge', labelSemaine);
         setText('semaine-pill',  labelSemaine);
 
-        /* Actus — carrousel central */
-        if (d.actus && d.actus.length > 0) {
+        /* Actus — carrousel central
+           BUG CORRIGE (1) : le test `d.actus.length > 0` sautait tout le bloc
+           quand le carrousel etait vide, si bien que les cartes de la semaine
+           precedente restaient affichees apres un basculement qui les avait
+           pourtant supprimees.
+           BUG CORRIGE (2) : le carrousel etait reconstruit a chaque
+           rafraichissement (toutes les 3 min), ce qui le ramenait d'un coup
+           sur la premiere carte, sans transition, meme quand rien n'avait
+           change. On ne reconstruit desormais que si le contenu a bouge. */
+        var actusSrc = d.actus || [];
+        var actusSig = JSON.stringify(actusSrc);
+        if (actusSig !== LAST_ACTUS_SIG) {
+          LAST_ACTUS_SIG = actusSig;
           ACTUS = [];
-          for (var ai = 0; ai < d.actus.length; ai++) {
-            var src = d.actus[ai];
+          for (var ai = 0; ai < actusSrc.length; ai++) {
+            var src = actusSrc[ai];
             ACTUS.push({
               emoji:         src.emoji         || '📌',
               tag:           src.tag           || '',
@@ -1268,9 +1385,13 @@ function loadData() {
             });
           }
           actuIdx = 0;
-          buildActuCards();
-          if (actuTimer) { clearInterval(actuTimer); }
-          startActuRotation();
+          if (actuTimer) { clearInterval(actuTimer); actuTimer = null; }
+          if (ACTUS.length === 0) {
+            clearActuSlots();
+          } else {
+            buildActuCards();
+            startActuRotation();
+          }
         }
 
         /* Agenda */
@@ -1285,18 +1406,35 @@ function loadData() {
           getMenuDuJour();
         }
 
-        /* Citations — rotation toutes les 13s */
-        if (d.citations && d.citations.length > 0) {
-          CITATIONS_DATA = d.citations;
-          showCitation(0);
-          if (citationTimer) { clearInterval(citationTimer); }
-          if (d.citations.length > 1) {
-            citationTimer = setInterval(function() {
-              CITATION_IDX = (CITATION_IDX + 1) % CITATIONS_DATA.length;
-              showCitation(CITATION_IDX);
-            }, 13000);
+        /* Citations — rotation toutes les 13s
+           BUG CORRIGE : meme probleme que pour les actus — supprimer toutes
+           les citations dans l'admin laissait la derniere affichee a l'ecran,
+           et chaque rafraichissement relancait la rotation depuis la premiere. */
+        var citsSrc = d.citations || [];
+        var citsSig = JSON.stringify(citsSrc);
+        if (citsSig !== LAST_CITATIONS_SIG) {
+          LAST_CITATIONS_SIG = citsSig;
+          CITATIONS_DATA = citsSrc;
+          CITATION_IDX = 0;
+          if (citationTimer) { clearInterval(citationTimer); citationTimer = null; }
+          if (CITATIONS_DATA.length === 0) {
+            var qt = document.getElementById('quote-text');
+            var qa = document.getElementById('quote-author');
+            if (qt) qt.innerHTML = '';
+            if (qa) qa.innerHTML = '';
+          } else {
+            showCitation(0);
+            if (CITATIONS_DATA.length > 1) {
+              citationTimer = setInterval(function() {
+                CITATION_IDX = (CITATION_IDX + 1) % CITATIONS_DATA.length;
+                showCitation(CITATION_IDX);
+              }, 13000);
+            }
           }
         }
+
+        /* Couche plein écran (interstitiels) */
+        applyOverlayConfig(d.plein_ecran);
 
       } catch (e) {
         /* En cas d'erreur JSON, l'affichage reste vide — pas de crash */
@@ -1324,9 +1462,204 @@ function showCitation(idx) {
   if (authEl) authEl.innerHTML = '\u2014 ' + c.auteur;
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   COUCHE PLEIN ÉCRAN (interstitiels) — ES5
+   Piloté par data.json > "plein_ecran" :
+     actif       : true/false — coupe tout si false
+     intervalle  : minutes entre deux passages
+     items[]     : ce qui est affiché, dans l'ordre, à chaque passage
+       type    : "image" | "texte"
+       src     : chemin de l'image (type image)
+       titre   : titre affiché
+       texte   : corps du message (type texte)
+       detail  : sous-titre affiché sous le titre (type image)
+       defilant: true = le texte défile de bas en haut
+       duree   : secondes d'affichage de CET élément
+       taille  : "plein" = tout l'écran · "panneau" = encart par-dessus
+       cadrage : "contain" (image entière) | "cover" (remplit, recadre)
+       actif   : true/false
+       debut/fin : "AAAA-MM-JJ" facultatifs — fenêtre d'affichage
+   Un passage = tous les items actifs enchaînés, chacun pendant sa durée.
+   Puis retour à l'écran d'accueil pendant `intervalle` minutes.
+══════════════════════════════════════════════════════════════════ */
+var OVERLAY_CFG     = null;
+var overlayTimer    = null;   /* attente avant le prochain passage   */
+var overlayItemTimer= null;   /* durée de l'élément en cours         */
+var overlaySig      = null;   /* évite de relancer si rien n'a changé */
+var overlayGen      = 0;      /* numéro de génération : un passage lancé avec
+                                 une ancienne configuration s'arrête de lui-même */
+
+function fsEsc(v) {
+  return String(v == null ? '' : v)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function overlayTodayKey() {
+  var n = new Date(new Date().getTime() + CLOCK_OFFSET_MS);
+  return n.getFullYear() + '-' + pad2(n.getMonth() + 1) + '-' + pad2(n.getDate());
+}
+
+/* Items réellement affichables : actifs ET dans leur fenêtre de dates */
+function overlayActiveItems() {
+  var out = [];
+  if (!OVERLAY_CFG || !OVERLAY_CFG.actif || !OVERLAY_CFG.items) return out;
+  var today = overlayTodayKey();
+  for (var i = 0; i < OVERLAY_CFG.items.length; i++) {
+    var it = OVERLAY_CFG.items[i];
+    if (!it || it.actif === false) continue;
+    if (it.debut && today < it.debut) continue;
+    if (it.fin   && today > it.fin)   continue;
+    if (it.type === 'texte') {
+      if (!(it.texte && it.texte.length) && !(it.titre && it.titre.length)) continue;
+    } else {
+      if (!(it.src && it.src.length > 3)) continue;
+    }
+    out.push(it);
+  }
+  return out;
+}
+
+/* Appelée à chaque chargement de data.json */
+function applyOverlayConfig(cfg) {
+  var sig = JSON.stringify(cfg || null);
+  if (sig === overlaySig) return;   /* rien n'a changé : ne pas interrompre */
+  overlaySig  = sig;
+  OVERLAY_CFG = cfg || null;
+
+  overlayGen++;   /* invalide le passage éventuellement en cours */
+  if (overlayTimer)     { clearTimeout(overlayTimer);     overlayTimer = null; }
+  if (overlayItemTimer) { clearTimeout(overlayItemTimer); overlayItemTimer = null; }
+  hideOverlay();
+
+  if (overlayActiveItems().length === 0) return;
+  scheduleNextOverlay();
+}
+
+function scheduleNextOverlay() {
+  if (overlayTimer) { clearTimeout(overlayTimer); }
+  var mins = (OVERLAY_CFG && OVERLAY_CFG.intervalle) ? Number(OVERLAY_CFG.intervalle) : 10;
+  if (!(mins > 0)) mins = 10;
+  overlayTimer = setTimeout(runOverlayPass, mins * 60000);
+}
+
+/* Un passage complet : tous les items actifs à la suite */
+function runOverlayPass() {
+  var items = overlayActiveItems();
+  if (items.length === 0) { scheduleNextOverlay(); return; }
+  playOverlayItem(items, 0, overlayGen);
+}
+
+function playOverlayItem(items, i, gen) {
+  if (gen !== overlayGen) return;   /* configuration changée entre-temps */
+  if (i >= items.length) {
+    hideOverlay();
+    scheduleNextOverlay();
+    return;
+  }
+  var it   = items[i];
+  var secs = Number(it.duree);
+  if (!(secs > 0)) secs = 15;
+  if (secs > 600) secs = 600;   /* garde-fou : jamais plus de 10 min d'affilée */
+
+  showOverlayItem(it, secs);
+
+  overlayItemTimer = setTimeout(function() {
+    if (gen !== overlayGen) return;
+    /* Fondu de sortie avant l'élément suivant (ou avant le retour à l'écran) */
+    var ov = document.getElementById('fs-overlay');
+    if (ov) removeClass(ov, 'show');
+    setTimeout(function() { playOverlayItem(items, i + 1, gen); }, 700);
+  }, secs * 1000);
+}
+
+function showOverlayItem(it, secs) {
+  var ov    = document.getElementById('fs-overlay');
+  var stage = document.getElementById('fs-stage');
+  var bar   = document.getElementById('fs-bar');
+  if (!ov || !stage) return;
+
+  removeClass(ov, 'panneau');
+  if (it.taille === 'panneau') addClass(ov, 'panneau');
+
+  var html = '';
+  if (it.type === 'texte') {
+    var corps = fsEsc(it.texte);
+    var titre = fsEsc(it.titre);
+    if (it.defilant) {
+      html += '<div class="fs-text-wrap"><div class="fs-crawl" id="fs-crawl">';
+      if (titre) html += '<div class="fs-title">' + titre + '</div>';
+      html += '<div class="fs-body">' + corps + '</div>';
+      html += '</div></div>';
+    } else {
+      html += '<div class="fs-text-center">';
+      if (titre) html += '<div class="fs-title">' + titre + '</div>';
+      html += '<div class="fs-body">' + corps + '</div>';
+      html += '</div>';
+    }
+  } else {
+    var cadr = (it.cadrage === 'cover') ? ' cover' : '';
+    /* Le chemin vient de data.json : on neutralise quand meme les apostrophes
+       pour ne pas casser le style inline si un nom de fichier en contient. */
+    var src = String(it.src).replace(/'/g, '%27');
+    html += '<div class="fs-img' + cadr + '" style="background-image:url(\'' + src + '\')"></div>';
+    if (it.titre || it.detail) {
+      html += '<div class="fs-caption">';
+      if (it.titre)  html += '<div class="fs-caption-title">' + fsEsc(it.titre) + '</div>';
+      if (it.detail) html += '<div class="fs-caption-sub">' + fsEsc(it.detail) + '</div>';
+      html += '</div>';
+    }
+  }
+
+  stage.innerHTML = html;
+
+  /* Défilement du texte : durée calée sur la durée d'affichage */
+  if (it.type === 'texte' && it.defilant) {
+    var crawl = document.getElementById('fs-crawl');
+    if (crawl) {
+      crawl.style.animation = 'fsCrawl ' + secs + 's linear 0s 1 normal forwards';
+      crawl.style.webkitAnimation = 'fsCrawl ' + secs + 's linear 0s 1 normal forwards';
+    }
+  }
+
+  /* Barre de progression : indique visuellement le temps restant */
+  if (bar) {
+    bar.style.transition = 'none';
+    bar.style.width = '0';
+    setTimeout(function() {
+      bar.style.transition = 'width ' + secs + 's linear';
+      bar.style.width = '100%';
+    }, 60);
+  }
+
+  addClass(ov, 'on');
+  setTimeout(function() { addClass(ov, 'show'); }, 40);
+}
+
+function hideOverlay() {
+  var ov  = document.getElementById('fs-overlay');
+  var bar = document.getElementById('fs-bar');
+  if (!ov) return;
+  removeClass(ov, 'show');
+  if (bar) { bar.style.transition = 'none'; bar.style.width = '0'; }
+  setTimeout(function() {
+    removeClass(ov, 'on');
+    var stage = document.getElementById('fs-stage');
+    if (stage) stage.innerHTML = '';   /* libère les images en mémoire */
+  }, 750);
+}
+
 loadData();
-/* Rafraîchissement toutes les 15 min — l'admin peut pousser une MAJ à tout moment */
-setInterval(loadData, 180000); /* rafraîchissement toutes les 3 min */
+/* Rafraîchissement toutes les 3 min — l'admin peut pousser une MAJ à tout moment */
+setInterval(loadData, 180000);
+
+var meteoRetryTimer = null;
+function scheduleMeteoRetry() {
+  if (meteoRetryTimer) return;   /* un seul réessai en attente à la fois */
+  meteoRetryTimer = setTimeout(function() {
+    meteoRetryTimer = null;
+    fetchMeteo();
+  }, 120000);
+}
 
 function fetchMeteo() {
   /* Fichier JSON statique mis à jour par GitHub Action toutes les 30 min */
@@ -1380,10 +1713,14 @@ function fetchMeteo() {
     }
   };
 
+  /* BUG CORRIGE : chaque échec programmait un réessai à 2 min, EN PLUS du
+     rafraîchissement automatique de 5 min. Sur une coupure réseau un peu
+     longue, les chaînes de réessai se cumulaient (une nouvelle à chaque tour
+     de 5 min) jusqu'à saturer l'écran de requêtes. Un seul réessai peut
+     désormais être en attente à la fois. */
   xhr.ontimeout = function() {
     setText('meteo-desc', 'Délai dépassé');
-    /* Réessai dans 2 minutes */
-    setTimeout(fetchMeteo, 120000);
+    scheduleMeteoRetry();
   };
 
   xhr.onerror = function() {
@@ -1392,8 +1729,7 @@ function fetchMeteo() {
     if (typeof FALLBACK_WCODE !== 'undefined') {
       applyMeteoBackground(FALLBACK_WCODE, FALLBACK_TEMP);
     }
-    /* Réessai dans 2 minutes */
-    setTimeout(fetchMeteo, 120000);
+    scheduleMeteoRetry();
   };
 
   try {
