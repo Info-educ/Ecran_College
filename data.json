@@ -309,8 +309,21 @@
     }
   ],
   "plein_ecran": {
-    "actif": false,
-    "intervalle": 10,
-    "items": []
+    "actif": true,
+    "intervalle": 2,
+    "items": [
+      {
+        "type": "image",
+        "src": "images/20260914_1427_fs_Logo_Acad.jpg",
+        "titre": "",
+        "detail": "",
+        "cadrage": "contain",
+        "duree": 15,
+        "taille": "plein",
+        "actif": true,
+        "debut": "",
+        "fin": ""
+      }
+    ]
   }
 }
