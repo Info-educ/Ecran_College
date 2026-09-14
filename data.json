@@ -317,6 +317,18 @@
         "src": "images/20260914_1427_fs_Logo_Acad.jpg",
         "titre": "",
         "detail": "",
+        "cadrage": "cover",
+        "duree": 120,
+        "taille": "plein",
+        "actif": true,
+        "debut": "2026-09-14",
+        "fin": "2026-09-15"
+      },
+      {
+        "type": "image",
+        "src": "images/20260914_1430_fs_Logo_Acad.jpg",
+        "titre": "",
+        "detail": "",
         "cadrage": "contain",
         "duree": 15,
         "taille": "plein",
