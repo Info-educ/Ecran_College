@@ -342,8 +342,8 @@
         "titre": "ConditionsAcc_sEtablissement",
         "detail": "",
         "cadrage": "contain",
-        "duree": 15,
-        "taille": "plein",
+        "duree": 180,
+        "taille": "panneau",
         "actif": true,
         "debut": "",
         "fin": ""
