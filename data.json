@@ -36,6 +36,17 @@
       "image": "images/20260914_0958_Capture.png",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 0.8999999999999999
+    },
+    {
+      "emoji": "📷",
+      "tag": "Jeudi 24 septembre",
+      "couleur": "green",
+      "texte": "Photos de classes",
+      "detail": "Jeudi 24 septembre · Cour de récréation",
+      "date": "Semaine prochaine",
+      "image": "images/20260915_1053_Capture.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
     }
   ],
   "agenda": [
@@ -59,6 +70,13 @@
       "nom": "JNSS - Journée Nationale du sport scolaire",
       "lieu": "",
       "semaine_prochaine": false
+    },
+    {
+      "label": "Jeudi 24 septembre",
+      "couleur": "green",
+      "nom": "Photos de classes",
+      "lieu": "Cour de récréation",
+      "semaine_prochaine": true
     }
   ],
   "menus": {
@@ -502,7 +520,8 @@
     }
   },
   "ticker": [
-    "Emplois du temps provisoires du 2 septembre au 18 septembre."
+    "Emplois du temps provisoires du 2 septembre au 18 septembre.",
+    "✅ Jeudi 24 septembre : Photos de classes - Mettez vous sur votre 31"
   ],
   "citations": [
     {
