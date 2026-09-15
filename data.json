@@ -426,6 +426,79 @@
       "dessert": [
         "Fruit de saison"
       ]
+    },
+    "2026-10-12": {
+      "entree": [
+        "Soupe de potiron et croûtons"
+      ],
+      "plat": [
+        "Sauté de boeuf sauce poivrade",
+        "Hoki sauce tomate"
+      ],
+      "accomp": [
+        "Haricot vert extra fin persillé",
+        "Pomme de terre Caldeirada"
+      ],
+      "fromage": [],
+      "dessert": [
+        "Yaourt nature de la bergerie de Rambouillet",
+        "Pain d'épice Fruit"
+      ]
+    },
+    "2026-10-13": {
+      "entree": [
+        "Coleslaw (carotte, chou blanc, mayonnaise)",
+        "Tartinade oeuf ciboulette et pain Suédois <span class=\"bio-tag\">BIO</span>"
+      ],
+      "plat": [
+        "Escalope de porc sauce moutarde",
+        "Pané moelleux au gouda"
+      ],
+      "accomp": [
+        "Orge perlé <span class=\"bio-tag\">BIO</span>",
+        "Jardinière de légumes"
+      ],
+      "fromage": [],
+      "dessert": [
+        "Liégeois saveur chocolat",
+        "Liégeois saveur vanille"
+      ]
+    },
+    "2026-10-15": {
+      "entree": [],
+      "plat": [
+        "Pizza poivron, chèvre",
+        "Pizza tomate, champignon, emmental, mozzarella"
+      ],
+      "accomp": [
+        "Salade verte vinaigrette <span class=\"bio-tag\">BIO</span>"
+      ],
+      "fromage": [
+        "Fromage fondu Samos",
+        "Fromage fondu Croc Lait"
+      ],
+      "dessert": [
+        "Fruit de saison"
+      ]
+    },
+    "2026-10-16": {
+      "entree": [],
+      "plat": [
+        "Merlu sauce aux agrumes",
+        "Omelette au fromage <span class=\"bio-tag\">BIO</span>"
+      ],
+      "accomp": [
+        "Carotte à l'ail <span class=\"bio-tag\">BIO</span>",
+        "Semoule <span class=\"bio-tag\">BIO</span>"
+      ],
+      "fromage": [
+        "Edam",
+        "Gouda",
+        "Pain spécial"
+      ],
+      "dessert": [
+        "Pain spécial"
+      ]
     }
   },
   "ticker": [
