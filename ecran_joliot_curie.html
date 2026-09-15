@@ -1609,11 +1609,57 @@ function scheduleNextOverlay(soon) {
   overlayTimer = setTimeout(runOverlayPass, delay);
 }
 
-/* Un passage complet : tous les items actifs à la suite */
+/* Un passage complet : tous les items actifs à la suite. Si au moins un
+   élément est réglé en « affichage continu », on boucle dessus indéfiniment
+   sans jamais revenir à l'écran d'accueil ni attendre l'intervalle — ce
+   dernier ne s'applique qu'aux passages périodiques normaux. */
+function overlayPermanentItems() {
+  var all = overlayActiveItems();
+  var out = [];
+  for (var i = 0; i < all.length; i++) { if (all[i].permanent) out.push(all[i]); }
+  return out;
+}
+function overlayPeriodicItems() {
+  var all = overlayActiveItems();
+  var out = [];
+  for (var i = 0; i < all.length; i++) { if (!all[i].permanent) out.push(all[i]); }
+  return out;
+}
+
 function runOverlayPass() {
-  var items = overlayActiveItems();
+  var perm = overlayPermanentItems();
+  if (perm.length > 0) { playPermanentLoop(perm, 0, overlayGen); return; }
+  var items = overlayPeriodicItems();
   if (items.length === 0) { scheduleNextOverlay(); return; }
   playOverlayItem(items, 0, overlayGen);
+}
+
+/* Boucle sans fin : jamais de hideOverlay() entre deux éléments, donc jamais
+   de retour à l'écran d'accueil tant qu'au moins un élément continu reste
+   valable. Réévalué à chaque tour, pour qu'un élément sortant de sa fenêtre
+   de dates/heures en cours de route ne reste pas affiché indéfiniment. */
+function playPermanentLoop(items, i, gen) {
+  if (gen !== overlayGen) return;
+  var perm = overlayPermanentItems();
+  if (perm.length === 0) {
+    /* Plus aucun élément continu valable : retour à l'accueil, puis reprise
+       du cycle normal (passages périodiques éventuels). */
+    hideOverlay();
+    scheduleNextOverlay();
+    return;
+  }
+  if (i >= perm.length) i = 0;
+  var it   = perm[i];
+  var secs = Number(it.duree);
+  if (!(secs > 0)) secs = 15;
+  if (secs > 600) secs = 600;
+
+  showOverlayItem(it, secs);
+
+  overlayItemTimer = setTimeout(function() {
+    if (gen !== overlayGen) return;
+    playPermanentLoop(perm, i + 1, gen);
+  }, secs * 1000);
 }
 
 function playOverlayItem(items, i, gen) {

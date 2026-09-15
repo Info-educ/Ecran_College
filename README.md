@@ -172,6 +172,25 @@ zéro toute la mémoire de la page, y compris le minuteur du plein écran :
   n'est pas grave en soi mais autant le savoir : **réglez de préférence 10
   minutes ou moins.**
 
+### Affichage continu (ne revient jamais à l'écran d'accueil)
+
+Pour un contenu de référence plutôt qu'une info fugitive (ex. un plan de
+salles), chaque élément a une case **« 🔁 Rester affiché en continu »**. Tant
+qu'un tel élément est actif (et dans sa fenêtre de dates/heures s'il y en a
+une), l'écran d'accueil ne s'affiche plus du tout et l'intervalle réglé plus
+haut ne s'applique pas à lui — il reste affiché, ou boucle avec d'autres
+éléments également réglés en continu. Dès qu'aucun élément continu n'est plus
+valable (fenêtre expirée, désactivé), l'écran d'accueil revient normalement.
+
+S'il y a à la fois des éléments continus et des éléments en passage
+périodique classique, **les continus sont prioritaires** : les périodiques ne
+s'affichent pas tant qu'un continu est actif.
+
+⚠️ Le rechargement de MagicInfo (~10 min, voir plus bas) interrompt aussi un
+affichage continu brièvement — l'écran d'accueil réapparaît environ 15
+secondes avant que l'élément continu ne reprenne. C'est une limite du lecteur,
+pas de ce fichier.
+
 ⚠️ **Gardez un passage sous les 8-10 minutes.** Si la somme des durées des
 éléments actifs dépasse 8 minutes, l'admin affiche un avertissement : un
 passage plus long risque d'être interrompu en plein milieu par le
@@ -195,6 +214,15 @@ ce fichier :
   Toutes les couches plein écran déclarent maintenant `top/right/bottom/left`
   explicitement, **en plus** de `inset` (qui reste pour les navigateurs
   récents).
+
+### Aperçu des images dans l'admin
+
+La vignette d'aperçu charge l'image directement depuis GitHub (pas depuis le
+poste local), en utilisant les identifiants de connexion déjà saisis en bas
+de l'admin. **Sans connexion GitHub configurée, il n'y a pas d'aperçu** — un
+message l'indique sous le nom du fichier. Une fois la connexion configurée,
+l'aperçu se charge automatiquement (avec un léger délai, le temps que GitHub
+serve le fichier fraîchement envoyé).
 
 ### Si le plein écran ne s'affiche toujours pas
 
