@@ -311,43 +311,6 @@
   "plein_ecran": {
     "actif": true,
     "intervalle": 2,
-    "items": [
-      {
-        "type": "image",
-        "src": "images/20260914_1430_fs_Logo_Acad.jpg",
-        "titre": "",
-        "detail": "",
-        "cadrage": "contain",
-        "duree": 120,
-        "taille": "plein",
-        "actif": true,
-        "debut": "",
-        "fin": ""
-      },
-      {
-        "type": "image",
-        "src": "images/20260914_1515_fs_LogoCurie.png",
-        "titre": "",
-        "detail": "",
-        "cadrage": "contain",
-        "duree": 120,
-        "taille": "plein",
-        "actif": true,
-        "debut": "",
-        "fin": ""
-      },
-      {
-        "type": "image",
-        "src": "images/20260915_0829_fs_ConditionsAcc_sEtablissement_p1.jpg",
-        "titre": "ConditionsAcc_sEtablissement",
-        "detail": "",
-        "cadrage": "contain",
-        "duree": 180,
-        "taille": "panneau",
-        "actif": true,
-        "debut": "",
-        "fin": ""
-      }
-    ]
+    "items": []
   }
 }
