@@ -560,8 +560,9 @@
         "actif": true,
         "debut": "2026-09-15",
         "fin": "2026-09-15",
-        "heure_debut": "10:50",
-        "heure_fin": "11:00"
+        "heure_debut": "17:50",
+        "heure_fin": "20:00",
+        "permanent": true
       }
     ]
   }
