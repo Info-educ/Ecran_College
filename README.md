@@ -178,6 +178,24 @@ passage plus long risque d'être interrompu en plein milieu par le
 rechargement de MagicInfo. Mieux vaut répartir beaucoup de contenu en
 plusieurs passages courts qu'un seul très long.
 
+### Compatibilité CSS avec le navigateur embarqué de MagicInfo
+
+Le navigateur intégré à un lecteur signalétique comme MagicInfo est souvent
+plus ancien qu'un navigateur grand public. Deux précautions déjà prises dans
+ce fichier :
+
+- **`backdrop-filter` n'est pas utilisé** (non supporté sur ce matériel,
+  d'après un test antérieur — voir les commentaires dans le CSS).
+- **Le raccourci CSS `inset: 0`** (qui remplace `top/right/bottom/left: 0`)
+  n'est standard que depuis 2020-2021 : un navigateur plus ancien peut
+  l'ignorer purement et simplement. Sans repli, un élément
+  `position: fixed` sans dimensions explicites ne s'affiche nulle part —
+  ce qui correspondait exactement à un plein écran invisible alors que le
+  reste de la page (horloge, météo, carrousel) fonctionnait normalement.
+  Toutes les couches plein écran déclarent maintenant `top/right/bottom/left`
+  explicitement, **en plus** de `inset` (qui reste pour les navigateurs
+  récents).
+
 ### Si le plein écran ne s'affiche toujours pas
 
 1. **Isoler MagicInfo du code** : ouvrir l'URL du dépôt (GitHub Pages) dans un
