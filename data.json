@@ -556,7 +556,7 @@
         "detail": "",
         "cadrage": "contain",
         "duree": 156,
-        "taille": "plein",
+        "taille": "zone",
         "actif": true,
         "debut": "2026-09-15",
         "fin": "2026-09-15",
