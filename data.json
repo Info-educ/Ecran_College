@@ -563,21 +563,6 @@
         "heure_debut": "17:50",
         "heure_fin": "20:00",
         "permanent": true
-      },
-      {
-        "type": "image",
-        "src": "images/20260915_1139_fs_20260911_AffichageSalle_p1.jpg",
-        "titre": "20260911_AffichageSalle",
-        "detail": "",
-        "cadrage": "contain",
-        "duree": 120,
-        "taille": "plein",
-        "actif": true,
-        "permanent": false,
-        "debut": "2026-09-15",
-        "fin": "2026-09-15",
-        "heure_debut": "14:00",
-        "heure_fin": "14:15"
       }
     ]
   }
