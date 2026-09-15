@@ -570,14 +570,14 @@
         "titre": "20260911_AffichageSalle",
         "detail": "",
         "cadrage": "contain",
-        "duree": 60,
+        "duree": 120,
         "taille": "plein",
         "actif": true,
         "permanent": false,
         "debut": "2026-09-15",
         "fin": "2026-09-15",
-        "heure_debut": "11:40",
-        "heure_fin": "11:59"
+        "heure_debut": "14:00",
+        "heure_fin": "14:15"
       }
     ]
   }
