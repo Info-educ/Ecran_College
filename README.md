@@ -148,22 +148,29 @@ suivant entre par la droite pendant que le précédent sort par la gauche ; il
 n'y a jamais de flash noir ni deux éléments qui démarrent en même temps, un
 seul à la fois, chacun pour sa durée réglée.
 
-### Le rechargement automatique de MagicInfo (~10 minutes)
+### Fonctionnement délibérément simple (sans stockage)
 
-MagicInfo recharge entièrement cette page toutes les 10 minutes environ
+Un passage démarre environ 15 secondes après chaque chargement de la page
+(ou après toute republication), puis se répète toutes les `intervalle`
+minutes tant que la page reste ouverte. **Aucune dépendance à
+localStorage** ou à un autre stockage : le comportement est entièrement
+autonome et ne dépend d'aucun état conservé d'une fois sur l'autre — un choix
+volontaire, car ce genre d'API peut être bridée ou se comporter de façon
+imprévisible dans le navigateur embarqué d'un lecteur signalétique comme
+MagicInfo.
+
+MagicInfo recharge entièrement cette page toutes les ~10 minutes environ
 (réglage du lecteur, propre à MagicInfo — pas à ce fichier). Cela remet à
-zéro toute la mémoire de la page : l'horloge, la météo et le carrousel de
-citations n'en souffrent pas (ils se relancent instantanément et tournent
-assez vite pour que rien ne soit manqué), mais un intervalle plein écran de
-plus de 10 minutes ne pouvait pas être respecté par un simple minuteur, qui
-repartait de zéro à chaque rechargement avant même de se déclencher.
+zéro toute la mémoire de la page, y compris le minuteur du plein écran :
 
-L'instant du dernier passage est donc mémorisé dans le navigateur
-(localStorage), qui — contrairement à la mémoire de la page — survit à un
-rechargement. Au chargement, l'écran calcule le temps réellement écoulé
-depuis le dernier passage et programme le suivant en conséquence : un
-intervalle de 20, 30 ou 60 minutes est ainsi respecté quel que soit le rythme
-de rechargement de MagicInfo.
+- **Intervalle réglé à 10 minutes ou moins** : s'affiche de façon fiable à
+  chaque chargement — le comportement recommandé.
+- **Intervalle plus long** : chaque rechargement de MagicInfo relance quand
+  même un passage ~15 secondes après, comme au tout premier chargement. Dans
+  les faits, sur cet écran, l'intervalle réel ressemblera donc plutôt au
+  rythme de rechargement de MagicInfo (~10 min) qu'à la valeur saisie. Ce
+  n'est pas grave en soi mais autant le savoir : **réglez de préférence 10
+  minutes ou moins.**
 
 ⚠️ **Gardez un passage sous les 8-10 minutes.** Si la somme des durées des
 éléments actifs dépasse 8 minutes, l'admin affiche un avertissement : un
@@ -171,12 +178,28 @@ passage plus long risque d'être interrompu en plein milieu par le
 rechargement de MagicInfo. Mieux vaut répartir beaucoup de contenu en
 plusieurs passages courts qu'un seul très long.
 
-**Un contenu qui vient d'être publié s'affiche toujours rapidement**, même si
-un ancien contenu différent avait tourné récemment avec un intervalle plus
-long : l'écran retient (dans le navigateur) le dernier contenu qu'il a vu, et
-ne respecte l'intervalle complet que lorsque le contenu est identique à la
-dernière fois — c'est-à-dire lors d'un simple rechargement automatique, pas
-après une vraie publication.
+### Si le plein écran ne s'affiche toujours pas
+
+1. **Isoler MagicInfo du code** : ouvrir l'URL du dépôt (GitHub Pages) dans un
+   navigateur ordinaire (téléphone, ordinateur) — PAS via MagicInfo. Si le
+   plein écran s'affiche là mais pas sur l'écran du hall, le problème est
+   côté MagicInfo (navigateur embarqué, cache, ou réglage du lecteur), pas
+   dans ce fichier.
+2. **Vérifier qu'il n'y a rien qui bloque la publication** : dans l'onglet
+   ⚙️ Réglages, l'encart *état de publication* signale si une publication
+   programmée est en attente — elle est prioritaire et peut faire que le
+   bouton *Publier* ne renvoie rien de nouveau tant qu'elle n'est pas traitée
+   ou annulée.
+3. **Vérifier le contenu réellement publié** : ouvrir `data.json` directement
+   dans un navigateur (`votre-site/data.json`) et contrôler que
+   `plein_ecran.actif` vaut bien `true` et que `plein_ecran.items` contient
+   au moins un élément avec `"actif": true`.
+4. **Cache de la page HTML elle-même** : contrairement à `data.json`
+   (rechargé avec un paramètre anti-cache), `ecran_joliot_curie.html` n'en a
+   pas. Si MagicInfo ou un réseau intermédiaire garde une ancienne version en
+   cache, les dernières corrections peuvent ne pas être présentes du tout sur
+   l'appareil. Un rechargement forcé (ou republier le fichier) permet de
+   vérifier.
 
 ### Le cas des PDF
 

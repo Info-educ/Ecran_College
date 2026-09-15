@@ -434,7 +434,10 @@
      défilant, pendant une durée paramétrée dans data.json.
      ══════════════════════════════════════════════════════════ */
   #fs-overlay {
-    position: fixed; inset: 0; z-index: 60;
+    /* BUG CORRIGE : le bandeau défilant du bas est en z-index 100 ; à 60,
+       cette couche restait DERRIÈRE lui, et le bandeau continuait à
+       s'afficher par-dessus le plein écran au lieu d'être masqué. */
+    position: fixed; inset: 0; z-index: 150;
     display: none; opacity: 0;
     transition: opacity 0.7s ease;
     background: var(--dark);
@@ -1503,40 +1506,24 @@ var overlaySig      = null;   /* évite de relancer si rien n'a changé */
 var overlayGen      = 0;      /* numéro de génération : un passage lancé avec
                                  une ancienne configuration s'arrête de lui-même */
 var overlayActiveSlideKey = null;   /* 'a' | 'b' | null : couche actuellement visible */
-var OVERLAY_FIRST_DELAY_MS = 15000; /* tout premier passage (jamais encore eu lieu) : 15 s,
-                                        pour vérifier tout de suite que ça marche —
-                                        pas besoin d'attendre l'intervalle complet */
-var OVERLAY_STORAGE_KEY = 'jc_fs_last_pass_start';
-var OVERLAY_SEEN_SIG_KEY = 'jc_fs_last_seen_sig';
+var OVERLAY_FIRST_DELAY_MS = 15000; /* premier passage après (ré)activation ou après tout
+                                        changement de configuration : 15 s — pas besoin
+                                        d'attendre l'intervalle complet pour vérifier */
 
-/* MagicInfo recharge entièrement cette page toutes les ~10 minutes (réglage
-   du lecteur, indépendant de ce fichier) : à chaque rechargement, toutes les
-   variables JS repartent de zéro. localStorage, lui, survit au rechargement
-   — on s'en sert pour retenir quand le dernier passage a réellement
-   commencé, et calculer depuis le VRAI temps écoulé plutôt que redémarrer
-   un minuteur à chaque fois. */
-function overlayReadLastStart() {
-  try {
-    var v = localStorage.getItem(OVERLAY_STORAGE_KEY);
-    return v ? Number(v) : null;
-  } catch (e) { return null; }
-}
-function overlayWriteLastStart(ts) {
-  try { localStorage.setItem(OVERLAY_STORAGE_KEY, String(ts)); } catch (e) {}
-}
-
-/* Signature du dernier contenu plein écran vu par CET écran (survit aux
-   rechargements, contrairement à overlaySig qui repart à null à chaque
-   fois). Sert à distinguer "MagicInfo a rechargé la page mais le contenu
-   publié n'a pas changé" de "un nouveau contenu vient d'être publié" —
-   seul le second cas doit se montrer vite, sans attendre le solde d'un
-   ancien calcul d'intervalle qui n'a plus rien à voir avec ce contenu. */
-function overlayReadSeenSig() {
-  try { return localStorage.getItem(OVERLAY_SEEN_SIG_KEY); } catch (e) { return null; }
-}
-function overlayWriteSeenSig(sig) {
-  try { localStorage.setItem(OVERLAY_SEEN_SIG_KEY, sig); } catch (e) {}
-}
+/* SIMPLIFIÉ VOLONTAIREMENT : une version précédente retenait l'instant du
+   dernier passage dans localStorage pour respecter un intervalle long malgré
+   les rechargements de MagicInfo. Cette dépendance a été retirée : certains
+   lecteurs signalétique (dont peut-être celui-ci) exécutent le contenu web
+   dans un mode restreint où localStorage peut être vidé, bridé ou se
+   comporter de façon imprévisible — un point qu'on ne peut pas vérifier à
+   distance. Le fonctionnement est désormais volontairement simple et
+   entièrement autonome, sans aucune dépendance à un stockage quelconque :
+   un passage démarre ~15 s après chaque chargement de la page (ou après
+   toute modification de la configuration), puis se répète toutes les
+   `intervalle` minutes tant que la page reste ouverte. Comme MagicInfo
+   recharge la page toutes les ~10 minutes, un intervalle réglé à 10 minutes
+   ou moins s'affichera de façon fiable à chaque fois ; un intervalle plus
+   long redémarrera simplement à chaque rechargement — voir le README. */
 
 function fsEsc(v) {
   return String(v == null ? '' : v)
@@ -1568,15 +1555,10 @@ function overlayActiveItems() {
   return out;
 }
 
-/* Appelée à chaque chargement de data.json — y compris juste après un
-   rechargement complet de la page par MagicInfo, plusieurs fois par heure. */
+/* Appelée à chaque chargement de data.json */
 function applyOverlayConfig(cfg) {
   var sig = JSON.stringify(cfg || null);
-  if (sig === overlaySig) return;   /* rien n'a changé DANS CETTE VIE DE PAGE : ne pas
-                                        interrompre un passage en cours. Après un
-                                        rechargement, overlaySig repart à null, donc ce
-                                        test ne suffit plus à lui seul à savoir si un
-                                        passage est réellement dû : voir scheduleNextOverlay. */
+  if (sig === overlaySig) return;   /* rien n'a changé : ne pas interrompre un passage en cours */
   overlaySig  = sig;
   OVERLAY_CFG = cfg || null;
 
@@ -1586,47 +1568,20 @@ function applyOverlayConfig(cfg) {
   hideOverlay();
 
   if (overlayActiveItems().length === 0) return;
-
-  // BUG CORRIGE : un contenu qui vient d'être publié attendait quand même
-  // le solde du calcul basé sur le DERNIER passage réel, même si ce
-  // dernier passage concernait un tout autre contenu (ancien essai,
-  // ancien intervalle...). Vu de l'admin : "j'ai publié, rien ne se
-  // passe". On compare maintenant avec le dernier contenu vu par cet
-  // écran : un contenu inédit se montre vite ; un contenu identique
-  // respecte l'intervalle réglé (comportement normal semaine après
-  // semaine, y compris à travers les rechargements MagicInfo).
-  var seenSig = overlayReadSeenSig();
-  overlayWriteSeenSig(sig);
-  if (seenSig !== sig) {
-    if (overlayTimer) clearTimeout(overlayTimer);
-    overlayTimer = setTimeout(runOverlayPass, OVERLAY_FIRST_DELAY_MS);
-  } else {
-    scheduleNextOverlay();
-  }
+  scheduleNextOverlay(true);
 }
 
-// Calcule QUAND doit avoir lieu le prochain passage, à partir du temps
-// RÉELLEMENT écoulé depuis le dernier (mémorisé dans localStorage, donc
-// valable même après un rechargement complet de la page). C'est ce calcul —
-// et non plus un simple minuteur remis à zéro à chaque chargement — qui
-// permet à un intervalle de 20, 30 ou 60 minutes d'être respecté malgré les
-// rechargements de MagicInfo toutes les ~10 minutes.
-function scheduleNextOverlay() {
+// mode « premier » : programme le passage suivant à OVERLAY_FIRST_DELAY_MS
+// (utilisé à l'activation et à chaque changement de configuration — donc à
+// chaque republication — pour qu'on puisse vérifier vite que c'est bien pris
+// en compte). Sans ce paramètre : programme le prochain passage à
+// l'intervalle complet réglé dans l'admin (utilisé entre deux passages d'un
+// même cycle, tant que la page reste ouverte).
+function scheduleNextOverlay(soon) {
   if (overlayTimer) { clearTimeout(overlayTimer); }
   var mins = (OVERLAY_CFG && OVERLAY_CFG.intervalle) ? Number(OVERLAY_CFG.intervalle) : 10;
   if (!(mins > 0)) mins = 10;
-  var intervalMs = mins * 60000;
-
-  var lastStart = overlayReadLastStart();
-  var delay;
-  if (lastStart === null) {
-    // Jamais encore eu de passage sur cet écran (ou stockage local vide) :
-    // on se lance vite pour permettre une vérification immédiate.
-    delay = OVERLAY_FIRST_DELAY_MS;
-  } else {
-    var elapsed = Date.now() - lastStart;
-    delay = (elapsed >= intervalMs) ? OVERLAY_FIRST_DELAY_MS : (intervalMs - elapsed);
-  }
+  var delay = soon ? OVERLAY_FIRST_DELAY_MS : mins * 60000;
   overlayTimer = setTimeout(runOverlayPass, delay);
 }
 
@@ -1634,9 +1589,6 @@ function scheduleNextOverlay() {
 function runOverlayPass() {
   var items = overlayActiveItems();
   if (items.length === 0) { scheduleNextOverlay(); return; }
-  // Le passage démarre réellement MAINTENANT : c'est ce top qui compte pour
-  // le prochain calcul d'intervalle, y compris après un rechargement.
-  overlayWriteLastStart(Date.now());
   playOverlayItem(items, 0, overlayGen);
 }
 
