@@ -281,6 +281,151 @@
       "dessert": [
         "Fruit de saison"
       ]
+    },
+    "2026-09-28": {
+      "entree": [],
+      "plat": [
+        "Poulet sauce façon orientale",
+        "Filet colin d'Alaska meunière et citron"
+      ],
+      "accomp": [
+        "Haricot vert extra fin",
+        "Semoule"
+      ],
+      "fromage": [
+        "Yaourt nature et sucre",
+        "Yaourt aromatisé vanille"
+      ],
+      "dessert": [
+        "Fruit de saison"
+      ]
+    },
+    "2026-09-29": {
+      "entree": [],
+      "plat": [
+        "Omelette sauce tomate",
+        "Fusilli sauce aux trois fromages (bleu, mozzarella, fromage italien)"
+      ],
+      "accomp": [
+        "Petits pois mijotés"
+      ],
+      "fromage": [
+        "Tomme blanche",
+        "Camembert"
+      ],
+      "dessert": [
+        "Smoothie pomme banane sirop d'érable",
+        "Purée pomme poire Fruit"
+      ]
+    },
+    "2026-10-01": {
+      "entree": [],
+      "plat": [
+        "Hoki sauce au citron persillé",
+        "Steak haché de veau sauce tomate"
+      ],
+      "accomp": [
+        "Riz semi - complet",
+        "Ratatouille"
+      ],
+      "fromage": [
+        "Coulommiers",
+        "St Paulin"
+      ],
+      "dessert": [
+        "Gâteau aux pommes (UCP)",
+        "Gâteau Basque",
+        "Fruit"
+      ]
+    },
+    "2026-10-02": {
+      "entree": [
+        "Soupe carotte muscade et croûtons"
+      ],
+      "plat": [
+        "Pain pita, émincé dinde crudités sauce fromage blanc vinaigre balsamique",
+        "Pain pita, boulettes falafels pois chiche crudités sauce fromage blanc vinaigre balsamique"
+      ],
+      "accomp": [
+        "Frites"
+      ],
+      "fromage": [],
+      "dessert": [
+        "Crème dessert saveur chocolat",
+        "Ile flottante",
+        "Fruit"
+      ]
+    },
+    "2026-10-05": {
+      "entree": [],
+      "plat": [
+        "Escalope de dinde sauce aux olives",
+        "Hoki aux herbes"
+      ],
+      "accomp": [
+        "Purée de brocoli",
+        "Farfalles"
+      ],
+      "fromage": [
+        "Emmental",
+        "Pointe de brie"
+      ],
+      "dessert": [
+        "Fruit de saison <span class=\"bio-tag\">BIO</span>"
+      ]
+    },
+    "2026-10-06": {
+      "entree": [
+        "Soupe de brocolis"
+      ],
+      "plat": [
+        "Boulgour sauce pois chiche marocain <span class=\"bio-tag\">BIO</span>",
+        "Boulgour korma brunoise provençale <span class=\"bio-tag\">BIO</span>"
+      ],
+      "accomp": [
+        "petit pois"
+      ],
+      "fromage": [],
+      "dessert": [
+        "Fruit de saison"
+      ]
+    },
+    "2026-10-08": {
+      "entree": [
+        "Chou rouge râpé",
+        "Chou blanc et maïs"
+      ],
+      "plat": [
+        "Rôti de boeuf sauce au romarin",
+        "Clafoutis patate douce pdt mozzarella"
+      ],
+      "accomp": [
+        "Carotte persillée",
+        "Lentilles vertes mijotées"
+      ],
+      "fromage": [],
+      "dessert": [
+        "Cake à la cannelle (UCP)",
+        "Crème dessert vanille"
+      ]
+    },
+    "2026-10-09": {
+      "entree": [],
+      "plat": [
+        "Escalope de porc sauce tomate",
+        "Merlu sauce aux épices douces"
+      ],
+      "accomp": [
+        "Riz semi complet <span class=\"bio-tag\">BIO</span>",
+        "Haricot beurre"
+      ],
+      "fromage": [
+        "Fromage blanc et sucre roux",
+        "chocolat en poudre Fruit"
+      ],
+      "dessert": [
+        "Fruit de saison"
+      ]
     }
   },
   "ticker": [
