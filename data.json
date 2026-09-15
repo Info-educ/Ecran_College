@@ -335,6 +335,18 @@
         "actif": true,
         "debut": "",
         "fin": ""
+      },
+      {
+        "type": "image",
+        "src": "images/20260915_0829_fs_ConditionsAcc_sEtablissement_p1.jpg",
+        "titre": "ConditionsAcc_sEtablissement",
+        "detail": "",
+        "cadrage": "contain",
+        "duree": 15,
+        "taille": "plein",
+        "actif": true,
+        "debut": "",
+        "fin": ""
       }
     ]
   }
