@@ -152,6 +152,7 @@
   }
   /* Scène de défilement des cartes — 2 slots côte à côte */
   .actu-scene {
+    position: relative;   /* repère de la couche « zone actualités » (#zone-overlay) */
     flex: 1;
     min-height: 0;
     display: flex;
@@ -537,6 +538,42 @@
     position: absolute; left: 0; bottom: 0; height: 9px; z-index: 5;
     background: var(--c3); width: 0;
   }
+
+  /* ══════════════════════════════════════════════════════════
+     COUCHE « ZONE ACTUALITÉS »
+     Même contenu que la couche plein écran, mais posée exactement sur les
+     deux cartes du carrousel (enfant de .actu-scene). Le reste de l'écran
+     (horloge, météo, agenda, menu, citation, bandeau) reste visible.
+     Le carrousel est mis en pause tant qu'elle est affichée.
+     ══════════════════════════════════════════════════════════ */
+  #zone-overlay {
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0; inset: 0; z-index: 20;
+    display: none; opacity: 0;
+    transition: opacity 0.7s ease;
+    border-radius: 22px;
+    overflow: hidden;
+    background: var(--dark);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.07);
+  }
+  #zone-overlay.on   { display: block; }
+  #zone-overlay.show { opacity: 1; }
+  /* Pastilles de pagination masquées : elles ne correspondent plus à rien */
+  .actu-zone.zone-on .actu-dots { visibility: hidden; }
+
+  /* Typographie réduite : la zone fait ~1280 × 600 px au lieu de 1920 × 1080 */
+  #zone-overlay .fs-text-wrap   { padding: 40px 60px; }
+  #zone-overlay .fs-text-center { top: 40px; right: 60px; bottom: 40px; left: 60px; inset: 40px 60px; }
+  #zone-overlay .fs-title       { font-size: 58px; margin-bottom: 20px; }
+  #zone-overlay .fs-body        { font-size: 36px; }
+  #zone-overlay .fs-crawl       { left: 60px; right: 60px; }
+  #zone-overlay .fs-caption     { padding: 60px 40px 28px; }
+  #zone-overlay .fs-caption-title { font-size: 42px; }
+  #zone-overlay .fs-caption-sub   { font-size: 24px; margin-top: 6px; }
+  #zone-overlay .fs-bar         { height: 6px; }
+  @keyframes fsCrawlZone {
+    from { transform: translateY(640px); }
+    to   { transform: translateY(-110%); }
+  }
 </style>
 </head>
 <body>
@@ -607,6 +644,8 @@
       <div class="actu-scene" id="actu-scene">
         <div class="actu-slot" id="actu-slot-0"><!-- carte gauche --></div>
         <div class="actu-slot" id="actu-slot-1"><!-- carte droite --></div>
+        <!-- COUCHE « ZONE ACTUALITÉS » — éléments plein écran réglés en taille "zone" -->
+        <div id="zone-overlay"><div class="fs-stage" id="zone-stage"></div><div class="fs-bar" id="zone-bar"></div></div>
       </div>
     </div>
 
@@ -725,6 +764,7 @@ var LAST_CITATIONS_SIG = null;
 var ACTUS   = [];
 var actuIdx = 0;   /* indice de la première carte visible (slot gauche) */
 var actuTimer = null;
+var actuPaused = false;   /* true tant qu'un élément « zone actualités » occupe la place du carrousel */
 
 /* Construit le HTML d'une carte à partir d'un objet ACTUS[i].
    Si a.image est defini, la carte passe en mode pleine image avec texte en bas.
@@ -818,6 +858,7 @@ function addClass(el, cls) {
    le slot droit celle d'après.
    Animation : exit vers la gauche / entrée depuis la droite.         */
 function showNextActu() {
+  if (actuPaused) return;   /* carrousel masqué par la zone actualités : on ne tourne pas dans le vide */
   if (ACTUS.length <= 1) return;
 
   var nextIdx0 = (actuIdx + 2) % ACTUS.length;  /* prochaine carte pour slot 0 */
@@ -1497,6 +1538,7 @@ function showCitation(idx) {
        defilant: true = le texte défile de bas en haut
        duree   : secondes d'affichage de CET élément
        taille  : "plein" = tout l'écran · "panneau" = encart par-dessus
+                 · "zone" = à la place des deux cartes du carrousel (pause du carrousel)
        cadrage : "contain" (image entière) | "cover" (remplit, recadre)
        actif   : true/false
        debut/fin : "AAAA-MM-JJ" facultatifs — fenêtre d'affichage
@@ -1509,7 +1551,16 @@ var overlayItemTimer= null;   /* durée de l'élément en cours         */
 var overlaySig      = null;   /* évite de relancer si rien n'a changé */
 var overlayGen      = 0;      /* numéro de génération : un passage lancé avec
                                  une ancienne configuration s'arrête de lui-même */
-var overlayActiveSlideKey = null;   /* 'a' | 'b' | null : couche actuellement visible */
+/* Deux cibles d'affichage possibles pour un élément : tout l'écran (fs,
+   tailles "plein" et "panneau") ou la zone du carrousel (zone, taille "zone").
+   Chacune a ses deux couches glissantes et retient laquelle est visible. */
+var OV_TARGETS = {
+  fs:   { overlay: 'fs-overlay',   stage: 'fs-stage',   bar: 'fs-bar',   slide: 'fs-slide-',
+          crawl: 'fsCrawl',     key: null, hideTimer: null },
+  zone: { overlay: 'zone-overlay', stage: 'zone-stage', bar: 'zone-bar', slide: 'zone-slide-',
+          crawl: 'fsCrawlZone', key: null, hideTimer: null }
+};
+function overlayTargetName(it) { return (it && it.taille === 'zone') ? 'zone' : 'fs'; }
 var OVERLAY_FIRST_DELAY_MS = 15000; /* premier passage après (ré)activation ou après tout
                                         changement de configuration : 15 s — pas besoin
                                         d'attendre l'intervalle complet pour vérifier */
@@ -1719,16 +1770,16 @@ function buildOverlaySlideHTML(it) {
   return html;
 }
 
-/* Prépare les deux couches empilées de .fs-stage (créées une seule fois). */
-function overlaySlideLayers() {
-  var stage = document.getElementById('fs-stage');
+/* Prépare les deux couches empilées d'une cible (créées une seule fois). */
+function overlaySlideLayers(t) {
+  var stage = document.getElementById(t.stage);
   if (!stage) return null;
-  var a = document.getElementById('fs-slide-a');
+  var a = document.getElementById(t.slide + 'a');
   if (!a) {
-    stage.innerHTML = '<div class="fs-slide" id="fs-slide-a"></div><div class="fs-slide" id="fs-slide-b"></div>';
-    a = document.getElementById('fs-slide-a');
+    stage.innerHTML = '<div class="fs-slide" id="' + t.slide + 'a"></div><div class="fs-slide" id="' + t.slide + 'b"></div>';
+    a = document.getElementById(t.slide + 'a');
   }
-  return { a: a, b: document.getElementById('fs-slide-b') };
+  return { a: a, b: document.getElementById(t.slide + 'b') };
 }
 
 function overlayNextFrame(fn) {
@@ -1736,17 +1787,41 @@ function overlayNextFrame(fn) {
   else { setTimeout(fn, 16); }
 }
 
+/* Pause / reprise du carrousel pendant l'affichage en zone actualités. La
+   rotation (setInterval) continue de battre mais showNextActu() ne fait rien :
+   aucun risque de désynchronisation avec un rechargement de data.json. */
+function setActuPaused(p) {
+  actuPaused = !!p;
+  var scene = document.getElementById('actu-scene');
+  var zone  = scene ? scene.parentNode : null;
+  if (zone) { if (actuPaused) addClass(zone, 'zone-on'); else removeClass(zone, 'zone-on'); }
+}
+
 function showOverlayItem(it, secs) {
-  var ov  = document.getElementById('fs-overlay');
-  var bar = document.getElementById('fs-bar');
+  var name = overlayTargetName(it);
+  /* Un seul affichage à la fois : si l'élément précédent était sur l'autre
+     cible (plein écran ↔ zone), celle-ci s'efface pendant que la nouvelle apparaît. */
+  hideOverlayTarget(name === 'zone' ? 'fs' : 'zone');
+
+  var t   = OV_TARGETS[name];
+  var ov  = document.getElementById(t.overlay);
+  var bar = document.getElementById(t.bar);
   if (!ov) return;
 
-  removeClass(ov, 'panneau');
-  if (it.taille === 'panneau') addClass(ov, 'panneau');
+  /* Un masquage de cette même cible était en cours (fin < 800 ms) : on
+     l'annule, sinon il viderait la scène juste après l'arrivée du nouvel élément. */
+  if (t.hideTimer) { clearTimeout(t.hideTimer); t.hideTimer = null; }
 
-  var layers = overlaySlideLayers();
+  if (name === 'fs') {
+    removeClass(ov, 'panneau');
+    if (it.taille === 'panneau') addClass(ov, 'panneau');
+  } else {
+    setActuPaused(true);
+  }
+
+  var layers = overlaySlideLayers(t);
   if (!layers) return;
-  var outKey = overlayActiveSlideKey;
+  var outKey = t.key;
   var inKey  = (outKey === 'a') ? 'b' : 'a';
   var inLayer  = layers[inKey];
   var outLayer = outKey ? layers[outKey] : null;
@@ -1775,14 +1850,14 @@ function showOverlayItem(it, secs) {
     }
   });
 
-  overlayActiveSlideKey = inKey;
+  t.key = inKey;
 
   /* Défilement du texte : durée calée sur la durée d'affichage */
   if (it.type === 'texte' && it.defilant) {
     var crawl = inLayer.querySelector('.fs-crawl');
     if (crawl) {
-      crawl.style.animation = 'fsCrawl ' + secs + 's linear 0s 1 normal forwards';
-      crawl.style.webkitAnimation = 'fsCrawl ' + secs + 's linear 0s 1 normal forwards';
+      crawl.style.animation = t.crawl + ' ' + secs + 's linear 0s 1 normal forwards';
+      crawl.style.webkitAnimation = t.crawl + ' ' + secs + 's linear 0s 1 normal forwards';
     }
   }
 
@@ -1797,24 +1872,34 @@ function showOverlayItem(it, secs) {
   }
 }
 
-function hideOverlay() {
-  var ov  = document.getElementById('fs-overlay');
-  var bar = document.getElementById('fs-bar');
+function hideOverlayTarget(name) {
+  var t   = OV_TARGETS[name];
+  var ov  = document.getElementById(t.overlay);
+  var bar = document.getElementById(t.bar);
+  if (name === 'zone') setActuPaused(false);   /* le carrousel reprend dès la sortie */
   if (!ov) return;
-  var layers = overlaySlideLayers();
-  if (layers && overlayActiveSlideKey) {
-    var cur = layers[overlayActiveSlideKey];
+  if (!/(^|\s)on(\s|$)/.test(ov.className)) return;   /* déjà masquée */
+  if (t.hideTimer) return;                             /* masquage déjà en cours */
+  var layers = overlaySlideLayers(t);
+  if (layers && t.key) {
+    var cur = layers[t.key];
     removeClass(cur, 'current');
     addClass(cur, 'exit');
   }
   removeClass(ov, 'show');
   if (bar) { bar.style.transition = 'none'; bar.style.width = '0'; }
-  setTimeout(function() {
+  t.hideTimer = setTimeout(function() {
+    t.hideTimer = null;
     removeClass(ov, 'on');
-    var stage = document.getElementById('fs-stage');
+    var stage = document.getElementById(t.stage);
     if (stage) stage.innerHTML = '';   /* libère les images en mémoire */
-    overlayActiveSlideKey = null;
+    t.key = null;
   }, 800);
+}
+
+function hideOverlay() {
+  hideOverlayTarget('fs');
+  hideOverlayTarget('zone');
 }
 
 loadData();
