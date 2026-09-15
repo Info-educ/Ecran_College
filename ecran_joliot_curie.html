@@ -1507,6 +1507,7 @@ var OVERLAY_FIRST_DELAY_MS = 15000; /* tout premier passage (jamais encore eu li
                                         pour vérifier tout de suite que ça marche —
                                         pas besoin d'attendre l'intervalle complet */
 var OVERLAY_STORAGE_KEY = 'jc_fs_last_pass_start';
+var OVERLAY_SEEN_SIG_KEY = 'jc_fs_last_seen_sig';
 
 /* MagicInfo recharge entièrement cette page toutes les ~10 minutes (réglage
    du lecteur, indépendant de ce fichier) : à chaque rechargement, toutes les
@@ -1522,6 +1523,19 @@ function overlayReadLastStart() {
 }
 function overlayWriteLastStart(ts) {
   try { localStorage.setItem(OVERLAY_STORAGE_KEY, String(ts)); } catch (e) {}
+}
+
+/* Signature du dernier contenu plein écran vu par CET écran (survit aux
+   rechargements, contrairement à overlaySig qui repart à null à chaque
+   fois). Sert à distinguer "MagicInfo a rechargé la page mais le contenu
+   publié n'a pas changé" de "un nouveau contenu vient d'être publié" —
+   seul le second cas doit se montrer vite, sans attendre le solde d'un
+   ancien calcul d'intervalle qui n'a plus rien à voir avec ce contenu. */
+function overlayReadSeenSig() {
+  try { return localStorage.getItem(OVERLAY_SEEN_SIG_KEY); } catch (e) { return null; }
+}
+function overlayWriteSeenSig(sig) {
+  try { localStorage.setItem(OVERLAY_SEEN_SIG_KEY, sig); } catch (e) {}
 }
 
 function fsEsc(v) {
@@ -1572,7 +1586,23 @@ function applyOverlayConfig(cfg) {
   hideOverlay();
 
   if (overlayActiveItems().length === 0) return;
-  scheduleNextOverlay();
+
+  // BUG CORRIGE : un contenu qui vient d'être publié attendait quand même
+  // le solde du calcul basé sur le DERNIER passage réel, même si ce
+  // dernier passage concernait un tout autre contenu (ancien essai,
+  // ancien intervalle...). Vu de l'admin : "j'ai publié, rien ne se
+  // passe". On compare maintenant avec le dernier contenu vu par cet
+  // écran : un contenu inédit se montre vite ; un contenu identique
+  // respecte l'intervalle réglé (comportement normal semaine après
+  // semaine, y compris à travers les rechargements MagicInfo).
+  var seenSig = overlayReadSeenSig();
+  overlayWriteSeenSig(sig);
+  if (seenSig !== sig) {
+    if (overlayTimer) clearTimeout(overlayTimer);
+    overlayTimer = setTimeout(runOverlayPass, OVERLAY_FIRST_DELAY_MS);
+  } else {
+    scheduleNextOverlay();
+  }
 }
 
 // Calcule QUAND doit avoir lieu le prochain passage, à partir du temps

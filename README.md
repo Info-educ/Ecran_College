@@ -135,6 +135,49 @@ Un **passage** affiche tous les éléments actifs à la suite, chacun pendant sa
 propre durée, puis rend la main à l'écran d'accueil. Le résumé sous les
 réglages indique la durée totale d'un passage.
 
+**Le tout premier passage arrive environ 15 secondes après activation** (ou
+après tout changement de configuration), pour qu'on puisse vérifier tout de
+suite que c'est bien réglé — les passages suivants respectent l'intervalle
+choisi. En attendant les 15 premières secondes, si rien ne s'affiche, vérifier
+d'abord que **« Activer l'affichage plein écran »** est bien coché et qu'au
+moins un élément est actif.
+
+**Les éléments s'enchaînent en glissant de droite à gauche**, quel que soit
+leur type (image, PDF converti en image, message) — comme un carrousel. Le
+suivant entre par la droite pendant que le précédent sort par la gauche ; il
+n'y a jamais de flash noir ni deux éléments qui démarrent en même temps, un
+seul à la fois, chacun pour sa durée réglée.
+
+### Le rechargement automatique de MagicInfo (~10 minutes)
+
+MagicInfo recharge entièrement cette page toutes les 10 minutes environ
+(réglage du lecteur, propre à MagicInfo — pas à ce fichier). Cela remet à
+zéro toute la mémoire de la page : l'horloge, la météo et le carrousel de
+citations n'en souffrent pas (ils se relancent instantanément et tournent
+assez vite pour que rien ne soit manqué), mais un intervalle plein écran de
+plus de 10 minutes ne pouvait pas être respecté par un simple minuteur, qui
+repartait de zéro à chaque rechargement avant même de se déclencher.
+
+L'instant du dernier passage est donc mémorisé dans le navigateur
+(localStorage), qui — contrairement à la mémoire de la page — survit à un
+rechargement. Au chargement, l'écran calcule le temps réellement écoulé
+depuis le dernier passage et programme le suivant en conséquence : un
+intervalle de 20, 30 ou 60 minutes est ainsi respecté quel que soit le rythme
+de rechargement de MagicInfo.
+
+⚠️ **Gardez un passage sous les 8-10 minutes.** Si la somme des durées des
+éléments actifs dépasse 8 minutes, l'admin affiche un avertissement : un
+passage plus long risque d'être interrompu en plein milieu par le
+rechargement de MagicInfo. Mieux vaut répartir beaucoup de contenu en
+plusieurs passages courts qu'un seul très long.
+
+**Un contenu qui vient d'être publié s'affiche toujours rapidement**, même si
+un ancien contenu différent avait tourné récemment avec un intervalle plus
+long : l'écran retient (dans le navigateur) le dernier contenu qu'il a vu, et
+ne respecte l'intervalle complet que lorsque le contenu est identique à la
+dernière fois — c'est-à-dire lors d'un simple rechargement automatique, pas
+après une vraie publication.
+
 ### Le cas des PDF
 
 MagicInfo n'affiche pas les PDF de façon fiable. La page admin **convertit
