@@ -1539,16 +1539,35 @@ function overlayTodayKey() {
   return n.getFullYear() + '-' + pad2(n.getMonth() + 1) + '-' + pad2(n.getDate());
 }
 
-/* Items réellement affichables : actifs ET dans leur fenêtre de dates */
+/* "HH:MM" actuel, sur l'heure déjà corrigée (été/hiver) utilisée par le
+   reste de l'écran — cohérent avec l'horloge affichée. */
+function overlayNowHM() {
+  var n = new Date(new Date().getTime() + CLOCK_OFFSET_MS);
+  return pad2(n.getHours()) + ':' + pad2(n.getMinutes());
+}
+
+/* Items réellement affichables : actifs, dans leur fenêtre de dates ET
+   dans leur fenêtre horaire (l'un ou l'autre, ou les deux, facultatifs).
+   Une fenêtre horaire qui passe minuit (ex. 22:00 → 06:00) est prise en
+   charge : heure_debut > heure_fin signifie "de ce soir à demain matin". */
 function overlayActiveItems() {
   var out = [];
   if (!OVERLAY_CFG || !OVERLAY_CFG.actif || !OVERLAY_CFG.items) return out;
   var today = overlayTodayKey();
+  var nowHM = overlayNowHM();
   for (var i = 0; i < OVERLAY_CFG.items.length; i++) {
     var it = OVERLAY_CFG.items[i];
     if (!it || it.actif === false) continue;
     if (it.debut && today < it.debut) continue;
     if (it.fin   && today > it.fin)   continue;
+    if (it.heure_debut || it.heure_fin) {
+      var hd = it.heure_debut || '00:00';
+      var hf = it.heure_fin   || '23:59';
+      var dansLaFenetre = (hd <= hf)
+        ? (nowHM >= hd && nowHM <= hf)   /* fenêtre normale, ex. 08:00 → 17:00 */
+        : (nowHM >= hd || nowHM <= hf);  /* fenêtre à cheval sur minuit, ex. 22:00 → 06:00 */
+      if (!dansLaFenetre) continue;
+    }
     if (it.type === 'texte') {
       if (!(it.texte && it.texte.length) && !(it.titre && it.titre.length)) continue;
     } else {
@@ -1558,6 +1577,7 @@ function overlayActiveItems() {
   }
   return out;
 }
+
 
 /* Appelée à chaque chargement de data.json */
 function applyOverlayConfig(cfg) {
