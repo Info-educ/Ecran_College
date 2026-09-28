@@ -1417,10 +1417,14 @@ function actuDateAuto(src, t) {
       : jourLong(dd);
     return (prochaine ? 'Semaine prochaine, du ' : 'Du ') + pre + ' au ' + jourLong(df);
   }
-  if (deb === t) return 'Aujourd\u2019hui';
-  if (deb === addDaysKey(t, 1)) return 'Demain';
-  if (prochaine) return 'Semaine prochaine, ' + jourLong(dd);
-  return majuscule(jourLong(dd));
+  if (deb === t) return avecMoment('Aujourd\u2019hui', src);
+  if (deb === addDaysKey(t, 1)) return avecMoment('Demain', src);
+  if (prochaine) return avecMoment('Semaine prochaine, ' + jourLong(dd), src);
+  return avecMoment(majuscule(jourLong(dd)), src);
+}
+/* « matin » / « après-midi » ajouté pour un événement d'une seule journée */
+function avecMoment(txt, src) {
+  return (src.moment && finKey(src) === src.debut) ? txt + ', ' + src.moment : txt;
 }
 
 /* Carte du carrousel visible aujourd'hui ? */
@@ -1552,7 +1556,7 @@ function applyData(d) {
       accentClass:   'accent-' + (src.couleur || 'blue'),
       text:          src.texte         || '',
       detail:        src.detail        || '',
-      date:          src.date          || actuDateAuto(src, t),
+      date:          isKey(src.debut) ? actuDateAuto(src, t) : (src.date || ''),
       image:         src.image         || '',
       imagePosition: src.imagePosition || 'center center',
       imageScale:    src.imageScale    || 1
