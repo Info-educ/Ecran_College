@@ -1,223 +1,102 @@
 {
   "semaine": {
     "type": "B",
-    "periode": "21 au 25 septembre 2026"
+    "periode": "5 au 9 octobre 2026"
   },
   "actus": [
-    {
-      "emoji": "📚",
-      "tag": "Du 21 au 24 septembre",
-      "couleur": "red",
-      "texte": "Évaluations Nationales",
-      "detail": "Du 21 au 24 septembre · Salle 25",
-      "date": "Cette semaine",
-      "image": "images/20260918_1738_Capture.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 1
-    },
-    {
-      "emoji": "🍽️",
-      "tag": "Jeudi 24 septembre",
-      "couleur": "green",
-      "texte": "Tablée des chefs",
-      "detail": "Jeudi 24 septembre · Réfectoire",
-      "date": "Cette semaine",
-      "image": "images/20260918_1739_Capture.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 1
-    },
     {
       "emoji": "📣",
       "tag": "Semaine du 28 septembre au 2 octobre",
       "couleur": "blue",
       "texte": "Élections des délégués",
       "detail": "Semaine du 28 septembre au 2 octobre",
-      "date": "Semaine prochaine",
-      "image": "images/20260918_1736_Capture.png",
+      "date": "Cette semaine",
+      "image": "images/20260928_0945_Capture.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1.1
+    },
+    {
+      "emoji": "🚌",
+      "tag": "Mardi 29 septembre",
+      "couleur": "green",
+      "texte": "Visite du 4B - Sortie Pédagogique",
+      "detail": "Mardi 29 septembre · Musée d'Arts Moderne et du Musée du Quai Branly",
+      "date": "Cette semaine",
+      "image": "images/20260928_0948_Capture1.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
+    },
+    {
+      "emoji": "📚",
+      "tag": "Mercredi 30 septembre - Après-midi",
+      "couleur": "orange",
+      "texte": "École ouverte - 6ème 5ème",
+      "detail": "Mercredi 30 septembre - Après-midi",
+      "date": "Cette semaine",
+      "image": "images/20260928_0950_Capture3.png",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 1
     }
   ],
   "agenda": [
     {
-      "label": "Jeudi 24 septembre",
-      "couleur": "green",
-      "nom": "Photos de classes",
-      "lieu": "Cour de récréation",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Du 21 au 24 septembre",
-      "couleur": "red",
-      "nom": "Évaluations Nationales",
-      "lieu": "Salle 25",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Mardi 22 septembre",
-      "couleur": "orange",
-      "nom": "Exercice incendie",
-      "lieu": "",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Jeudi 24 septembre",
-      "couleur": "green",
-      "nom": "Tablée des chefs",
-      "lieu": "Réfectoire",
-      "semaine_prochaine": false
-    },
-    {
       "label": "Semaine du 28 septembre au 2 octobre",
       "couleur": "blue",
       "nom": "Élections des délégués",
       "lieu": "",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "Mardi 29 septembre",
+      "couleur": "green",
+      "nom": "Visite du 4B - Sortie Pédagogique",
+      "lieu": "Musée d'Arts Moderne et du Musée du Quai Branly",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "Mercredi 30 septembre - Après-midi",
+      "couleur": "orange",
+      "nom": "École ouverte - 6ème 5ème",
+      "lieu": "",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "Jeudi 01 octobre - 18h",
+      "couleur": "purple",
+      "nom": "Conseil d'Administration",
+      "lieu": "Salle Lucie Aubrac",
+      "semaine_prochaine": false
+    },
+    {
+      "label": "Semaine du 5 au 9 octobre ",
+      "couleur": "green",
+      "nom": "Semaine de la démocratie scolaire",
+      "lieu": "",
       "semaine_prochaine": true
+    },
+    {
+      "label": "Mercredi 07 octobre - Après-midi",
+      "couleur": "green",
+      "nom": "3ème - École ouverte - Recherche de stage",
+      "lieu": "",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "Jeudi 8 octobre ",
+      "couleur": "blue",
+      "nom": "Tablée des chefs",
+      "lieu": "",
+      "semaine_prochaine": true
+    },
+    {
+      "label": "Vendredi 9 octobre",
+      "couleur": "blue",
+      "nom": "4A - Sortie Pédagogique",
+      "lieu": "Visite du Musée Rodin et de Musée du Louvre",
+      "semaine_prochaine": false
     }
   ],
   "menus": {
-    "2026-09-14": {
-      "entree": [],
-      "plat": [
-        "Hoki sauce à l’oseille",
-        "Steak haché de veau sauce tomate"
-      ],
-      "accomp": [
-        "Chou fleur fleurette béchamel <span class=\"bio-tag\">BIO</span> <span class=\"vege-tag\">Végé</span>",
-        "Boulgour <span class=\"bio-tag\">BIO</span> <span class=\"vege-tag\">Végé</span>"
-      ],
-      "fromage": [
-        "Coulommiers",
-        "Edam"
-      ],
-      "dessert": [
-        "Pêche au sirop et galette pur beurre",
-        "Abricot au sirop et galette pur beurre",
-        "Fruit"
-      ]
-    },
-    "2026-09-15": {
-      "entree": [
-        "Quartier de melon",
-        "Tomate vinaigrette basilic"
-      ],
-      "plat": [
-        "Poulet sauce aux olives",
-        "Clafoutis carottes cumin et emmental"
-      ],
-      "accomp": [
-        "Purée de pomme de terre à la muscade Haricot vert extra fin à l'ail"
-      ],
-      "fromage": [
-        "Yaourt nature de la bergerie de Rambouillet et amandes effilées Yaourt nature de la ferme de Sigy et sucre",
-        "Yaourt nature de la ferme de Sigy et sucre"
-      ],
-      "dessert": []
-    },
-    "2026-09-17": {
-      "entree": [
-        "Salade maïs poivron olive",
-        "Carotte râpée"
-      ],
-      "plat": [
-        "Escalope porc sauce moutarde",
-        "Burrito bowl riz pois chiche maïs cheddar guacamole"
-      ],
-      "accomp": [
-        "Petits pois sauce tomate",
-        "Riz créole"
-      ],
-      "fromage": [],
-      "dessert": [
-        "Fruit de saison"
-      ]
-    },
-    "2026-09-18": {
-      "entree": [],
-      "plat": [
-        "Pennes sauce légumes du sud fromage de brebis",
-        "Pennes sauce pesto brocolis haricots blanc"
-      ],
-      "accomp": [],
-      "fromage": [
-        "Cantal",
-        "Mimolette"
-      ],
-      "dessert": [
-        "Fruit de saison"
-      ]
-    },
-    "2026-09-21": {
-      "entree": [],
-      "plat": [
-        "Sauté de boeuf sauce au thym",
-        "Merlu sauce tomate"
-      ],
-      "accomp": [
-        "Carottes persillées",
-        "Pomme de terre boulangère"
-      ],
-      "fromage": [
-        "Bleu Auvergne",
-        "Gouda"
-      ],
-      "dessert": [
-        "Banane sauce chocolat au lait",
-        "Banane topping caramel"
-      ]
-    },
-    "2026-09-22": {
-      "entree": [
-        "Salade pomme et orange vinaigrette balsamique au miel",
-        "Céleri râpé vinaigrette balsamique au miel"
-      ],
-      "plat": [
-        "Blé sauce haricot rouge et tomate façon bolognaise emmental",
-        "Blé sauce courgettes façon caponata"
-      ],
-      "accomp": [],
-      "fromage": [
-        "Fromage blanc façon stracciatella",
-        "Fromage blanc saveur vanille"
-      ],
-      "dessert": []
-    },
-    "2026-09-24": {
-      "entree": [],
-      "plat": [
-        "Rôti de dinde sauce moutarde",
-        "Pommes de terre dahl de lentilles vertes"
-      ],
-      "accomp": [
-        "Lentilles vertes mijotées",
-        "Jardinière de légumes"
-      ],
-      "fromage": [
-        "Yaourt nature I Grec framboise",
-        "Yaourt nature I Grec sucré"
-      ],
-      "dessert": [
-        "Fruit de saison"
-      ]
-    },
-    "2026-09-25": {
-      "entree": [],
-      "plat": [
-        "Steak haché de boeuf sauce tomate basilic",
-        "Merlu sauce tomate basilic"
-      ],
-      "accomp": [
-        "Ratatouille",
-        "Riz créole"
-      ],
-      "fromage": [
-        "Fromage frais Saint Moret Fromage frais",
-        "Rondelé ail et fines herbes"
-      ],
-      "dessert": [
-        "Fruit de saison"
-      ]
-    },
     "2026-09-28": {
       "entree": [],
       "plat": [
@@ -437,7 +316,9 @@
       ]
     }
   },
-  "ticker": [],
+  "ticker": [
+    "✅ Semaine du 5 au 9 octobre  : Semaine de la démocratie scolaire"
+  ],
   "citations": [
     {
       "texte": "Les maitres d'école sont les jardiniers en intelligences humaines",
