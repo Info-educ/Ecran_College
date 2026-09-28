@@ -732,20 +732,50 @@ var JOURS = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 var MOIS  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 
 /* ── CORRECTION HORLOGE MAGICINFO ──────────────────────────────────────
-   MagicInfo ne gère pas le changement heure été/hiver automatiquement.
-   CLOCK_OFFSET_MS se décompose en deux corrections cumulées :
-     - HEURE_ETE_MS  : +3 600 000 ms (1h) — à retirer en heure d'hiver
-                       (dernier dimanche d'octobre → mettre 0)
-                       (dernier dimanche de mars   → remettre 3 600 000)
-     - AVANCE_ECOLE_MS : +180 000 ms (3 min) — décalage propre au poste
-                         MagicInfo du collège, à ne pas toucher.
+   Le poste MagicInfo reste à l'heure d'hiver toute l'année. La correction
+   été/hiver est désormais calculée automatiquement (dernier dimanche de
+   mars → dernier dimanche d'octobre) : plus rien à modifier deux fois par an.
+     - HEURE_ETE_MODE  : 'auto' (défaut). En cas de souci ponctuel, forcer
+                         'ete' ou 'hiver'.
+     - AVANCE_ECOLE_MS : décalage fixe propre au poste MagicInfo du collège.
    ──────────────────────────────────────────────────────────────────────── */
-var HEURE_ETE_MS   = 3600000; /* 1h — passer à 0 en heure d'hiver */
-var AVANCE_ECOLE_MS =   60000; /* 1 min — décalage fixe du poste    */
-var CLOCK_OFFSET_MS = HEURE_ETE_MS + AVANCE_ECOLE_MS;
+var HEURE_ETE_MODE  = 'auto';  /* 'auto' | 'ete' | 'hiver' */
+var AVANCE_ECOLE_MS = 60000;   /* 1 min — décalage fixe du poste */
+
+function dernierDimanche(annee, mois) {
+  var d = new Date(annee, mois + 1, 0, 12, 0, 0);   /* dernier jour du mois */
+  d.setDate(d.getDate() - d.getDay());
+  return d;
+}
+function estHeureEte(brut) {
+  if (HEURE_ETE_MODE === 'ete')   return true;
+  if (HEURE_ETE_MODE === 'hiver') return false;
+  var y = brut.getFullYear();
+  var debut = dernierDimanche(y, 2); debut.setHours(2, 0, 0, 0);
+  var fin   = dernierDimanche(y, 9); fin.setHours(2, 0, 0, 0);   /* 3h été = 2h hiver */
+  return brut.getTime() >= debut.getTime() && brut.getTime() < fin.getTime();
+}
+function clockOffsetMs() {
+  return (estHeureEte(new Date()) ? 3600000 : 0) + AVANCE_ECOLE_MS;
+}
+/* Heure corrigée, utilisée partout (horloge, menus, agenda, carrousel…) */
+function ecranNow() { return new Date(new Date().getTime() + clockOffsetMs()); }
+
+/* ── DATES (clés AAAA-MM-JJ) ── */
+function keyOf(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+function isKey(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s); }
+function dateOfKey(k) { var p = k.split('-'); return new Date(+p[0], +p[1] - 1, +p[2], 12, 0, 0); }
+function addDaysKey(k, n) { var d = dateOfKey(k); d.setDate(d.getDate() + n); return keyOf(d); }
+function mondayKey(k) {
+  var d = dateOfKey(k); var dow = d.getDay();
+  d.setDate(d.getDate() + (dow === 0 ? -6 : 1 - dow));
+  return keyOf(d);
+}
+function todayKey() { return keyOf(ecranNow()); }
+function finKey(o) { return (isKey(o.fin) && o.fin > o.debut) ? o.fin : o.debut; }
 
 function updateClock() {
-  var now = new Date(new Date().getTime() + CLOCK_OFFSET_MS);
+  var now = ecranNow();
   setText('time',      pad2(now.getHours()) + ':' + pad2(now.getMinutes()));
   setText('day-name',  JOURS[now.getDay()]);
   setText('date-full', now.getDate() + ' ' + MOIS[now.getMonth()] + ' ' + now.getFullYear());
@@ -916,7 +946,7 @@ function startActuRotation() {
 var MENUS_DATA = {};
 
 function getMenuDuJour() {
-  var now = new Date(new Date().getTime() + CLOCK_OFFSET_MS);
+  var now = ecranNow();
   var dow = now.getDay();
   var dateKey = now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate());
   var libelle = JOURS[dow] + ' ' + now.getDate() + ' ' + MOIS[now.getMonth()];
@@ -1336,68 +1366,255 @@ function applyMeteoBackground(wcode, tempNow) {
    Alimente : badges semaine, agenda, ticker
    Rafraîchi toutes les 15 min (l'admin peut pousser une MAJ à tout moment)
 ══════════════════════════════════════════════════════════════════ */
-function buildAgenda(agenda) {
+/* ══════════════════════════════════════════════════════════════════
+   CALCULS PAR DATE — l'écran décide seul de ce qui est d'actualité.
+   Plus besoin de « basculer » la semaine : les éléments datés apparaissent
+   et disparaissent d'eux-mêmes. Les éléments anciens (sans date) gardent
+   leur comportement d'avant.
+══════════════════════════════════════════════════════════════════ */
+var JOURS_COURT = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+
+/* Type A/B : calculé à partir d'un lundi de référence (semaine A connue) */
+function typeSemaine(sem, t) {
+  if (sem && sem.auto && isKey(sem.ref_A)) {
+    var ms = dateOfKey(mondayKey(t)).getTime() - dateOfKey(mondayKey(sem.ref_A)).getTime();
+    var diff = Math.round(ms / 604800000);
+    return (Math.abs(diff) % 2 === 0) ? 'A' : 'B';
+  }
+  return (sem && sem.type) || 'A';
+}
+
+function jourLong(d) { return JOURS[d.getDay()].toLowerCase() + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()]; }
+function majuscule(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+
+/* Étiquette de date d'un événement agenda (pastille colorée) */
+function agendaPill(ev) {
+  var d = dateOfKey(ev.debut);
+  var f = finKey(ev);
+  var txt;
+  if (f === ev.debut) {
+    txt = JOURS_COURT[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1);
+  } else {
+    var df = dateOfKey(f);
+    txt = 'Du ' + JOURS_COURT[d.getDay()].toLowerCase() + ' ' + d.getDate() + '/' + (d.getMonth() + 1)
+        + '<br>au ' + JOURS_COURT[df.getDay()].toLowerCase() + ' ' + df.getDate() + '/' + (df.getMonth() + 1);
+  }
+  if (ev.moment) txt += '<br>' + ev.moment;
+  return txt;
+}
+
+/* Texte de date d'une carte du carrousel (si le label n'est pas forcé) */
+function actuDateAuto(src, t) {
+  if (!isKey(src.debut)) return '';
+  var deb = src.debut, fin = finKey(src);
+  var dd = dateOfKey(deb), df = dateOfKey(fin);
+  var lundiT = mondayKey(t);
+  var prochaine = (mondayKey(deb) === addDaysKey(lundiT, 7));
+  if (deb !== fin) {
+    if (t >= deb) return 'En ce moment, jusqu\u2019au ' + jourLong(df);
+    var pre = (dd.getMonth() === df.getMonth())
+      ? JOURS[dd.getDay()].toLowerCase() + ' ' + dd.getDate()
+      : jourLong(dd);
+    return (prochaine ? 'Semaine prochaine, du ' : 'Du ') + pre + ' au ' + jourLong(df);
+  }
+  if (deb === t) return 'Aujourd\u2019hui';
+  if (deb === addDaysKey(t, 1)) return 'Demain';
+  if (prochaine) return 'Semaine prochaine, ' + jourLong(dd);
+  return majuscule(jourLong(dd));
+}
+
+/* Carte du carrousel visible aujourd'hui ? */
+function actuVisible(src, t) {
+  if (!src) return false;
+  if (isKey(src.affiche_des) && t < src.affiche_des) return false;
+  if (isKey(src.debut) && t > finKey(src)) return false;
+  return true;
+}
+
+/* Message du bandeau : ancien format (texte seul) ou { texte, debut, fin } */
+function tickerTexte(it, t) {
+  if (typeof it === 'string') return it;
+  if (!it || !it.texte) return '';
+  if (isKey(it.debut) && t < it.debut) return '';
+  if (isKey(it.fin)   && t > it.fin)   return '';
+  return it.texte;
+}
+
+function agendaItemHTML(ev, pill, estProchaine) {
+  var h = '<div class="agenda-item"' + (estProchaine ? ' style="opacity:0.65;"' : '') + '>';
+  h += '<span class="agenda-date-pill pill-' + (ev.couleur || 'blue') + '">' + pill + '</span>';
+  h += '<div class="agenda-info">';
+  h += '<div class="agenda-name">' + (ev.nom || '') + '</div>';
+  h += '<div class="agenda-lieu">' + (ev.lieu || '') + '</div>';
+  h += '</div></div>';
+  return h;
+}
+
+function buildAgenda(agenda, t) {
   var container = document.getElementById('agenda-items');
   if (!container) return;
 
-  /* Séparer les deux groupes en respectant l'ordre manuel de chacun */
+  var lundiProchain  = addDaysKey(mondayKey(t), 7);
+  var lundiSuivant   = addDaysKey(mondayKey(t), 14);
   var cetteSemaine   = [];
   var semaineProchai = [];
+
   for (var i = 0; i < agenda.length; i++) {
-    if (agenda[i].semaine_prochaine) { semaineProchai.push(agenda[i]); }
-    else                             { cetteSemaine.push(agenda[i]); }
+    var ev = agenda[i];
+    if (!ev) continue;
+    if (isKey(ev.debut)) {
+      if (finKey(ev) < t) continue;                 /* terminé */
+      if (ev.debut < lundiProchain)      cetteSemaine.push({ ev: ev, k: ev.debut, i: i });
+      else if (ev.debut < lundiSuivant)  semaineProchai.push({ ev: ev, k: ev.debut, i: i });
+      /* plus tard : pas encore affiché */
+    } else {
+      /* Ancien format sans date */
+      var legacy = { ev: ev, k: '9999', i: i, legacy: true };
+      if (ev.semaine_prochaine) semaineProchai.push(legacy); else cetteSemaine.push(legacy);
+    }
+  }
+  function tri(a, b) { return (a.k < b.k) ? -1 : (a.k > b.k) ? 1 : (a.i - b.i); }
+  cetteSemaine.sort(tri);
+  semaineProchai.sort(tri);
+
+  function pillOf(x) {
+    return x.legacy ? String(x.ev.label || '').replace('\n', '<br>') : agendaPill(x.ev);
   }
 
   var html = '';
-
-  /* ── Groupe "Cette semaine" ── */
   if (cetteSemaine.length > 0) {
     html += '<div class="agenda-section-sep" style="color:var(--c1);">✅ Cette semaine</div>';
-    for (var j = 0; j < cetteSemaine.length; j++) {
-      var ev = cetteSemaine[j];
-      var label = ev.label.replace('\n', '<br>');
-      html += '<div class="agenda-item">';
-      html += '<span class="agenda-date-pill pill-' + ev.couleur + '">' + label + '</span>';
-      html += '<div class="agenda-info">';
-      html += '<div class="agenda-name">' + ev.nom + '</div>';
-      html += '<div class="agenda-lieu">' + ev.lieu + '</div>';
-      html += '</div></div>';
-    }
+    for (var j = 0; j < cetteSemaine.length; j++) html += agendaItemHTML(cetteSemaine[j].ev, pillOf(cetteSemaine[j]), false);
   }
-
-  /* ── Groupe "Semaine prochaine" ── */
   if (semaineProchai.length > 0) {
     html += '<div class="agenda-section-sep" style="color:var(--muted);">⏭️ Semaine prochaine</div>';
-    for (var k = 0; k < semaineProchai.length; k++) {
-      var ev2 = semaineProchai[k];
-      var label2 = ev2.label.replace('\n', '<br>');
-      html += '<div class="agenda-item" style="opacity:0.65;">';
-      html += '<span class="agenda-date-pill pill-' + ev2.couleur + '">' + label2 + '</span>';
-      html += '<div class="agenda-info">';
-      html += '<div class="agenda-name">' + ev2.nom + '</div>';
-      html += '<div class="agenda-lieu">' + ev2.lieu + '</div>';
-      html += '</div></div>';
-    }
+    for (var k = 0; k < semaineProchai.length; k++) html += agendaItemHTML(semaineProchai[k].ev, pillOf(semaineProchai[k]), true);
   }
+  if (!html) html = '<div class="agenda-lieu" style="padding:10px 0;">Rien de prévu pour le moment</div>';
 
-  container.innerHTML = html;
+  if (html !== LAST_AGENDA_HTML) { LAST_AGENDA_HTML = html; container.innerHTML = html; }
 }
+var LAST_AGENDA_HTML = null;
 
-function buildTicker(items) {
+/* BUG CORRIGE : le bandeau était reconstruit à chaque rechargement de
+   data.json (toutes les 3 min), ce qui relançait le défilement depuis le
+   début. On ne le reconstruit plus que si son contenu change. */
+var LAST_TICKER_SIG = null;
+function buildTicker(items, t) {
   var container = document.getElementById('ticker-inner');
   if (!container) return;
+  var textes = [];
+  for (var i = 0; i < items.length; i++) {
+    var tx = tickerTexte(items[i], t);
+    if (tx) textes.push(tx);
+  }
+  var sig = textes.join('\u0001');
+  if (sig === LAST_TICKER_SIG) return;
+  LAST_TICKER_SIG = sig;
 
-  /* Construire une copie du contenu (répétée 2× pour le défilement infini CSS) */
   function buildCopy() {
     var h = '<div class="ticker-copy">';
-    for (var i = 0; i < items.length; i++) {
-      h += '<span>' + items[i] + '</span>';
+    for (var j = 0; j < textes.length; j++) {
+      h += '<span>' + textes[j] + '</span>';
       h += '<span class="sep">•</span>';
     }
     h += '</div>';
     return h;
   }
-  container.innerHTML = buildCopy() + buildCopy();
+  container.innerHTML = textes.length ? buildCopy() + buildCopy() : '';
+}
+
+/* Dernières données reçues : réappliquées même si le réseau tombe, pour que
+   le passage d'un jour (ou d'une semaine) à l'autre se fasse quand même. */
+var LAST_DATA = null;
+
+function applyData(d) {
+  var t = todayKey();
+
+  /* Badges semaine A/B */
+  var labelSemaine = '📅 Semaine ' + typeSemaine(d.semaine, t);
+  setText('semaine-badge', labelSemaine);
+  setText('semaine-pill',  labelSemaine);
+
+  /* Actus — carrousel central, filtrées par date.
+     BUG CORRIGE (1) : un carrousel vide laissait les anciennes cartes affichées.
+     BUG CORRIGE (2) : on ne reconstruit que si le contenu a bougé (sinon le
+     carrousel revenait sur la première carte toutes les 3 min). */
+  var actusSrc = d.actus || [];
+  var nouvelles = [];
+  for (var ai = 0; ai < actusSrc.length; ai++) {
+    var src = actusSrc[ai];
+    if (!actuVisible(src, t)) continue;
+    nouvelles.push({
+      emoji:         src.emoji         || '📌',
+      tag:           src.tag           || '',
+      tagClass:      'tag-'    + (src.couleur || 'blue'),
+      accentClass:   'accent-' + (src.couleur || 'blue'),
+      text:          src.texte         || '',
+      detail:        src.detail        || '',
+      date:          src.date          || actuDateAuto(src, t),
+      image:         src.image         || '',
+      imagePosition: src.imagePosition || 'center center',
+      imageScale:    src.imageScale    || 1
+    });
+  }
+  var actusSig = JSON.stringify(nouvelles);
+  if (actusSig !== LAST_ACTUS_SIG) {
+    LAST_ACTUS_SIG = actusSig;
+    ACTUS = nouvelles;
+    actuIdx = 0;
+    if (actuTimer) { clearInterval(actuTimer); actuTimer = null; }
+    if (ACTUS.length === 0) {
+      clearActuSlots();
+    } else {
+      buildActuCards();
+      startActuRotation();
+    }
+  }
+
+  /* Agenda */
+  buildAgenda(d.agenda || [], t);
+
+  /* Ticker */
+  buildTicker(d.ticker || [], t);
+
+  /* Menus — charge MENUS_DATA puis rafraichit l'affichage */
+  if (d.menus) {
+    MENUS_DATA = d.menus;
+    getMenuDuJour();
+  }
+
+  /* Citations — rotation toutes les 13s (reconstruites seulement si elles changent) */
+  var citsSrc = d.citations || [];
+  var citsSig = JSON.stringify(citsSrc);
+  if (citsSig !== LAST_CITATIONS_SIG) {
+    LAST_CITATIONS_SIG = citsSig;
+    CITATIONS_DATA = citsSrc;
+    CITATION_IDX = 0;
+    if (citationTimer) { clearInterval(citationTimer); citationTimer = null; }
+    if (CITATIONS_DATA.length === 0) {
+      var qt = document.getElementById('quote-text');
+      var qa = document.getElementById('quote-author');
+      if (qt) qt.innerHTML = '';
+      if (qa) qa.innerHTML = '';
+    } else {
+      showCitation(0);
+      if (CITATIONS_DATA.length > 1) {
+        citationTimer = setInterval(function() {
+          CITATION_IDX = (CITATION_IDX + 1) % CITATIONS_DATA.length;
+          showCitation(CITATION_IDX);
+        }, 13000);
+      }
+    }
+  }
+
+  /* Couche plein écran (interstitiels) */
+  applyOverlayConfig(d.plein_ecran);
+}
+
+function reapplyLastData() {
+  if (!LAST_DATA) return;
+  try { applyData(LAST_DATA); } catch (e) {}
 }
 
 function loadData() {
@@ -1411,103 +1628,19 @@ function loadData() {
     if (xhr.status === 200) {
       try {
         var d = JSON.parse(xhr.responseText);
-
-        /* Badges semaine A/B */
-        var labelSemaine = '📅 Semaine ' + d.semaine.type;
-        setText('semaine-badge', labelSemaine);
-        setText('semaine-pill',  labelSemaine);
-
-        /* Actus — carrousel central
-           BUG CORRIGE (1) : le test `d.actus.length > 0` sautait tout le bloc
-           quand le carrousel etait vide, si bien que les cartes de la semaine
-           precedente restaient affichees apres un basculement qui les avait
-           pourtant supprimees.
-           BUG CORRIGE (2) : le carrousel etait reconstruit a chaque
-           rafraichissement (toutes les 3 min), ce qui le ramenait d'un coup
-           sur la premiere carte, sans transition, meme quand rien n'avait
-           change. On ne reconstruit desormais que si le contenu a bouge. */
-        var actusSrc = d.actus || [];
-        var actusSig = JSON.stringify(actusSrc);
-        if (actusSig !== LAST_ACTUS_SIG) {
-          LAST_ACTUS_SIG = actusSig;
-          ACTUS = [];
-          for (var ai = 0; ai < actusSrc.length; ai++) {
-            var src = actusSrc[ai];
-            ACTUS.push({
-              emoji:         src.emoji         || '📌',
-              tag:           src.tag           || '',
-              tagClass:      'tag-'    + (src.couleur || 'blue'),
-              accentClass:   'accent-' + (src.couleur || 'blue'),
-              text:          src.texte         || '',
-              detail:        src.detail        || '',
-              date:          src.date          || '',
-              image:         src.image         || '',
-              imagePosition: src.imagePosition || 'center center',
-              imageScale:    src.imageScale    || 1
-            });
-          }
-          actuIdx = 0;
-          if (actuTimer) { clearInterval(actuTimer); actuTimer = null; }
-          if (ACTUS.length === 0) {
-            clearActuSlots();
-          } else {
-            buildActuCards();
-            startActuRotation();
-          }
-        }
-
-        /* Agenda */
-        if (d.agenda) { buildAgenda(d.agenda); }
-
-        /* Ticker */
-        if (d.ticker) { buildTicker(d.ticker); }
-
-        /* Menus — charge MENUS_DATA puis rafraichit l'affichage */
-        if (d.menus) {
-          MENUS_DATA = d.menus;
-          getMenuDuJour();
-        }
-
-        /* Citations — rotation toutes les 13s
-           BUG CORRIGE : meme probleme que pour les actus — supprimer toutes
-           les citations dans l'admin laissait la derniere affichee a l'ecran,
-           et chaque rafraichissement relancait la rotation depuis la premiere. */
-        var citsSrc = d.citations || [];
-        var citsSig = JSON.stringify(citsSrc);
-        if (citsSig !== LAST_CITATIONS_SIG) {
-          LAST_CITATIONS_SIG = citsSig;
-          CITATIONS_DATA = citsSrc;
-          CITATION_IDX = 0;
-          if (citationTimer) { clearInterval(citationTimer); citationTimer = null; }
-          if (CITATIONS_DATA.length === 0) {
-            var qt = document.getElementById('quote-text');
-            var qa = document.getElementById('quote-author');
-            if (qt) qt.innerHTML = '';
-            if (qa) qa.innerHTML = '';
-          } else {
-            showCitation(0);
-            if (CITATIONS_DATA.length > 1) {
-              citationTimer = setInterval(function() {
-                CITATION_IDX = (CITATION_IDX + 1) % CITATIONS_DATA.length;
-                showCitation(CITATION_IDX);
-              }, 13000);
-            }
-          }
-        }
-
-        /* Couche plein écran (interstitiels) */
-        applyOverlayConfig(d.plein_ecran);
-
+        LAST_DATA = d;
+        applyData(d);
       } catch (e) {
-        /* En cas d'erreur JSON, l'affichage reste vide — pas de crash */
         console && console.error('data.json : erreur de parsing', e);
+        reapplyLastData();
       }
+    } else {
+      reapplyLastData();
     }
-    /* En cas d'erreur réseau : on garde les conteneurs vides, rien ne plante */
   };
 
-  xhr.ontimeout = function() { console && console.warn('data.json : délai dépassé'); };
-  try { xhr.send(); } catch(e) {}
+  xhr.ontimeout = function() { console && console.warn('data.json : délai dépassé'); reapplyLastData(); };
+  try { xhr.send(); } catch(e) { reapplyLastData(); }
 }
 
 /* ── CITATIONS ── */
@@ -1586,14 +1719,13 @@ function fsEsc(v) {
 }
 
 function overlayTodayKey() {
-  var n = new Date(new Date().getTime() + CLOCK_OFFSET_MS);
-  return n.getFullYear() + '-' + pad2(n.getMonth() + 1) + '-' + pad2(n.getDate());
+  return todayKey();
 }
 
 /* "HH:MM" actuel, sur l'heure déjà corrigée (été/hiver) utilisée par le
    reste de l'écran — cohérent avec l'horloge affichée. */
 function overlayNowHM() {
-  var n = new Date(new Date().getTime() + CLOCK_OFFSET_MS);
+  var n = ecranNow();
   return pad2(n.getHours()) + ':' + pad2(n.getMinutes());
 }
 
