@@ -1,28 +1,23 @@
 {
   "semaine": {
     "type": "B",
-    "periode": "5 au 9 octobre 2026"
+    "periode": "5 au 9 octobre 2026",
+    "auto": true,
+    "ref_A": "2026-09-28"
   },
   "actus": [
     {
-      "emoji": "📣",
-      "tag": "Semaine du 28 septembre au 2 octobre",
+      "emoji": "🎓",
+      "tag": "Agenda",
       "couleur": "blue",
-      "texte": "Élections des délégués",
-      "detail": "Semaine du 28 septembre au 2 octobre",
-      "date": "Cette semaine",
-      "image": "images/20260928_0945_Capture.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 1.1
-    },
-    {
-      "emoji": "🚌",
-      "tag": "Mardi 29 septembre",
-      "couleur": "green",
-      "texte": "Visite du 4B - Sortie Pédagogique",
-      "detail": "Mardi 29 septembre · Musée d'Arts Moderne et du Musée du Quai Branly",
-      "date": "Cette semaine",
-      "image": "images/20260928_0948_Capture1.png",
+      "texte": "3A - Début du Projet IRCAM",
+      "detail": "",
+      "date": "",
+      "debut": "2027-10-05",
+      "fin": "2027-10-06",
+      "moment": "après-midi",
+      "affiche_des": "2026-10-05",
+      "image": "images/20261005_1105_Capture.png",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 1
     },
@@ -36,6 +31,21 @@
       "image": "images/20260928_0950_Capture3.png",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 1
+    },
+    {
+      "emoji": "📅",
+      "tag": "Agenda",
+      "couleur": "green",
+      "texte": "Tablée des chefs",
+      "detail": "Réféctoire",
+      "date": "",
+      "debut": "2026-10-08",
+      "fin": "",
+      "moment": "après-midi",
+      "affiche_des": "",
+      "image": "images/20261005_1107_Capture.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
     }
   ],
   "agenda": [
@@ -44,27 +54,6 @@
       "couleur": "blue",
       "nom": "Élections des délégués",
       "lieu": "",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Mardi 29 septembre",
-      "couleur": "green",
-      "nom": "Visite du 4B - Sortie Pédagogique",
-      "lieu": "Musée d'Arts Moderne et du Musée du Quai Branly",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Mercredi 30 septembre - Après-midi",
-      "couleur": "orange",
-      "nom": "École ouverte - 6ème 5ème",
-      "lieu": "",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Jeudi 01 octobre - 18h",
-      "couleur": "purple",
-      "nom": "Conseil d'Administration",
-      "lieu": "Salle Lucie Aubrac",
       "semaine_prochaine": false
     },
     {
@@ -82,11 +71,14 @@
       "semaine_prochaine": true
     },
     {
-      "label": "Jeudi 8 octobre ",
-      "couleur": "blue",
+      "label": "Jeu 8/10 après-midi",
+      "couleur": "green",
       "nom": "Tablée des chefs",
-      "lieu": "",
-      "semaine_prochaine": true
+      "lieu": "Réféctoire",
+      "debut": "2026-10-08",
+      "fin": "",
+      "moment": "après-midi",
+      "semaine_prochaine": false
     },
     {
       "label": "Vendredi 9 octobre",
@@ -94,83 +86,19 @@
       "nom": "4A - Sortie Pédagogique",
       "lieu": "Visite du Musée Rodin et de Musée du Louvre",
       "semaine_prochaine": false
+    },
+    {
+      "debut": "2027-10-05",
+      "fin": "2027-10-06",
+      "moment": "après-midi",
+      "couleur": "blue",
+      "nom": "3A - Début du Projet IRCAM",
+      "lieu": "",
+      "label": "Du mar 5/10 au mer 6/10 après-midi",
+      "semaine_prochaine": false
     }
   ],
   "menus": {
-    "2026-09-28": {
-      "entree": [],
-      "plat": [
-        "Poulet sauce façon orientale",
-        "Filet colin d'Alaska meunière et citron"
-      ],
-      "accomp": [
-        "Haricot vert extra fin",
-        "Semoule"
-      ],
-      "fromage": [
-        "Yaourt nature et sucre",
-        "Yaourt aromatisé vanille"
-      ],
-      "dessert": [
-        "Fruit de saison"
-      ]
-    },
-    "2026-09-29": {
-      "entree": [],
-      "plat": [
-        "Omelette sauce tomate",
-        "Fusilli sauce aux trois fromages (bleu, mozzarella, fromage italien)"
-      ],
-      "accomp": [
-        "Petits pois mijotés"
-      ],
-      "fromage": [
-        "Tomme blanche",
-        "Camembert"
-      ],
-      "dessert": [
-        "Smoothie pomme banane sirop d'érable",
-        "Purée pomme poire Fruit"
-      ]
-    },
-    "2026-10-01": {
-      "entree": [],
-      "plat": [
-        "Hoki sauce au citron persillé",
-        "Steak haché de veau sauce tomate"
-      ],
-      "accomp": [
-        "Riz semi - complet",
-        "Ratatouille"
-      ],
-      "fromage": [
-        "Coulommiers",
-        "St Paulin"
-      ],
-      "dessert": [
-        "Gâteau aux pommes (UCP)",
-        "Gâteau Basque",
-        "Fruit"
-      ]
-    },
-    "2026-10-02": {
-      "entree": [
-        "Soupe carotte muscade et croûtons"
-      ],
-      "plat": [
-        "Pain pita, émincé dinde crudités sauce fromage blanc vinaigre balsamique",
-        "Pain pita, boulettes falafels pois chiche crudités sauce fromage blanc vinaigre balsamique"
-      ],
-      "accomp": [
-        "Frites"
-      ],
-      "fromage": [],
-      "dessert": [
-        "Crème dessert saveur chocolat",
-        "Ile flottante",
-        "Fruit"
-      ]
-    },
     "2026-10-05": {
       "entree": [],
       "plat": [
