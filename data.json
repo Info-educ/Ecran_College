@@ -46,6 +46,20 @@
       "image": "images/20261005_1107_Capture.png",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 1
+    },
+    {
+      "emoji": "⚽",
+      "tag": "Info",
+      "couleur": "red",
+      "texte": "Jeux de Société Allemand",
+      "detail": "Salle Lucie Aubrac",
+      "date": "",
+      "image": "images/20261008_1513_Flyer_atelier_jeux_de_soci_t_-1.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 0.6499999999999997,
+      "moment": "matin",
+      "debut": "2026-10-09",
+      "fin": "2026-10-16"
     }
   ],
   "agenda": [
@@ -71,6 +85,13 @@
       "semaine_prochaine": true
     },
     {
+      "label": "Vendredi 9 octobre",
+      "couleur": "blue",
+      "nom": "4A - Sortie Pédagogique",
+      "lieu": "Visite du Musée Rodin et de Musée du Louvre",
+      "semaine_prochaine": false
+    },
+    {
       "label": "Jeu 8/10 après-midi",
       "couleur": "green",
       "nom": "Tablée des chefs",
@@ -78,13 +99,6 @@
       "debut": "2026-10-08",
       "fin": "",
       "moment": "après-midi",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Vendredi 9 octobre",
-      "couleur": "blue",
-      "nom": "4A - Sortie Pédagogique",
-      "lieu": "Visite du Musée Rodin et de Musée du Louvre",
       "semaine_prochaine": false
     },
     {
