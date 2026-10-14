@@ -1444,6 +1444,18 @@ function tickerTexte(it, t) {
   return it.texte;
 }
 
+/* Rang d'un événement dans sa journée : toute la journée, matin, horaires, après-midi */
+function momentRank(m) {
+  m = String(m || '').toLowerCase().replace(/^\s+|\s+$/g, '');
+  if (!m) return 0;
+  var h = /(\d{1,2})\s*(?:h|:)\s*(\d{2})?/.exec(m);
+  if (h) return (+h[1]) * 60 + (h[2] ? +h[2] : 0);
+  if (/apr[eè]s/.test(m)) return 780;
+  if (m.indexOf('matin') !== -1) return 480;
+  if (m.indexOf('midi') !== -1) return 720;
+  return 1000;
+}
+
 function agendaItemHTML(ev, pill, estProchaine) {
   var h = '<div class="agenda-item"' + (estProchaine ? ' style="opacity:0.65;"' : '') + '>';
   h += '<span class="agenda-date-pill pill-' + (ev.couleur || 'blue') + '">' + pill + '</span>';
@@ -1468,16 +1480,21 @@ function buildAgenda(agenda, t) {
     if (!ev) continue;
     if (isKey(ev.debut)) {
       if (finKey(ev) < t) continue;                 /* terminé */
-      if (ev.debut < lundiProchain)      cetteSemaine.push({ ev: ev, k: ev.debut, i: i });
-      else if (ev.debut < lundiSuivant)  semaineProchai.push({ ev: ev, k: ev.debut, i: i });
+      if (ev.debut < lundiProchain)      cetteSemaine.push({ ev: ev, k: ev.debut, r: momentRank(ev.moment), f: finKey(ev), i: i });
+      else if (ev.debut < lundiSuivant)  semaineProchai.push({ ev: ev, k: ev.debut, r: momentRank(ev.moment), f: finKey(ev), i: i });
       /* plus tard : pas encore affiché */
     } else {
       /* Ancien format sans date */
-      var legacy = { ev: ev, k: '9999', i: i, legacy: true };
+      var legacy = { ev: ev, k: '9999', r: 0, f: '9999', i: i, legacy: true };
       if (ev.semaine_prochaine) semaineProchai.push(legacy); else cetteSemaine.push(legacy);
     }
   }
-  function tri(a, b) { return (a.k < b.k) ? -1 : (a.k > b.k) ? 1 : (a.i - b.i); }
+  function tri(a, b) {
+    if (a.k !== b.k) return (a.k < b.k) ? -1 : 1;     /* date de début */
+    if (a.r !== b.r) return a.r - b.r;                /* moment de la journée */
+    if (a.f !== b.f) return (a.f < b.f) ? -1 : 1;     /* fin : le plus court d'abord */
+    return a.i - b.i;                                 /* ordre de saisie */
+  }
   cetteSemaine.sort(tri);
   semaineProchai.sort(tri);
 
