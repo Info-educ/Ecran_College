@@ -1,52 +1,11 @@
 {
   "semaine": {
-    "type": "B",
-    "periode": "5 au 9 octobre 2026",
+    "type": "A",
+    "periode": "12 au 16 octobre 2026",
     "auto": true,
     "ref_A": "2026-09-28"
   },
   "actus": [
-    {
-      "emoji": "🎓",
-      "tag": "Agenda",
-      "couleur": "blue",
-      "texte": "3A - Début du Projet IRCAM",
-      "detail": "",
-      "date": "",
-      "debut": "2027-10-05",
-      "fin": "2027-10-06",
-      "moment": "après-midi",
-      "affiche_des": "2026-10-05",
-      "image": "images/20261005_1105_Capture.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 1
-    },
-    {
-      "emoji": "📚",
-      "tag": "Mercredi 30 septembre - Après-midi",
-      "couleur": "orange",
-      "texte": "École ouverte - 6ème 5ème",
-      "detail": "Mercredi 30 septembre - Après-midi",
-      "date": "Cette semaine",
-      "image": "images/20260928_0950_Capture3.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 1
-    },
-    {
-      "emoji": "📅",
-      "tag": "Agenda",
-      "couleur": "green",
-      "texte": "Tablée des chefs",
-      "detail": "Réféctoire",
-      "date": "",
-      "debut": "2026-10-08",
-      "fin": "",
-      "moment": "après-midi",
-      "affiche_des": "",
-      "image": "images/20261005_1107_Capture.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 1
-    },
     {
       "emoji": "⚽",
       "tag": "Info",
@@ -59,131 +18,62 @@
       "imageScale": 0.6499999999999997,
       "moment": "matin",
       "debut": "2026-10-09",
-      "fin": "2026-10-16"
+      "fin": "2026-11-20"
+    },
+    {
+      "emoji": "👥",
+      "tag": "Agenda",
+      "couleur": "blue",
+      "texte": "Réunion des délégués",
+      "detail": "9h - 11h · Salle Lucie Aubrac",
+      "date": "",
+      "debut": "2026-10-15",
+      "fin": "",
+      "moment": "matin",
+      "affiche_des": "",
+      "image": "images/20261014_1227_Capture.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
+    },
+    {
+      "emoji": "📅",
+      "tag": "Agenda",
+      "couleur": "green",
+      "texte": "Vacances de la Toussaint",
+      "detail": "",
+      "date": "",
+      "debut": "2026-10-17",
+      "fin": "",
+      "moment": "",
+      "affiche_des": "",
+      "image": "images/20261014_1231_Capture.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
     }
   ],
   "agenda": [
     {
-      "label": "Semaine du 28 septembre au 2 octobre",
-      "couleur": "blue",
-      "nom": "Élections des délégués",
-      "lieu": "",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Semaine du 5 au 9 octobre ",
-      "couleur": "green",
-      "nom": "Semaine de la démocratie scolaire",
-      "lieu": "",
-      "semaine_prochaine": true
-    },
-    {
-      "label": "Mercredi 07 octobre - Après-midi",
-      "couleur": "green",
-      "nom": "3ème - École ouverte - Recherche de stage",
-      "lieu": "",
-      "semaine_prochaine": true
-    },
-    {
-      "label": "Vendredi 9 octobre",
-      "couleur": "blue",
-      "nom": "4A - Sortie Pédagogique",
-      "lieu": "Visite du Musée Rodin et de Musée du Louvre",
-      "semaine_prochaine": false
-    },
-    {
-      "label": "Jeu 8/10 après-midi",
-      "couleur": "green",
-      "nom": "Tablée des chefs",
-      "lieu": "Réféctoire",
-      "debut": "2026-10-08",
+      "debut": "2026-10-16",
       "fin": "",
-      "moment": "après-midi",
+      "moment": "16h45",
+      "couleur": "blue",
+      "nom": "Vacances de la Toussaint",
+      "lieu": "",
+      "label": "Ven 16/10 16h45",
       "semaine_prochaine": false
     },
     {
-      "debut": "2027-10-05",
-      "fin": "2027-10-06",
-      "moment": "après-midi",
+      "debut": "2026-10-15",
+      "fin": "",
+      "moment": "9h-11h",
       "couleur": "blue",
-      "nom": "3A - Début du Projet IRCAM",
-      "lieu": "",
-      "label": "Du mar 5/10 au mer 6/10 après-midi",
+      "nom": "Réunion des délégués",
+      "lieu": "Salle Lucie Aubrac",
+      "label": "Jeu 15/10 9h-11h",
       "semaine_prochaine": false
     }
   ],
   "menus": {
-    "2026-10-05": {
-      "entree": [],
-      "plat": [
-        "Escalope de dinde sauce aux olives",
-        "Hoki aux herbes"
-      ],
-      "accomp": [
-        "Purée de brocoli",
-        "Farfalles"
-      ],
-      "fromage": [
-        "Emmental",
-        "Pointe de brie"
-      ],
-      "dessert": [
-        "Fruit de saison <span class=\"bio-tag\">BIO</span>"
-      ]
-    },
-    "2026-10-06": {
-      "entree": [
-        "Soupe de brocolis"
-      ],
-      "plat": [
-        "Boulgour sauce pois chiche marocain <span class=\"bio-tag\">BIO</span>",
-        "Boulgour korma brunoise provençale <span class=\"bio-tag\">BIO</span>"
-      ],
-      "accomp": [
-        "petit pois"
-      ],
-      "fromage": [],
-      "dessert": [
-        "Fruit de saison"
-      ]
-    },
-    "2026-10-08": {
-      "entree": [
-        "Chou rouge râpé",
-        "Chou blanc et maïs"
-      ],
-      "plat": [
-        "Rôti de boeuf sauce au romarin",
-        "Clafoutis patate douce pdt mozzarella"
-      ],
-      "accomp": [
-        "Carotte persillée",
-        "Lentilles vertes mijotées"
-      ],
-      "fromage": [],
-      "dessert": [
-        "Cake à la cannelle (UCP)",
-        "Crème dessert vanille"
-      ]
-    },
-    "2026-10-09": {
-      "entree": [],
-      "plat": [
-        "Escalope de porc sauce tomate",
-        "Merlu sauce aux épices douces"
-      ],
-      "accomp": [
-        "Riz semi complet <span class=\"bio-tag\">BIO</span>",
-        "Haricot beurre"
-      ],
-      "fromage": [
-        "Fromage blanc et sucre roux",
-        "chocolat en poudre Fruit"
-      ],
-      "dessert": [
-        "Fruit de saison"
-      ]
-    },
     "2026-10-12": {
       "entree": [
         "Soupe de potiron et croûtons"
@@ -258,9 +148,7 @@
       ]
     }
   },
-  "ticker": [
-    "✅ Semaine du 5 au 9 octobre  : Semaine de la démocratie scolaire"
-  ],
+  "ticker": [],
   "citations": [
     {
       "texte": "Les maitres d'école sont les jardiniers en intelligences humaines",
