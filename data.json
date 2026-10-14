@@ -49,9 +49,79 @@
       "image": "images/20261014_1231_Capture.png",
       "imagePosition": "50.0% 50.0%",
       "imageScale": 1
+    },
+    {
+      "emoji": "📢",
+      "tag": "Agenda",
+      "couleur": "blue",
+      "texte": "Réunion d'information - Journée à Londres",
+      "detail": "18h · Salle Lucie Aubrac",
+      "date": "",
+      "debut": "2026-11-03",
+      "fin": "",
+      "moment": "",
+      "affiche_des": "",
+      "image": "images/20261014_1246_Capture.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 0.7999999999999998
+    },
+    {
+      "emoji": "🤝",
+      "tag": "Agenda",
+      "couleur": "green",
+      "texte": "Journée de lutte contre le harcèlement",
+      "detail": "",
+      "date": "",
+      "debut": "2026-11-05",
+      "fin": "",
+      "moment": "",
+      "affiche_des": "",
+      "image": "images/20261014_1247_Capture.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
+    },
+    {
+      "emoji": "📅",
+      "tag": "Agenda",
+      "couleur": "purple",
+      "texte": "Tablée des chefs",
+      "detail": "Réfectoires",
+      "date": "",
+      "debut": "2026-11-05",
+      "fin": "",
+      "moment": "après-midi",
+      "affiche_des": "",
+      "image": "images/20261014_1249_Capture.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
+    },
+    {
+      "emoji": "📚",
+      "tag": "Agenda",
+      "couleur": "red",
+      "texte": "École ouverte - Maths/Français 6ème-5ème",
+      "detail": "",
+      "date": "",
+      "debut": "2026-11-04",
+      "fin": "",
+      "moment": "après-midi",
+      "affiche_des": "",
+      "image": "images/20261014_1251_Capture.png",
+      "imagePosition": "50.0% 50.0%",
+      "imageScale": 1
     }
   ],
   "agenda": [
+    {
+      "debut": "2026-10-15",
+      "fin": "",
+      "moment": "9h-11h",
+      "couleur": "blue",
+      "nom": "Réunion des délégués",
+      "lieu": "Salle Lucie Aubrac",
+      "label": "Jeu 15/10 9h-11h",
+      "semaine_prochaine": false
+    },
     {
       "debut": "2026-10-16",
       "fin": "",
@@ -63,13 +133,53 @@
       "semaine_prochaine": false
     },
     {
-      "debut": "2026-10-15",
+      "debut": "2026-11-03",
       "fin": "",
-      "moment": "9h-11h",
+      "moment": "18h",
       "couleur": "blue",
-      "nom": "Réunion des délégués",
+      "nom": "Réunion d'information - Journée à Londres",
       "lieu": "Salle Lucie Aubrac",
-      "label": "Jeu 15/10 9h-11h",
+      "label": "Mar 3/11 18h",
+      "semaine_prochaine": false
+    },
+    {
+      "debut": "2026-11-04",
+      "fin": "",
+      "moment": "après-midi",
+      "couleur": "blue",
+      "nom": "École ouverte - Maths/Français 6ème-5ème",
+      "lieu": "",
+      "label": "Mer 4/11 après-midi",
+      "semaine_prochaine": false
+    },
+    {
+      "debut": "2026-11-05",
+      "fin": "",
+      "moment": "",
+      "couleur": "green",
+      "nom": "Journée de lutte contre le harcèlement",
+      "lieu": "",
+      "label": "Jeu 5/11",
+      "semaine_prochaine": false
+    },
+    {
+      "debut": "2026-11-05",
+      "fin": "",
+      "moment": "après-midi",
+      "couleur": "purple",
+      "nom": "Tablée des chefs",
+      "lieu": "Réfectoires",
+      "label": "Jeu 5/11 après-midi",
+      "semaine_prochaine": false
+    },
+    {
+      "debut": "2026-11-05",
+      "fin": "",
+      "moment": "18h",
+      "couleur": "blue",
+      "nom": "Conseil d'administration",
+      "lieu": "Salle Lucie Aubrac",
+      "label": "Jeu 5/11 18h",
       "semaine_prochaine": false
     }
   ],
