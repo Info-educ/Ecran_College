@@ -1,7 +1,7 @@
 {
   "semaine": {
-    "type": "A",
-    "periode": "12 au 16 octobre 2026",
+    "type": "B",
+    "periode": "2 au 6 novembre 2026",
     "auto": true,
     "ref_A": "2026-09-28"
   },
@@ -19,36 +19,6 @@
       "moment": "matin",
       "debut": "2026-10-09",
       "fin": "2026-11-20"
-    },
-    {
-      "emoji": "👥",
-      "tag": "Agenda",
-      "couleur": "blue",
-      "texte": "Réunion des délégués",
-      "detail": "9h - 11h · Salle Lucie Aubrac",
-      "date": "",
-      "debut": "2026-10-15",
-      "fin": "",
-      "moment": "matin",
-      "affiche_des": "",
-      "image": "images/20261014_1227_Capture.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 1
-    },
-    {
-      "emoji": "📅",
-      "tag": "Agenda",
-      "couleur": "green",
-      "texte": "Vacances de la Toussaint",
-      "detail": "",
-      "date": "",
-      "debut": "2026-10-17",
-      "fin": "",
-      "moment": "",
-      "affiche_des": "",
-      "image": "images/20261014_1231_Capture.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 1
     },
     {
       "emoji": "📢",
@@ -113,26 +83,6 @@
   ],
   "agenda": [
     {
-      "debut": "2026-10-15",
-      "fin": "",
-      "moment": "9h-11h",
-      "couleur": "blue",
-      "nom": "Réunion des délégués",
-      "lieu": "Salle Lucie Aubrac",
-      "label": "Jeu 15/10 9h-11h",
-      "semaine_prochaine": false
-    },
-    {
-      "debut": "2026-10-16",
-      "fin": "",
-      "moment": "16h45",
-      "couleur": "blue",
-      "nom": "Vacances de la Toussaint",
-      "lieu": "",
-      "label": "Ven 16/10 16h45",
-      "semaine_prochaine": false
-    },
-    {
       "debut": "2026-11-03",
       "fin": "",
       "moment": "18h",
@@ -155,16 +105,6 @@
     {
       "debut": "2026-11-05",
       "fin": "",
-      "moment": "",
-      "couleur": "green",
-      "nom": "Journée de lutte contre le harcèlement",
-      "lieu": "",
-      "label": "Jeu 5/11",
-      "semaine_prochaine": false
-    },
-    {
-      "debut": "2026-11-05",
-      "fin": "",
       "moment": "après-midi",
       "couleur": "purple",
       "nom": "Tablée des chefs",
@@ -181,83 +121,19 @@
       "lieu": "Salle Lucie Aubrac",
       "label": "Jeu 5/11 18h",
       "semaine_prochaine": false
+    },
+    {
+      "debut": "2026-11-09",
+      "fin": "",
+      "moment": "",
+      "couleur": "green",
+      "nom": "Journée de lutte contre le harcèlement",
+      "lieu": "",
+      "label": "Lun 9/11",
+      "semaine_prochaine": true
     }
   ],
-  "menus": {
-    "2026-10-12": {
-      "entree": [
-        "Soupe de potiron et croûtons"
-      ],
-      "plat": [
-        "Sauté de boeuf sauce poivrade",
-        "Hoki sauce tomate"
-      ],
-      "accomp": [
-        "Haricot vert extra fin persillé",
-        "Pomme de terre Caldeirada"
-      ],
-      "fromage": [],
-      "dessert": [
-        "Yaourt nature de la bergerie de Rambouillet",
-        "Pain d'épice Fruit"
-      ]
-    },
-    "2026-10-13": {
-      "entree": [
-        "Coleslaw (carotte, chou blanc, mayonnaise)",
-        "Tartinade oeuf ciboulette et pain Suédois <span class=\"bio-tag\">BIO</span>"
-      ],
-      "plat": [
-        "Escalope de porc sauce moutarde",
-        "Pané moelleux au gouda"
-      ],
-      "accomp": [
-        "Orge perlé <span class=\"bio-tag\">BIO</span>",
-        "Jardinière de légumes"
-      ],
-      "fromage": [],
-      "dessert": [
-        "Liégeois saveur chocolat",
-        "Liégeois saveur vanille"
-      ]
-    },
-    "2026-10-15": {
-      "entree": [],
-      "plat": [
-        "Pizza poivron, chèvre",
-        "Pizza tomate, champignon, emmental, mozzarella"
-      ],
-      "accomp": [
-        "Salade verte vinaigrette <span class=\"bio-tag\">BIO</span>"
-      ],
-      "fromage": [
-        "Fromage fondu Samos",
-        "Fromage fondu Croc Lait"
-      ],
-      "dessert": [
-        "Fruit de saison"
-      ]
-    },
-    "2026-10-16": {
-      "entree": [],
-      "plat": [
-        "Merlu sauce aux agrumes",
-        "Omelette au fromage <span class=\"bio-tag\">BIO</span>"
-      ],
-      "accomp": [
-        "Carotte à l'ail <span class=\"bio-tag\">BIO</span>",
-        "Semoule <span class=\"bio-tag\">BIO</span>"
-      ],
-      "fromage": [
-        "Edam",
-        "Gouda",
-        "Pain spécial"
-      ],
-      "dessert": [
-        "Pain spécial"
-      ]
-    }
-  },
+  "menus": {},
   "ticker": [],
   "citations": [
     {
