@@ -21,21 +21,6 @@
       "fin": "2026-11-20"
     },
     {
-      "emoji": "📢",
-      "tag": "Agenda",
-      "couleur": "blue",
-      "texte": "Réunion d'information - Journée à Londres",
-      "detail": "18h · Salle Lucie Aubrac",
-      "date": "",
-      "debut": "2026-11-03",
-      "fin": "",
-      "moment": "",
-      "affiche_des": "",
-      "image": "images/20261014_1246_Capture.png",
-      "imagePosition": "50.0% 50.0%",
-      "imageScale": 0.7999999999999998
-    },
-    {
       "emoji": "🤝",
       "tag": "Agenda",
       "couleur": "green",
@@ -46,9 +31,9 @@
       "fin": "",
       "moment": "",
       "affiche_des": "",
-      "image": "images/20261014_1247_Capture.png",
+      "image": "images/20261104_1314_Capture.png",
       "imagePosition": "50.0% 50.0%",
-      "imageScale": 1
+      "imageScale": 0.7999999999999998
     },
     {
       "emoji": "📅",
@@ -82,16 +67,6 @@
     }
   ],
   "agenda": [
-    {
-      "debut": "2026-11-03",
-      "fin": "",
-      "moment": "18h",
-      "couleur": "blue",
-      "nom": "Réunion d'information - Journée à Londres",
-      "lieu": "Salle Lucie Aubrac",
-      "label": "Mar 3/11 18h",
-      "semaine_prochaine": false
-    },
     {
       "debut": "2026-11-04",
       "fin": "",
